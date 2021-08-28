@@ -37,8 +37,6 @@ init
 
 update
 {
-	print("" + vars.BA);
-    print("" + (IntPtr)vars.SceneManager);
     current.LoadingScene = new DeepPointer((IntPtr)vars.SceneManager, 0x18, 0x0, 0x70).Deref<int>(game);
     current.ActiveScene = new DeepPointer((IntPtr)vars.SceneManager, 0x2C, 0x0, 0x70).Deref<int>(game);
     // current.QueueSize = new DeepPointer((IntPtr)vars.SceneManager, 0x1C).Deref<int>(game);
