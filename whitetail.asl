@@ -1,5 +1,4 @@
-// This autosplitter was generated using 'uASL' by Ero.
-// More infos on https://github.com/just-ero/uASL.
+// This autosplitter was kindly written in assistance with Ero
 
 state("The Whitetail Incident") {}
 
