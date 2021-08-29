@@ -22,6 +22,11 @@ startup {
 	settings.Add("Map02", false, "Interacting with Johnathon at the ritual", "sceneSplits");
 	settings.Add("Map03", false, "Reaching Johnathon", "sceneSplits");
 	settings.Add("Map04(Boss)", true, "Killing Johnathon", "sceneSplits");
+
+	settings.Add("Cutscene01", false, "Cutscene 1 (Arrival)", "sceneSplits");
+	settings.Add("Cutscene02", false, "Cutscene 2 (Sacrifice)", "sceneSplits");
+	settings.Add("Cutscene03", false, "Cutscene 3 (Runaway)", "sceneSplits");
+	settings.Add("Cutscene04", false, "Cutscene 4 (Boss)", "sceneSplits");
 }
 
 init
@@ -56,11 +61,11 @@ start
 
 split
 {
-	if(old.LoadingScene == null || current.LoadingScene == null) return false;
 	if(old.LoadingScene != current.LoadingScene) {
 		print("---");
 		print("" + old.LoadingScene);
 		print("" + current.LoadingScene);
+		print("" + settings[vars.Scenes[old.LoadingScene]]);
 	}
 	
 	return old.LoadingScene != current.LoadingScene &&
