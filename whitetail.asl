@@ -56,13 +56,22 @@ start
 
 split
 {
+	if(old.LoadingScene == null || current.LoadingScene == null) return false;
+	if(old.LoadingScene != current.LoadingScene) {
+		print("---");
+		print("" + old.LoadingScene);
+		print("" + current.LoadingScene);
+	}
+	
 	return old.LoadingScene != current.LoadingScene &&
-		settings[vars.Scenes[old.LoadingScene]];
+		settings[vars.Scenes[old.LoadingScene]]
+		&& current.LoadingScene != 0;
 }
 
 reset
 {
-	return current.ActiveScene == 0;
+	if(current.ActiveScene == null || current.LoadingScene == null) return false;
+	return current.ActiveScene == 0 || current.LoadingScene == 0;
 }
 
 isLoading
