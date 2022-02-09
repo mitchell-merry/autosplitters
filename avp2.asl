@@ -28,12 +28,14 @@ update
 
 isLoading
 {
+    if(current.gameState == null) return false;
+
     return current.gameState == vars.Loading; // you reckon
 }
 
 start
 {
-    if(current.levelName == null) return false;
+    if(current.levelName == null || current.gameState == null || old.hasControl == null || current.hascontrol == null) return false;
     
     if(Array.IndexOf(vars.levelsToNotSplitOn, current.levelName) != -1) return false;
 
@@ -48,7 +50,7 @@ start
 
 split
 {
-    if(current.levelName == null || old.levelName == null) return false;
+    if(current.levelName == null || old.levelName == null || old.hasControl == null || current.hasControl == null || ) return false;
 
     // specific level splits on cutscenes (split when you lose control only on these levels)
     if(old.hasControl && !current.hasControl) {
