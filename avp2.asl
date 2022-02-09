@@ -11,6 +11,7 @@ startup {
     vars.Loading = 0x98;
     vars.GameNotLoaded = 0x0;
 
+    vars.levelsToStartAfterCutscene = new string[] { "P1S1", "M1S1", "A1S1" };
     vars.levelsToSplitOnCutscene = new string[] { "M7S2", "P7S2", "A7S3" };
     vars.levelsToNotSplitOn = new string[] { "A_OPEN", "A4_OPEN", "M_CLOSE", "M_OPEN", "M3_OPEN", "M4_OPEN", "P_OPEN", "OUTRO" };
 }
@@ -36,8 +37,13 @@ start
     
     if(Array.IndexOf(vars.levelsToNotSplitOn, current.levelName) != -1) return false;
 
-	return current.gameState == vars.InGame &&
+    if(Array.IndexOf(vars.levelsToStartAfterCutscene, current.levelName) != -1) {
+        
+        return current.gameState == vars.InGame &&
             !old.hasControl && current.hasControl;
+    }
+
+    return old.gameState == vars.Loading && current.gameState == vars.InGame;
 }
 
 split
