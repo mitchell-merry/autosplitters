@@ -14,17 +14,11 @@ startup {
     vars.levelsToStartAfterCutscene = new string[] { "P1S1", "M1S1", "A1S1" };
     vars.levelsToSplitOnCutscene = new string[] { "M7S2", "P7S2", "A7S3" };
     vars.levelsToNotSplitOn = new string[] { "A_OPEN", "A4_OPEN", "M_CLOSE", "M_OPEN", "M3_OPEN", "M4_OPEN", "P_OPEN", "OUTRO" };
+    vars.levelsToNotStartOn = new string[] { "A_OPEN", "M_OPEN", "P_OPEN", "M_CLOSE", "M3S1", "M4S1", "P_OPEN", "OUTRO" };
 }
 
-init
-{
-	
-}
-
-update
-{ 
-    
-}
+init { }
+update { }
 
 isLoading
 {
@@ -36,8 +30,8 @@ isLoading
 start
 {
     if(current.levelName == null || current.gameState == null || old.hasControl == null || current.hasControl == null) return false;
-    
-    if(Array.IndexOf(vars.levelsToNotSplitOn, current.levelName) != -1) return false;
+
+    if(Array.IndexOf(vars.levelsToNotStartOn, current.levelName) != -1) return false;
 
     if(Array.IndexOf(vars.levelsToStartAfterCutscene, current.levelName) != -1) {
         
@@ -52,13 +46,14 @@ split
 {
     if(current.levelName == null || old.levelName == null || old.hasControl == null || current.hasControl == null) return false;
 
+
     // specific level splits on cutscenes (split when you lose control only on these levels)
     if(old.hasControl && !current.hasControl) {
         if(Array.IndexOf(vars.levelsToSplitOnCutscene, current.levelName) != -1) return true;
     }
 
     // dont split on these levels
-    if(Array.IndexOf(vars.levelsToNotSplitOn, current.levelName) != -1) return false;
+    if(Array.IndexOf(vars.levelsToNotSplitOn, old.levelName) != -1) return false;
 
 	return old.levelName != current.levelName; // on the next level
 }
