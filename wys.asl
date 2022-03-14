@@ -10,7 +10,7 @@ startup {
 
     vars.StartRoom = 29;
     vars.Bosses = new int[] { 50, 71, 93, 121, 140, 141 };
-    vars.ChapterStarts = new int[] { 29, 52, 73, 95, 123 };
+    vars.ChapterStarts = new int[] { 52, 73, 95, 123 };
 
     settings.Add("reset_onsaveselect", false, "Reset the autosplitter automatically when on the save select screen.");
     settings.Add("chapter_start", false, "Start timer when entering the first level of a chapter.");
