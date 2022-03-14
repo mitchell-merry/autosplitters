@@ -48,8 +48,10 @@ isLoading {
 start {
     if(settings["chapter_start"] // if the chapter timer is enabled
         && old.room != current.room && old.room != vars.Pause // if we entered a new room and we didn't just unpause
-        && Array.Exists((int[]) vars.ChapterStarts, e => e == current.room)) // if the room we entered is a chapter start
-    return true;
+        && Array.Exists((int[]) vars.ChapterStarts, e => e == current.room) // if the room we entered is a chapter start
+    ) {
+        return true;
+    }
     
 
     return current.room == vars.StartRoom && old.x != current.x && current.x != 544;
@@ -63,9 +65,11 @@ split {
     }
 
     if(current.room == vars.Pause
-     || current.room == vars.SaveSelect || old.room == vars.SaveSelect
-     || old.room == vars.LevelSelect) return false;
-
+        || current.room == vars.SaveSelect || old.room == vars.SaveSelect
+        || old.room == vars.LevelSelect
+    ) {
+        return false;
+    }
 
     return old.room != current.room && old.room != vars.Pause;
 }
