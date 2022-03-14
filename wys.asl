@@ -27,6 +27,7 @@ startup {
 }
 
 init { 
+    version = "ASL: 0.1.2";
 }
 
 update {
