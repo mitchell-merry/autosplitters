@@ -1,6 +1,6 @@
 state("Will You Snail") {
-    int room: "Will You Snail.exe", 0xFCBA20;
-    float x: "Will You Snail.exe", 0x00FC7408, 0x0;
+    int room: "Will You Snail.exe", 0xFD6C30;
+    float x: "Will You Snail.exe", 0x012107D0, 0x10;
 }
 
 startup {
@@ -27,7 +27,7 @@ startup {
 }
 
 init { 
-    version = "ASL: 0.1.2";
+    version = "1.21, ASL: 0.2";
 }
 
 update {
