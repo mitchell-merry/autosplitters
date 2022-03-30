@@ -1,5 +1,4 @@
-state("Will You Snail", "1.3") {
-    double x: "Will You Snail.exe", 0x1032200, 0x0, 0x48, 0x10, 0x5E0, 0x0;
+state("Will You Snail") {
     double chaptertime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD50;
     double fulltime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD60;
     bool showtimers: "Will You Snail.exe", 0x0101CBB8, 0x0, 0xCD0, 0x18, 0x78;
@@ -112,7 +111,8 @@ start {
     if(settings["chapter_timer"]) {
         return old.room != current.room
             && current.showtimers
-            && Array.Exists((int[]) vars.ChapterStarts, e => e == current.room);
+            && Array.Exists((int[]) vars.ChapterStarts, e => e == current.room)
+            && current.chaptertime < 1;
     }
 
     return current.room == vars.StartRoom
