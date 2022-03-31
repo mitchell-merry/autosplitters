@@ -86,6 +86,7 @@ gameTime {
     } else {
         return TimeSpan.FromSeconds(current.fulltime);
     }
+}
 
 start {
     // when in chapter mode:
