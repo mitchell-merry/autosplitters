@@ -1,10 +1,14 @@
 state("Will You Snail") {
-    double chaptertime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD50;
+    // these need to be updated every patch
+    // chaptertime is just 0x10 less on the last offset compared to fulltime
+    // leveltime is like 0x20 less than chaptertime or something. it's around there. if you ever need it
+    double chaptertime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD50; 
     double fulltime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD60;
     bool showtimers: "Will You Snail.exe", 0x0101CBB8, 0x0, 0xCD0, 0x18, 0x78;
 }
 
 startup {
+    // update these if they change
     vars.LevelSelect = 144;
     vars.Pause = 145;
     vars.SaveSelect = 26;
@@ -17,6 +21,7 @@ startup {
     settings.Add("reset_onsaveselect", false, "Reset the autosplitter automatically when on the save select screen.");
     settings.Add("chapter_timer", false, "Chapter timer mode.");
 
+    // defaults
     vars.OldRoomNotPause = -1;
     vars.CurrentRoomNotPause = -1;
 
@@ -28,6 +33,8 @@ init {
     version = "1.3";
 
     // https://gist.github.com/just-ero/3b07dc98802ba3652cb13ff8313bbfee
+    // i posted old screenshots in the #livesplit or #memory channel ages ago going into more depth for
+    // this if you really want to get into the nitty-gritty
 
     var mainModule = modules.First(); // "Will You Snail.exe"
     var scr = new SignatureScanner(game, mainModule.BaseAddress, mainModule.ModuleMemorySize);
@@ -39,28 +46,21 @@ init {
     };
 
     vars.room = scr.Scan(levelTarget);
-
-    // var xPosTarget = new SigScanTarget(0x7, "85 C9 75 1D 48 8B 0D ?? ?? ?? ??");
-    // xPosTarget.OnFound = (proc, scanner, address) => {
-    //     var rip = proc.ReadValue<int>(address);
-    //     var pointer = address + 0x4 + rip;
-    //     return (IntPtr) proc.ReadValue<IntPtr>(pointer);
-    // };
-
-    // vars.x = scr.Scan(xPosTarget);
+    
     print("Init complete.");
 }
 
 update {
-   try {
+    // have to explicitly set the values for things that are sig-scanned
+    try {
         old.room = current.room;
     } catch {
         old.room = -1;
     }
 
     current.room = game.ReadValue<int>((IntPtr) vars.room);
-    // current.x = game.ReadValue<float>((IntPtr) vars.x);
 
+    // handles OldRoomNotPause
     if(old.room != current.room && current.room != vars.Pause) {
         vars.OldRoomNotPause = vars.CurrentRoomNotPause;
         vars.CurrentRoomNotPause = current.room;
@@ -74,52 +74,35 @@ update {
 }
 
 isLoading {
-    // case where the unpause frames get skipped? theoretically this case shouldn't be possible
-    // if(current.room == vars.LevelSelect) {
-    //     int roomToCheck = old.room == vars.Pause ? vars.OldRoomNotPause : old.room;
-    //     return !Array.Exists((int[]) vars.Bosses, e => e == vars.OldRoomNotPause);
-    // }
-
-    // if(current.room == vars.Pause
-    //     || current.room == vars.SaveSelect || old.room == vars.SaveSelect
-    //     || old.room == vars.LevelSelect
-    // ) {
-    //     return true;
-    // }
-
-    // return !(old.room != current.room && old.room != vars.Pause);
-    // return current.room == old.room || old.fulltime == current.fulltime;
-    // return true;
-
+    // I don't know what this is doing but I don't want to touch it. Check the livesplit autosplitters documentation
+    // on what isLoading does to gameTime
     return current.room == old.room && current.room == vars.SaveSelect;
 }
 
 gameTime {
+    // fairly self-explanatory
     if(settings["chapter_timer"]) {
         return TimeSpan.FromSeconds(current.chaptertime);
     } else {
         return TimeSpan.FromSeconds(current.fulltime);
     }
-    // if(current.room != old.room || (int) current.fulltime != (int) old.fulltime) {
-    //     print("Updating. " + current.room.ToString() + " " + old.room.ToString() + " " + current.fulltime + " " + old.fulltime);
-    //     return TimeSpan.FromSeconds(current.fulltime);
-    // }
-}
 
-start {    
-    // print(current.room.ToString() + " " + TimeSpan.FromSeconds(current.fulltime).ToString());
+start {
+    // when in chapter mode:
     if(settings["chapter_timer"]) {
-        return old.room != current.room
-            && current.showtimers
-            && Array.Exists((int[]) vars.ChapterStarts, e => e == current.room)
-            && current.chaptertime < 1;
+        return old.room != current.room     // if we just entered this room
+            && current.showtimers           // and if timers are showing (so we just entered this room still, might be redundant)
+            && Array.Exists((int[]) vars.ChapterStarts, e => e == current.room)     // and this room is the first room in a chapter
+            && current.chaptertime < 1;     // and the timer has just reset (1 is arbitrary)
     }
 
-    return current.room == vars.StartRoom
-        && current.fulltime != old.fulltime && old.fulltime == 0;
+    // when in full-game mode:
+    return current.room == vars.StartRoom           // start only if we are in the first room (29)
+        && current.fulltime != old.fulltime && old.fulltime == 0;   // and if the timer was 0 and has changed
 }
 
 split {
+    // first frame
     if(old.room == -1) return false;
 
     // final split for chapters
@@ -134,10 +117,11 @@ split {
 
     // case where the unpause frames get skipped? theoretically this case shouldn't be possible
     if(current.room == vars.LevelSelect) {
-        int roomToCheck = old.room == vars.Pause ? vars.OldRoomNotPause : old.room;
+        // if the room we were just in, not counting pause, is a boss room, and we are now in level select, split
         return Array.Exists((int[]) vars.Bosses, e => e == vars.OldRoomNotPause);
     }
 
+    // rooms where we shouldn't split
     if(current.room == vars.Pause
         || current.room == vars.SaveSelect || old.room == vars.SaveSelect
         || old.room == vars.LevelSelect
@@ -146,16 +130,18 @@ split {
         return false;
     }
 
+    // if we're in a new room and the old room wasn't Pause
     return old.room != current.room && old.room != vars.Pause;
 }
 
 reset {
+    // self-explanatory
 	if(settings["reset_onsaveselect"] && current.room == vars.SaveSelect) {
         return true;
     }
 
+    // reset when going to level select for chapter timers. You might want to make this another setting later on
     if(settings["chapter_timer"] && current.room == vars.LevelSelect && old.room != current.room) {
-        print(vars.OldRoomNotPause.ToString());
         return !Array.Exists((int[]) vars.Bosses, e => e == vars.OldRoomNotPause);
     }
 }
