@@ -2,9 +2,9 @@ state("Will You Snail") {
     // these need to be updated every patch
     // chaptertime is just 0x10 less on the last offset compared to fulltime
     // leveltime is like 0x20 less than chaptertime or something. it's around there. if you ever need it
-    double chaptertime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD50; 
-    double fulltime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD60;
-    bool showtimers: "Will You Snail.exe", 0x0101CBB8, 0x0, 0xCD0, 0x18, 0x78;
+    double chaptertime: "Will You Snail.exe", 0x10F40E0, 0x8, 0x170, 0xF30; 
+    double fulltime: "Will You Snail.exe", 0x10F40E0, 0x8, 0x170, 0xF40;
+    bool showtimers: "Will You Snail.exe", 0x010EC8D8, 0x0, 0xD50, 0x18, 0x60;
 }
 
 startup {
@@ -30,7 +30,7 @@ startup {
 
 init { 
     print("Init start.");
-    version = "1.3";
+    version = "1.42";
 
     // https://gist.github.com/just-ero/3b07dc98802ba3652cb13ff8313bbfee
     // i posted old screenshots in the #livesplit or #memory channel ages ago going into more depth for
