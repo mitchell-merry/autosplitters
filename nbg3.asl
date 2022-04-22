@@ -32,9 +32,11 @@ update {
 }
 
 start {
-    
-
     return current.activeScene.Equals(vars.KidnapFlashback) && old.activeScene.Equals(vars.MainMenu);    
+}
+
+reset {
+    return current.loadingScene != old.loadingScene && current.loadingScene == vars.MainMenu;
 }
 
 split {
