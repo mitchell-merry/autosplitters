@@ -6,6 +6,7 @@ state("Bloodwash")
 
 init
 {
+    vars.MainMenu = "MainMenuWasher.unity";
     vars.LoadingScreen = "LoadingScreenScene.unity";
     vars.Intro = "IntroScenev2.unity";
 }
@@ -15,9 +16,16 @@ start
     return current.activeScene == vars.Intro && old.activeScene == vars.LoadingScreen;    
 }
 
-isLoading {
+isLoading 
+{
     return current.activeScene != current.loadingScene
         || current.activeScene == vars.LoadingScreen
         || current.loadingScene == vars.LoadingScreen;
 }
 
+reset 
+{
+    return current.activeScene != current.loadingScene
+        && current.loadingScene == vars.MainMenu
+        && current.activeScene == vars.LoadingScreen;
+}
