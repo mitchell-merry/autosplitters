@@ -126,7 +126,7 @@ update
 start
 {
     return !old.cursorVisible && current.cursorVisible
-        && current.activeScene == vars.MainScene; // condition is briefly satisfied after returning to the menu, so ensuring that we're in the main scene
+        && current.activeScene == vars.MainScene && current.loadingScene == vars.MainScene; // condition is briefly satisfied after returning to the menu, so ensuring that we're in the main scene
 }
 
 split
