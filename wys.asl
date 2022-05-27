@@ -1,4 +1,11 @@
-state("Will You Snail") {
+state("Will You Snail", "1.3") {
+
+    double chaptertime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD50;
+    double fulltime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD60;
+    bool showtimers: "Will You Snail.exe", 0x0101CBB8, 0x0, 0xCD0, 0x18, 0x78;
+}
+
+state("Will You Snail", "1.42") {
     // these need to be updated every patch
     // chaptertime is just 0x10 less on the last offset compared to fulltime
     // leveltime is like 0x20 less than chaptertime or something. it's around there. if you ever need it
@@ -18,6 +25,18 @@ startup {
     vars.ChapterStarts = new int[] { 29, 52, 73, 95, 123 };
     vars.ChapterEnds = new int[] { 51, 72, 94, 122, 142 };
 
+    // stolen from https://github.com/just-ero/asl/blob/main/TUNIC/TUNIC.asl
+    if (timer.CurrentTimingMethod == TimingMethod.RealTime)
+	{
+		var mbox = MessageBox.Show(
+			"\"Will You Snail?\" uses in-game time.\nWould you like to switch to it?",
+			"LiveSplit | \"Will You Snail?\"",
+			MessageBoxButtons.YesNo);
+
+		if (mbox == DialogResult.Yes)
+			timer.CurrentTimingMethod = TimingMethod.GameTime;
+	}
+
     settings.Add("reset_onsaveselect", false, "Reset the autosplitter automatically when on the save select screen.");
     settings.Add("chapter_timer", false, "Chapter timer mode.");
 
@@ -30,7 +49,18 @@ startup {
 
 init { 
     print("Init start.");
-    version = "1.42";
+    
+    var mms = modules.First().ModuleMemorySize;
+
+    print(mms.ToString("X"));
+    switch (mms)
+    {
+        case 0x142A000: version = "1.42"; break;
+        case 0x1347000: version = "1.3"; break;
+        default:
+            version = "Unknown. Post in the discord if you need support for this version.";
+            break;
+    }
 
     // https://gist.github.com/just-ero/3b07dc98802ba3652cb13ff8313bbfee
     // i posted old screenshots in the #livesplit or #memory channel ages ago going into more depth for
