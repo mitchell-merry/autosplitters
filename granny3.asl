@@ -1,4 +1,4 @@
-state("Granny 3")
+state("Granny 3", "1.1.2")
 {
     // true in the main menu
     bool cursorVisible: "GameAssembly.dll", 0xC21D38, 0x58, 0x3A8;
@@ -81,7 +81,7 @@ startup
         vars.ItemWatchers.Add(
             new MemoryWatcher<bool>(
                 // InventorySystem - may break
-                new DeepPointer("UnityPlayer.dll", 0x013C1A7C, 0x60, 0x84, 0xC, 0x3C,
+                new DeepPointer("GameAssembly.dll", 0xC21D38, 0x50, 0x6EC, 0x8, 0x1C, 0x24, 0x18,
                 vars.ItemOffsets[key])
             ) { Name = key }
         );
@@ -90,7 +90,19 @@ startup
     }
 }
 
-init { }
+init {
+    var mms = modules.First().ModuleMemorySize;
+
+    print(mms.ToString("X"));
+    switch(mms) {
+        case 0xA0000:
+            version = "1.1.2";
+            break;
+        default:
+            version = "Unknown. Contact diggitydingdong#3084 on discord to support this version.";
+            break;
+    }
+}
 
 update
 {
