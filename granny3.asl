@@ -1,6 +1,6 @@
 // couldn't get unityasl to work with this game for the life of me
 // and there's no static references to anything 
-// leave me alone if it works it works
+// if it works it works
 state("Granny 3", "1.1.2")
 {
 	// not really but good enough
