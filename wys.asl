@@ -15,7 +15,11 @@ state("Will You Snail", "1.42") {
 }
 
 startup {
+    vars.TimerModel = new TimerModel { CurrentState = timer };
+
     // update these if they change
+    vars.StartupRoom = 24;
+    vars.PhotosensRoom = 16;
     vars.LevelSelect = 144;
     vars.Pause = 145;
     vars.SaveSelect = 26;
@@ -38,6 +42,7 @@ startup {
 	}
 
     settings.Add("reset_onsaveselect", false, "Reset the autosplitter automatically when on the save select screen.");
+    settings.Add("reset_ongameclose", true, "Reset the autosplitter automatically when the game closes.");
     settings.Add("chapter_timer", false, "Chapter timer mode.");
 
     // defaults
@@ -89,6 +94,8 @@ update {
     }
 
     current.room = game.ReadValue<int>((IntPtr) vars.room);
+
+    if(old.room != current.room) print(current.room.ToString());
 
     // handles OldRoomNotPause
     if(old.room != current.room && current.room != vars.Pause) {
@@ -157,6 +164,8 @@ split {
         || current.room == vars.SaveSelect || old.room == vars.SaveSelect
         || old.room == vars.LevelSelect
         || current.room == vars.Frustration
+        || old.room == vars.PhotosensRoom || current.room == vars.PhotosensRoom
+        || old.room == vars.StartupRoom || current.room == vars.StartupRoom
     ) {
         return false;
     }
@@ -177,3 +186,7 @@ reset {
     }
 }
 
+exit
+{
+    if(settings["reset_ongameclose"]) vars.TimerModel.Reset();
+}
