@@ -38,6 +38,17 @@ startup
 
     vars.Cutscenes = new List<string>() { "intro.smk" };
     vars.StartScenes = new List<string>() { "tutorial", "ssdocks" };
+
+    if (timer.CurrentTimingMethod == TimingMethod.RealTime)
+	{
+		var mbox = MessageBox.Show(
+			"\"Heretic II\" uses in-game time.\nWould you like to switch to it?",
+			"LiveSplit | \"Heretic II\"",
+			MessageBoxButtons.YesNo);
+
+		if (mbox == DialogResult.Yes)
+			timer.CurrentTimingMethod = TimingMethod.GameTime;
+	}
 }
 
 update
