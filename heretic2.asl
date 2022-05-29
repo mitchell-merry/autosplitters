@@ -78,6 +78,6 @@ start
 split
 {
     return old.scene != current.scene                   // changing scenes
-		&& old.scene == "" && current.scene == ""		// non-value								
+		&& old.scene != "" && current.scene != ""		// non-value								
         && !vars.Cutscenes.Contains(old.scene);         // and we didnt change from a cutscene
 }
