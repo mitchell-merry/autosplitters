@@ -9,34 +9,7 @@ state("Heretic2")
 
 startup
 {
-    // vars.LevelLabels = new Dictionary<string, string>()
-    // {
-    //     {"ssdocks", "Silverspring Docks"},
-    //     {"sswarehouse", "Silverspring Warehouse"},
-    //     {"sstown", "The Town of Silverspring"},
-    //     {"sspalace", "Silverspring Palace"},
-    //     {"", "Darkmire Swamps"},
-    //     {"andhealer", "Andoria Healer's Tower"},
-    //     {"andplaza", "Andoria Plaza"},
-    //     {"andacademic", "Andoria Academic Quarters"},
-    //     {"andslums", "Andoria Slums"},
-    //     {"kellcaves", "Kell Caves"},
-    //     {"canyon", "Katlit'k Canyon"},
-    //     {"hive1", "K'Chekrik Hive 1"},
-    //     {"hive2", "K'Chekrik Hive 2"},
-    //     {"gauntlet", "The Gauntlet"},
-    //     {"hivetrialpit", "The Trial Pit"},
-    //     {"", "Lair of the Mothers"},
-    //     {"oglemine1", "Ogle Mines 1"},
-    //     {"oglemine2", "Ogle Mines 2"},
-    //     {"dungeon", "Morcalavin's Dungeon"},
-    //     {"", "Cloud Fortress"},
-    //     {"", "Morcalavin's Inner Sanctum"},
-    //     {"cloudlabs", "Cloud Fortress Labs"},
-    //     {"cloudquarters", "Cloud Living Quarters"},
-    // };
-
-    vars.Cutscenes = new List<string>() { "intro.smk" };
+    vars.Cutscenes = new List<string>() { "intro.smk", "outro.smk" };
     vars.StartScenes = new List<string>() { "tutorial", "ssdocks" };
 
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
