@@ -1,6 +1,6 @@
 /// <reference path="./asr.d.ts">
 
-let current, old;
+let current = {}, old;
 
 /** cutscenes in-game, do not split on these */
 const cutscenes = [ "intro.smk", "outro.smk" ];
