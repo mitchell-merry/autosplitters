@@ -5,17 +5,7 @@ state("DevilCatcherVer2.3")
 }
 
 startup
-{
-	/*
-	[Unity Helper] Searching for g_RuntimeSceneManager...
-	[Unity Helper]   => Scan target could not be resolved!
-	[Unity Helper]
-	[Unity Helper]     => SceneManager will not be available!
-	*/
-	// vars.Unity = Assembly.Load(File.ReadAllBytes(@"Components\UnityASL.bin")).CreateInstance("UnityASL.Unity");
-	// vars.Unity.LoadSceneManager = true;
-
-	/*
+{/*
 	MainMenu
 	Level1
 	DevilBoss
@@ -40,16 +30,8 @@ startup
 	}
 }
 
-init
-{
-	// vars.Unity.Load(game);
-}
-
 update
 {
-	// if (!vars.Unity.Loaded) return false;
-	// vars.Unity.Update();
-
 	if(old.loading != current.loading) print("loading: " + old.loading + " -> " + current.loading);
 	if(old.active != current.active) print("active: " + old.active + " -> " + current.active);
 }
@@ -72,14 +54,4 @@ isLoading
 reset
 {
 	return old.loading != current.loading && current.loading == vars.MainMenu;
-}
-
-exit
-{
-	// vars.Unity.Reset();
-}
-
-shutdown
-{
-	// vars.Unity.Reset();
 }
