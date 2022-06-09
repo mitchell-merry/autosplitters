@@ -96,7 +96,7 @@ update {
     current.room = game.ReadValue<int>((IntPtr) vars.room);
 
     if(old.room != current.room) print(current.room.ToString());
-    if(old.fulltime != current.fulltime) print(TimeSpan.FromSeconds(current.fulltime).ToString());
+    print("GAMETIME: " + TimeSpan.FromSeconds(current.fulltime).ToString());
 
     // handles OldRoomNotPause
     if(old.room != current.room && current.room != vars.Pause) {
