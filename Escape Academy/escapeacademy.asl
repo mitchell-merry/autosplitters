@@ -29,7 +29,7 @@ init
 		return true;
 	});
 
-	vars.Helper.Load();
+	vars.Helper.Load(1000);
 }
 
 update
