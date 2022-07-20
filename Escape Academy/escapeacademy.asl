@@ -47,7 +47,7 @@ update
 
 isLoading
 {
-	return (current.AsyncLoading || (current.LSLoading && current.MGMState == 3))
+	return (current.AsyncLoading || current.LSLoading)
 		&& !(current.MGMLoading && current.RoomHasStarted);    // the dialogue portion before a level
 }
 
