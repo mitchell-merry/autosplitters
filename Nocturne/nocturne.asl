@@ -64,7 +64,8 @@ startup
 	#endregion Debugging
 
 	vars.CompletedSplits = new List<string>();
-	vars.Vol1Chapters = new List<string> { "HQ.geo", "GTOWN.geo", "FOREST.geo", "CASTLE.geo", "DUNGEON.geo" };
+	// 1,3,4 is HQ, 2 is TRAIN, 5 is HQWreck (volume)
+	vars.StartMaps = new List<string> { "HQ.geo", "TRAIN.geo", "HQWRECK.geo" };
 }
 
 init
@@ -108,7 +109,7 @@ isLoading
 {
 	// https://discord.com/channels/144133978759233536/144134231201808385/727009875569279048
 	if (current.isLoading && timer.CurrentTime.GameTime.HasValue
-	   && timer.CurrentTime.RealTime.Value < TimeSpan.FromMilliseconds(30))
+	   && timer.CurrentTime.RealTime.Value < TimeSpan.FromMilliseconds(50))
 	{
 		vars.LogAndWrite("Overwrite Game Time to 0");
 		timer.SetGameTime(TimeSpan.Zero);
