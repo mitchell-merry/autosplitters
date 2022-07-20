@@ -1,9 +1,8 @@
 state("nocturne")
 {
-	bool isLoading    : "nocturne.exe", 0x18C316C;
-	string128 map     : "nocturne.exe", 0x1BA3F8C;
-	bool inGame       : "nocturne.exe", 0x18AE0D4;
-	bool inGameOrStart: "nocturne.exe", 0x29FC25C, 0xDE3;
+	bool isLoading: "nocturne.exe", 0x18C316C;
+	string128 map : "nocturne.exe", 0x1BA3F8C;
+	bool inGame   : "nocturne.exe", 0x18AE0D4;
 }
 
 startup
@@ -60,7 +59,7 @@ startup
 		foreach(var key in keys) vars.WatchValue(curr, ol, key);
 	});
 
-	vars.ValuesToWatch = new List<string> { "isLoading", "inGame", "inGameOrStart", "map" };
+	vars.ValuesToWatch = new List<string> { "isLoading", "inGame", "map" };
 	#endregion Debugging
 
 	vars.CompletedSplits = new List<string>();
