@@ -39,6 +39,7 @@ update
 
 	current.RoomHasStarted = vars.Helper["RoomHasStarted"].Current;
 	current.AsyncLoading = vars.Helper["_asyncLoadingLevel"].Current;
+	current.MGMState = vars.Helper["currentMGState"].Current;
 	// intro / outro states
 	current.LSLoading = vars.Helper["LSState"].Current == 0 || vars.Helper["LSState"].Current == 4;
 	current.MGMLoading = vars.Helper["currentMGState"].Current == 1;
@@ -46,7 +47,7 @@ update
 
 isLoading
 {
-	return (current.AsyncLoading || current.LSLoading)
+	return (current.AsyncLoading || (current.LSLoading && current.MGMState == 3))
 		&& !(current.MGMLoading && current.RoomHasStarted);    // the dialogue portion before a level
 }
 
