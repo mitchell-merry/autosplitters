@@ -10,7 +10,7 @@ startup
 {
 	#region Debugging
 	// should always be false publicly
-	vars.DEBUG = true;
+	vars.DEBUG = false;
 
 	vars.Log = (Action<object>)(output => print("[Nocturne] " + output.ToString()));
 	// https://stackoverflow.com/questions/26778554/why-cant-i-index-into-an-expandoobject
@@ -79,7 +79,7 @@ update
 start
 {
 	// loading into first map from main menu (so out of game)
-	if (current.isLoading && current.map == "HQ.geo" && current.inGame
+	if (current.isLoading && vars.StartMaps.Contains(current.map) && current.inGame
 	    && (current.inGame != old.inGame || current.map != old.map))
 	{
 		if (vars.DEBUG) vars.LogAndWrite(String.Format("STARTING | isLoading: {0} | map: {1} | inGame {2} -> {3}", current.isLoading, current.map, old.inGame, current.inGame));
