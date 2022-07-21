@@ -5,6 +5,8 @@ startup
 	var bytes = File.ReadAllBytes(@"Components\LiveSplit.ASLHelper.bin");
 	var type = Assembly.Load(bytes).GetType("ASLHelper.Unity");
 	vars.Helper = Activator.CreateInstance(type, timer, this);
+
+	vars.Helper.AlertLoadless();
 }
 
 init 
