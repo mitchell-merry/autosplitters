@@ -2,63 +2,40 @@ state("Escape Academy") { }
 
 startup
 {
-	var bytes = File.ReadAllBytes(@"Components\LiveSplit.ASLHelper.bin");
-	var type = Assembly.Load(bytes).GetType("ASLHelper.Unity");
-	vars.Helper = Activator.CreateInstance(type, timer, this);
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
 
 	vars.Helper.AlertLoadless();
 }
 
-init 
+init
 {
 	print("Escape Academy detected.");
 
-	vars.Helper.TryOnLoad = (Func<dynamic, bool>)(mono =>
+	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
 	{
-		var mgm = mono.GetClass("Escape.Metagame.MetagameManager");
-		var slm = mono.GetClass("Escape.Metagame.SceneLevelManager");
+		var mgm = mono["Escape.Metagame.MetagameManager"];
+		vars.Helper["MGMState"] = mono.Make<int>(mgm, "_instance", "_currentMetaGameState");
+		vars.Helper["AsyncLoading"] = mono.Make<bool>(mgm, "_instance", "sceneLevelManager", "_asyncLoadingLevel");
 
-		vars.Helper["currentMGState"] = mgm.Make<int>("_instance", "_currentMetaGameState");
-		vars.Helper["_asyncLoadingLevel"] = mgm.Make<bool>("_instance", "sceneLevelManager", slm["_asyncLoadingLevel"]);
-
-		var lsm = mono.GetClass("Escape.Metagame.LevelSelect.LevelSelectManager");
-		vars.Helper["LSState"] = lsm.Make<int>("Instance", "_currentLevelSelectState");
+		var lsm = mono["Escape.Metagame.LevelSelect.LevelSelectManager"];
+		vars.Helper["LSState"] = mono.Make<int>(lsm, "Instance", "_currentLevelSelectState");
 
 		var rm = mono.GetClass("Escape.Rooms.RoomManager");
-
-		vars.Helper["RoomHasStarted"] = rm.Make<bool>("Instance", "RoomHasStarted");
+		vars.Helper["RoomHasStarted"] = mono.Make<bool>(rm, "Instance", "RoomHasStarted");
 
 		return true;
 	});
-
-	vars.Helper.Load(1000);
 }
 
 update
 {
-	if (!vars.Helper.Update())
-		return false;
-
-	current.RoomHasStarted = vars.Helper["RoomHasStarted"].Current;
-	current.AsyncLoading = vars.Helper["_asyncLoadingLevel"].Current;
-	current.MGMState = vars.Helper["currentMGState"].Current;
 	// intro / outro states
-	current.LSLoading = vars.Helper["LSState"].Current == 0 || vars.Helper["LSState"].Current == 4;
-	current.MGMLoading = vars.Helper["currentMGState"].Current == 1;
+	current.LSLoading = current.LSState == 0 || current.LSState == 4;
+	current.MGMLoading = current.MGMState == 1;
 }
 
 isLoading
 {
 	return (current.AsyncLoading || (current.LSLoading && current.MGMState == 3))
-		&& !(current.MGMLoading && current.RoomHasStarted);    // the dialogue portion before a level
-}
-
-exit
-{
-	vars.Helper.Dispose();
-}
-
-shutdown
-{
-	vars.Helper.Dispose();
+	   && !(current.MGMLoading && current.RoomHasStarted);    // the dialogue portion before a level
 }
