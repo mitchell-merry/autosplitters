@@ -20,7 +20,7 @@ init
 		var lsm = mono["Escape.Metagame.LevelSelect.LevelSelectManager"];
 		vars.Helper["LSState"] = mono.Make<int>(lsm, "Instance", "_currentLevelSelectState");
 
-		var rm = mono.GetClass("Escape.Rooms.RoomManager");
+		var rm = mono["Escape.Rooms.RoomManager"];
 		vars.Helper["RoomHasStarted"] = mono.Make<bool>(rm, "Instance", "RoomHasStarted");
 
 		return true;
