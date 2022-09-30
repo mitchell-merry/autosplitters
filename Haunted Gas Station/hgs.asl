@@ -2,37 +2,26 @@ state("Haunted Gas Station") { }
 
 startup
 {
-	var bytes = File.ReadAllBytes(@"Components\LiveSplit.ASLHelper.bin");
-	var type = Assembly.Load(bytes).GetType("ASLHelper.Unity");
-	vars.Helper = Activator.CreateInstance(type, timer, this);
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+	vars.Helper.GameName = "HGS";
 	vars.Helper.LoadSceneManager = true;
-	
-	vars.Log = (Action<object>)(output => print("[HGS] " + output));
-}
-
-init
-{
-	vars.Helper.Load();
 }
 
 update
 {
-	if (!vars.Helper.Update())
-		return false;
-
 	current.activeScene = vars.Helper.Scenes.Active.Index;
 
-	if (current.activeScene == -1 || vars.Helper.Scenes.Loading.Count != 1)
+	if (current.activeScene == -1 || vars.Helper.Scenes.Loaded.Count != 1)
 	{
-		vars.Log(current.activeScene + ", " + vars.Helper.Scenes.Loading.Count);
+		vars.Log(current.activeScene + ", " + vars.Helper.Scenes.Loaded.Count);
 		return false;
 	}
 
-	current.loadingScene = vars.Helper.Scenes.Loading[0].Index;
+	current.loadingScene = vars.Helper.Scenes.Loaded[0].Index;
 
 	if (old.loadingScene != current.loadingScene)
 		vars.Log("loadingScene: " + old.loadingScene + " -> " + current.loadingScene);
-		
+
 	if (old.activeScene != current.activeScene)
 		vars.Log("activeScene: " + old.activeScene + " -> " + current.activeScene);
 }
@@ -46,14 +35,4 @@ start
 split
 {
 	return current.activeScene == 2 && old.loadingScene == 2 && current.loadingScene == 4;
-}
-
-exit
-{
-	vars.Helper.Dispose();
-}
-
-shutdown
-{
-	vars.Helper.Dispose();
 }
