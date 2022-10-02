@@ -1,57 +1,43 @@
-state("DevilCatcherVer2.3") 
-{
-	string128 loading: "UnityPlayer.dll", 0xFF1CD0, 0x18, 0x0, 0xC, 0xD;
-	string128 active:  "UnityPlayer.dll", 0xFF1CD0, 0x2C, 0x0, 0xC, 0xD;
-}
+state("DevilCatcherVer2.3") { }
 
 startup
-{/*
-	MainMenu
-	Level1
-	DevilBoss
-	Level2
-	GodBoss
-	*/
-	vars.MainMenu = "MainMenu.unity";
-	vars.Level1 = "Level1.unity";
+{
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+	vars.Helper.LoadSceneManager = true;
+	vars.Helper.AlertLoadless();
 
-	vars.Levels = new Dictionary<string, string>()
-	{
-		{ vars.Level1, "Level 1" },
-		{ "DevilBoss.unity", "Devil Boss" },
-		{ "Level2.unity", "Level 2" },
-		{ "GodBoss.unity", "God Boss" },
-	};
-
-	settings.Add("level", true, "Split on level complete");
-	foreach(string key in vars.Levels.Keys) 
-	{
-		settings.Add(key, false, vars.Levels[key], "level");
-	}
+	settings.Add("split_scene", true, "Split on completing scene:");
+	settings.Add("Level1", false, "Level 1", "split_scene");
+	settings.Add("DevilBoss", false, "Devil Boss", "split_scene");
+	settings.Add("Level2", false, "Level 2", "split_scene");
+	settings.Add("GodBoss", true, "God Boss", "split_scene");
 }
 
 update
 {
-	if(old.loading != current.loading) print("loading: " + old.loading + " -> " + current.loading);
-	if(old.active != current.active) print("active: " + old.active + " -> " + current.active);
+	current.activeScene = vars.Helper.Scenes.Active.Name == null ? current.activeScene : vars.Helper.Scenes.Active.Name;
+	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name == null ? current.loadingScene : vars.Helper.Scenes.Loaded[0].Name;
+
+	// if(current.activeScene != old.activeScene) vars.Log("a: " + old.activeScene + ", " + current.activeScene);
+	// if(current.loadingScene != old.loadingScene) vars.Log("l: " + old.loadingScene + ", " + current.loadingScene);
 }
 
 start
 {
-	return old.active == vars.MainMenu && current.active == vars.Level1;
+	return old.activeScene == "MainMenu" && current.activeScene == "Level1";
 }
 
 split
 {
-	return old.loading != current.loading && settings[current.loading];
+	return old.loadingScene != current.loadingScene && settings[current.loadingScene];
 }
 
 isLoading
 {
-	return current.loading != current.active;
+	return current.loadingScene != current.activeScene;
 }
 
 reset
 {
-	return old.loading != current.loading && current.loading == vars.MainMenu;
+	return old.loadingScene != current.loadingScene && current.loadingScene == "MainMenu";
 }

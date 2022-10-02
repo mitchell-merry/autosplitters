@@ -1,38 +1,41 @@
-state("Death Flush")
+state("Death Flush") { }
+
+startup
 {
-    string128 loadingScene: "UnityPlayer.dll", 0x19423F8, 0x28, 0x0, 0x10, 0x7;
-    string128 activeScene: "UnityPlayer.dll", 0x19423F8, 0x50, 0x0, 0x10, 0x7;
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+	vars.Helper.LoadSceneManager = true;
+	vars.Helper.AlertLoadless();
+
+	settings.Add("split_scene", true, "Split on completing scene:");
+	settings.Add("start scene", false, "Main Area", "split_scene");
+	settings.Add("Boss Scene", true, "Boss", "split_scene");
 }
 
-init
+update
 {
-    /*
-        "INSTRUCTIONS", "attendant", "ENDING", "Boss Scene", "start scene", "LOADING", "main menu"
-    */
-    vars.MainMenu = "main menu.unity";
-    vars.Instructions = "INSTRUCTIONS.unity";
-    vars.Loading = "LOADING.unity";
-    vars.Start = "start scene.unity";
+	current.activeScene = vars.Helper.Scenes.Active.Name == null ? current.activeScene : vars.Helper.Scenes.Active.Name;
+	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name == null ? current.loadingScene : vars.Helper.Scenes.Loaded[0].Name;
+
+	if(current.activeScene != old.activeScene) vars.Log("a: " + old.activeScene + ", " + current.activeScene);
+	if(current.loadingScene != old.loadingScene) vars.Log("l: " + old.loadingScene + ", " + current.loadingScene);
 }
 
-start 
+
+start
 {
-    return old.loadingScene == vars.MainMenu && current.loadingScene == vars.Instructions;    
+	return old.activeScene != "main menu" && current.activeScene == "INSTRUCTIONS";
 }
 
 split
 {
-    if(current.loadingScene == null || current.activeScene == null) return false;
-
-    return current.loadingScene != old.loadingScene
-        && old.loadingScene != vars.Loading
-        && old.loadingScene != vars.Instructions;
+	return current.loadingScene != old.loadingScene
+	    && settings.ContainsKey(old.loadingScene)
+	    && settings[old.loadingScene];
 }
 
-isLoading 
+isLoading
 {
     return current.activeScene != current.loadingScene
-        || current.activeScene == vars.Loading
-        || current.loadingScene == vars.Loading;
+        || current.activeScene == "LOADING"
+        || current.loadingScene == "LOADING";
 }
-

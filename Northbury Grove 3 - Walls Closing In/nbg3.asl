@@ -1,47 +1,46 @@
-state("Walls Closing In HDRP")
-{
-	string32 loadingScene: "UnityPlayer.dll", 0x1545C30, 0x28, 0x0, 0x10, 0xF;
-	string32 activeScene: "UnityPlayer.dll", 0x1545C30, 0x50, 0x0, 0x10, 0xF;
-}
+state("Walls Closing In HDRP") { }
 
 startup
-{	
-	vars.MainMenu = "Main Menu.unity";
-	vars.KidnapFlashback = "Kidnap Flashback.unity";
-	vars.Scenes = new List<string>()
-	{
-		"New Prologue", "The Farmhouse", "Interrogation", "The Hood", "End Credits"
-	};
+{
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+	vars.Helper.LoadSceneManager = true;
+	vars.Helper.AlertLoadless();
 
-	vars.Suffix = ".unity";
+	vars.Scenes = new[] { "New Prologue", "The Farmhouse", "Interrogation", "The Hood", "End Credits" };
 
-	settings.Add("scenes", true, "Split on entering level.");
-	foreach(string scene in vars.Scenes)
-	{
-		settings.Add(scene + vars.Suffix, scene != "The Hood", scene, "scenes");
-	}
+	settings.Add("split_scene", true, "Split on completing scene:");
+	settings.Add("Kidnap Flashback", false, "Kidnap Flashback", "split_scene");
+	settings.Add("New Prologue", false, "Basement", "split_scene");
+	settings.Add("The Farmhouse", false, "Farmhouse", "split_scene");
+	settings.Add("The Hood", true, "The Hood", "split_scene");
 }
 
-start 
+update
 {
-	return current.activeScene == vars.KidnapFlashback && old.activeScene== vars.MainMenu;    
+	current.activeScene = vars.Helper.Scenes.Active.Name == null ? current.activeScene : vars.Helper.Scenes.Active.Name;
+	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name == null ? current.loadingScene : vars.Helper.Scenes.Loaded[0].Name;
 }
 
-reset 
+start
 {
-	return current.loadingScene != old.loadingScene && current.loadingScene == vars.MainMenu;
+	return old.activeScene == "Main Menu"
+	    && current.activeScene == "Kidnap Flashback";
 }
 
-split 
+reset
 {
-	if(current.loadingScene != old.loadingScene)
-	{
-		return settings[current.loadingScene];
-	}
+	return old.loadingScene != current.loadingScene
+	    && current.loadingScene == "Main Menu";
+}
+
+split
+{
+	return old.loadingScene != current.loadingScene
+	    && settings.ContainsKey(old.loadingScene)
+		&& settings[old.loadingScene];
 }
 
 isLoading 
 {
 	return current.activeScene != current.loadingScene;
 }
-
