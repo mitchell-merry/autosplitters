@@ -1,8 +1,4 @@
-state("In Sound Mind")
-{
-	bool isLoading : "unityplayer.dll", 0x19fb7c8, 0x78;
-	long inventoryUI: "UnityPlayer.dll", 0x01952CC0, 0x330, 0x48, 0x168, 0x30, 0x30, 0x18, 0x28;
-}
+state("") { }
 
 startup
 {
