@@ -39,5 +39,5 @@ split
 {
 	return old.loadingScene != current.loadingScene
 	    && settings.ContainsKey(old.loadingScene)
-		&& settings[old.loadingScene];
+	    && settings[old.loadingScene];
 }
