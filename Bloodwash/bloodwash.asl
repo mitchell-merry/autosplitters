@@ -1,14 +1,23 @@
-state("Bloodwash")
+state("Bloodwash") { }
+
+startup
 {
-    string128 loadingScene: "UnityPlayer.dll", 0x168FF58, 0x28, 0x0, 0x10, 0xE;
-    string128 activeScene: "UnityPlayer.dll", 0x168FF58, 0x50, 0x0, 0x10, 0xE;
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+	vars.Helper.LoadSceneManager = true;
+	vars.Helper.AlertLoadless();
 }
 
 init
 {
-    vars.MainMenu = "MainMenuWasher.unity";
-    vars.LoadingScreen = "LoadingScreenScene.unity";
-    vars.Intro = "IntroScenev2.unity";
+    vars.MainMenu = "MainMenuWasher";
+    vars.LoadingScreen = "LoadingScreenScene";
+    vars.Intro = "IntroScenev2";
+}
+
+update
+{
+	current.activeScene = vars.Helper.Scenes.Active.Name == null ? current.activeScene : vars.Helper.Scenes.Active.Name;
+	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name == null ? current.loadingScene : vars.Helper.Scenes.Loaded[0].Name;
 }
 
 start 
