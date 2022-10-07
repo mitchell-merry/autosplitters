@@ -60,5 +60,6 @@ start
 split
 {
 	return old.loadingScene != current.loadingScene
+	    && current.loadingScene != "MainMenu ENG"
 	    && settings.ContainsKey(old.loadingScene) && settings[old.loadingScene];
 }
