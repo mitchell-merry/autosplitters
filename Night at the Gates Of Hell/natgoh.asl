@@ -1,12 +1,30 @@
-// Uses mono v3 x86 which is not supported in the ASL helper library - https://github.com/just-ero/asl-help/issues/2
-state("Night at the Gates of Hell")
+state("Night at the Gates of Hell") {}
+
+startup
 {
-	// GameManager.instance._currentGameState
-	// Init, Menu, Loading, Paused, Cutscene, Conversation, Attacked, Playing, None, Shot
-	int gameState: "UnityPlayer.dll", 0x14D2AEC, 0xCC, 0x34, 0x3C, 0x0, 0x3C, 0x0, 0x2C;
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+	vars.Helper.GameName = "NatGoH";
+	vars.Helper.LoadSceneManager = true;
+
+	vars.Helper.AlertLoadless();
 }
+
+init
+{
+	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
+	{
+		var gm = mono["GameManager"];
+		vars.Helper["GameState"] = mono.Make<int>(gm, "instance", "currentGameState");
+
+		return true;
+	});
+}
+
+onStart
+{
+	vars.Log(vars.Helper["GameState"]);}
 
 isLoading
 {
-	return current.gameState == 2;
+	return current.GameState == 2;
 }

@@ -1,25 +1,28 @@
-state("Late Work")
+state("Late Work") { }
+
+startup
 {
-    byte isPaused: "UnityPlayer.dll", 0x012BDAB0, 0x24, 0xF0;
-    byte isLoading: "UnityPlayer.dll", 0x12C4848, 0x20;
+	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+	vars.Helper.GameName = "LW";
+	// vars.Helper.LoadSceneManager = true;
+	vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
 }
 
-init { }
-
-start
+init
 {
-    if(current.isLoading == 0 && old.isLoading == 1 && current.isPaused == 0) {
-        return true;
-    }
+	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
+	{
+		var gms = mono["GameManagerScript"];
+		vars.Helper["Task"] = mono.Make<IntPtr>(gms, "activeEvent");
+
+		return true;
+	});
 }
 
-reset { 
-    
-}
-
-split 
-{ 
-    if(current.isPaused == 1 && old.isPaused == 0) {
-        return true;
-    }
+update
+{
+	vars.Log(vars.Helper["Task"].Current.ToString("X"));
+	vars.Watch("Task");
+	// current.activeScene = vars.Helper.Scenes.Active.Name == null ? current.activeScene : vars.Helper.Scenes.Active.Name;
+	// current.loadingScene = vars.Helper.Scenes.Loaded[0].Name == null ? current.loadingScene : vars.Helper.Scenes.Loaded[0].Name;
 }
