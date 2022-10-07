@@ -61,5 +61,6 @@ split
 {
 	return old.loadingScene != current.loadingScene
 	    && current.loadingScene != "MainMenu ENG"
+	    && current.loadingScene != "Cutscene1Basement"
 	    && settings.ContainsKey(old.loadingScene) && settings[old.loadingScene];
 }
