@@ -6,6 +6,8 @@ startup
 	vars.Helper.GameName = "DBA";
 	vars.Helper.LoadSceneManager = true;
 	vars.Helper.AlertLoadless();
+
+	settings.Add("start_after_cutscene", false, "Start after the first cutscene.");
 }
 
 update
@@ -20,4 +22,14 @@ update
 isLoading
 {
 	return current.activeScene != current.loadingScene;
+}
+
+start
+{
+	return (!settings["start_after_cutscene"]
+	    && old.activeScene == "MainMenu ENG"
+	    && current.activeScene == "Cutscene1Basement")
+		|| (settings["start_after_cutscene"]
+	    && old.activeScene == "Cutscene1Basement"
+	    && current.activeScene == "Basement");
 }
