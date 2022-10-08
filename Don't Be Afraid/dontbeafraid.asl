@@ -14,16 +14,22 @@ startup
 	var SceneLabels = new Dictionary<string, string>() {
 		{ "Basement", "Basement 1" },
 		{ "Basement 2", "Basement 2" },
-		{ "David'sHouseMOTHERENDING", "David's House: Mother" },
+		{ "David'sHouseMOTHERENDING", "David's House 1" },
 		{ "Parter (01)", "Ground Floor" },
 		{ "FirstFloor (01)", "First Floor" },
 		{ "SecondFloor1", "Second Floor" },
-		{ "David'sHouseRETRO_DEATH", "David's House: Retro Death" },
+		{ "David'sHouseRETRO_DEATH", "David's House 2 (Eternal Sleep)" },
+		{ "David'sHouseRETRO_MOTHER", "David's House 2 (Mama's Boy)" },
 		{ "ThirdFloorMother&Death", "Third Floor" },
-		{ "Attic_Death", "Attic" },
-		{ "Forest_Death", "Forest" },
+		{ "Attic_Death", "Attic (Eternal Sleep)" },
+		{ "Attic_Mother", "Attic (Mama's Boy)" },
+		{ "Forest_Death", "Forest (Eternal Sleep)" },
+		{ "Forest_Mother", "Forest (Mama's Boy)" },
 		{ "ClownHouse", "Clown House 1" },
 		{ "ClownHouse2", "Clown House 2" }
+
+		// BasementEnding ?
+		// SchoolEnding1Mother
 	};
 
 	foreach(var scene in SceneLabels.Keys)
