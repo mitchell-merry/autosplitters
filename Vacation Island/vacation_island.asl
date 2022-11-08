@@ -1,3 +1,4 @@
+// unity game but no static refs and all in one scene
 state("Vacation Island")
 {
 	// TriggerEndings instance at "mono-2.0-bdwgc.dll", 0x3A1574, 0xA8C
