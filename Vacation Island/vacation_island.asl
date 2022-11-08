@@ -6,7 +6,6 @@ state("Vacation Island")
 	bool _endingBplayed: "mono-2.0-bdwgc.dll", 0x3A1574, 0xA8C, 0x4A;
 	bool CanUsePower: "mono-2.0-bdwgc.dll", 0x3A1574, 0xA8C, 0xC, 0x78;
 	bool CanHeadBob: "mono-2.0-bdwgc.dll", 0x3A1574, 0xA8C, 0xC, 0xDA;
-
 }
 
 startup
