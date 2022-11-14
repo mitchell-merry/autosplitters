@@ -58,9 +58,8 @@ init
 		var pv = mono["PlayerVariables"];
 		vars.Helper["EvidenceCollected"] = mono.Make<int>(pv, "EvidenceCollected");
 		vars.Helper["PurseCollected"] = mono.Make<bool>(pv, "purseCollected");
-		vars.Helper["hasSurvived"] = mono.Make<bool>(pv, "HasSurvived");
-		vars.Helper["watchedAllTV"] = mono.Make<bool>(pv, "WatchedAllTV");
-		vars.Helper["foundOuija"] = mono.Make<bool>(pv, "FoundOuija");
+		vars.Helper["WatchedAllTV"] = mono.Make<bool>(pv, "WatchedAllTV");
+		vars.Helper["FoundOuija"] = mono.Make<bool>(pv, "FoundOuija");
 		vars.Helper["hasChange"] = mono.Make<bool>(pv, "hasChange");
 		vars.Helper["hasPhoneNumber"] = mono.Make<bool>(pv, "hasPhoneNumber");
 		vars.Helper["TalkedToCallGirl"] = mono.Make<bool>(pv, "TalkedToCallGirl");
@@ -74,7 +73,6 @@ init
 
 		var rcc = mono["RushCharacterController"];
 		vars.Helper["lockMovement"] = mono.Make<bool>(rcc, "current", "lockMovement");
-		vars.Helper["lockCamera"] = mono.Make<bool>(rcc, "current", "lockCamera");
 
 		var ai = mono["AIController"];
 		
@@ -94,11 +92,10 @@ init
 				vars.Helper.Write<bool>(false, npcAchInfo + nai["spokenTo"]);
 			}
 
-			vars.Helper.Write<bool>(false, pv.Static + pv["HasSurvived"]);
-			vars.Helper.Write<bool>(false, pv.Static + pv["WatchedAllTV"]);
-			vars.Helper.Write<bool>(false, pv.Static + pv["FoundOuija"]);
-			vars.Helper.Write<bool>(false, pv.Static + pv["TalkedToCallGirl"]);
-			vars.Helper.Write<int>(0, pv.Static + pv["BathroomsExplored"]);
+			vars.Helper.Write["WatchedAllTV"](false);
+			vars.Helper.Write["FoundOuija"](false);
+			vars.Helper.Write["TalkedToCallGirl"](false);
+			vars.Helper.Write["BathroomsExplored"](0);
 		});
 
 		vars.ReadNPCSpoken = (Func<IntPtr, bool>)(npcAchInfo =>
@@ -115,9 +112,6 @@ init
 	});
 
 	current.activeScene = current.loadingScene = "";
-	current.opDidTeleport = false;
-	current.wrState = 0;
-	current.wrHealth = 0;
 	current.wrDead = false;
 	vars.ResetSplits();
 }
@@ -140,9 +134,6 @@ update
 		vars.Log("Womb Ripper just died!!!! OH SHIT!");
 		current.wrDead = true;
 	}
-
-	if(current.activeScene != old.activeScene) vars.Log("a: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
-	if(current.loadingScene != old.loadingScene) vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
 }
 
 start 
@@ -246,14 +237,14 @@ split
 		return true;
 	}
 
-	if (settings["split_tv"] && !vars.CompletedSplits["split_tv"] && !old.watchedAllTV && current.watchedAllTV)
+	if (settings["split_tv"] && !vars.CompletedSplits["split_tv"] && !old.WatchedAllTV && current.WatchedAllTV)
 	{
 		vars.Log("Split | Watched All TV");
 		vars.CompletedSplits["split_tv"] = true;
 		return true;
 	}
 
-	if (settings["split_ouija"] && !vars.CompletedSplits["split_ouija"] && !old.foundOuija && current.foundOuija)
+	if (settings["split_ouija"] && !vars.CompletedSplits["split_ouija"] && !old.FoundOuija && current.FoundOuija)
 	{
 		vars.Log("Split | Found the Ouija board.");
 		vars.CompletedSplits["split_ouija"] = true;
