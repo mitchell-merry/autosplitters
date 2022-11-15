@@ -197,7 +197,7 @@ split
 		}
 	}
 
-	if (settings["split_item_purse"] && !old.PurseCollected && current.PurseCollected)
+	if (settings["split_purse"] && !old.PurseCollected && current.PurseCollected)
 	{
 		vars.Log("Split | Collected Purse");
 		return true;
