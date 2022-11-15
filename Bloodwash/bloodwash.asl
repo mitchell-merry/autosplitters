@@ -92,10 +92,10 @@ init
 				vars.Helper.Write<bool>(false, npcAchInfo + nai["spokenTo"]);
 			}
 
-			vars.Helper.Write["WatchedAllTV"](false);
-			vars.Helper.Write["FoundOuija"](false);
-			vars.Helper.Write["TalkedToCallGirl"](false);
-			vars.Helper.Write["BathroomsExplored"](0);
+			vars.Helper["WatchedAllTV"].Write(false);
+			vars.Helper["FoundOuija"].Write(false);
+			vars.Helper["TalkedToCallGirl"].Write(false);
+			vars.Helper["BathroomsExplored"].Write(0);
 		});
 
 		vars.ReadNPCSpoken = (Func<IntPtr, bool>)(npcAchInfo =>
