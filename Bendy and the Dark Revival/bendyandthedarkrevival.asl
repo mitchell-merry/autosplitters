@@ -15,7 +15,7 @@ init
 	{
 		var gm = mono["GameManager"];
 		vars.Helper["GameState"] = mono.Make<int>(gm, "m_Instance", "GameState");
-		vars.Helper["IsLoading"] = mono.Make<bool>(gm, "m_AsyncLoader", "m_IsLoading");
+		vars.Helper["IsLoading"] = mono.Make<bool>(gm, "m_Instance", "m_AsyncLoader", "m_IsLoading");
 
 		return true;
 	});
@@ -24,12 +24,15 @@ init
 onStart
 {
 	vars.Log(current.GameState);
+	vars.Log(current.IsLoading);
+	vars.Log(current.activeScene);
+	vars.Log(current.loadingScene);
 }
 
 update
 {
-	current.activeScene = vars.Helper.Scenes.Active.Name == null ?? current.activeScene;
-	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name == null ?? current.loadingScene;
+	current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
+	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
 
 	if(current.activeScene != old.activeScene) vars.Log("a: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
 	if(current.loadingScene != old.loadingScene) vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
