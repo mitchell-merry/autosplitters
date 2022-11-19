@@ -19,6 +19,7 @@ init
 		vars.Helper["IsGameLoaded"] = mono.Make<bool>(gm, "m_Instance", "isGameLoaded");
 		vars.Helper["IsGameMenu"] = mono.Make<bool>(gm, "m_Instance", "m_IsGameMenu");
 
+		// hashset of currently loading sections, 0x30 is the _count field of the HashSet
 		vars.Helper["SectionLoadingCount"] = mono.Make<int>(gm, "m_Instance", "SectionManager", "m_SectionsLoading", 0x30);
 		// DEBUGGING, IGNORE
 		// vars.Helper["SectionsLoading"] = mono.MakeArray<IntPtr>(gm, "m_Instance", "SectionManager", "m_SectionsLoading", 0x18);
