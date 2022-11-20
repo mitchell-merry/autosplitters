@@ -2,7 +2,6 @@ state("Bendy and the Dark Revival") { }
 
 startup
 {
-	vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
 	vars.Helper.GameName = "Bendy and the Dark Revival";
 	vars.Helper.AlertLoadless();
@@ -10,7 +9,7 @@ startup
 	// requested by community
 	settings.Add("remove_paused", false, "Pause timer when the game is paused.");
 	
-	vars.FakeLoads = new List<string>() { "LOCATION_S107_FACTORY_LOCKERS" };
+	vars.FakeLoads = new List<string>() { "LOCATION_S107_FACTORY_LOCKERS", "LOCATION_S107_FACTORY_ACCESS_ENTRANCE" };
 }
 
 init
@@ -18,11 +17,8 @@ init
 	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
 	{
 		var gm = mono["GameManager"];
-		// vars.Helper["IsPaused"] = mono.Make<bool>(gm, "m_Instance", "IsPaused");
 		vars.Helper["zone"] = mono.MakeString(gm, "m_Instance", "Player", "CurrentZone");
-		// hashset of currently loading sections, 0x30 is the _count field of the HashSet
-		vars.Helper["SectionLoadingCount"] = mono.Make<int>(gm, "m_Instance", "SectionManager", "m_SectionsLoading", 0x30);
-
+		vars.Helper["gm"] = mono.Make<IntPtr>(gm, "m_Instance");
 		vars.Helper["GameState"] = mono.Make<int>(gm, "m_Instance", "GameState");
 		vars.Helper["PauseMenuActive"] = mono.Make<bool>(gm, "m_Instance", "UIManager", "m_UIGameMenu", "IsActive");
 
@@ -37,7 +33,7 @@ onStart
 
 update
 {
-	current.IsLoadingSection = current.SectionLoadingCount > 0;
+	current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
 	current.IsPaused = current.PauseMenuActive && current.GameState == 4;
 }
 
