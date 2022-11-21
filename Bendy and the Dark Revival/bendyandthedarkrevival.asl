@@ -16,7 +16,7 @@ init
 	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
 	{
 		var gm = mono["GameManager"];
-		vars.Helper["asyncLoader"] = mono.Make<IntPtr>(gm, "m_Instance", "m_AsyncLoader");
+		vars.Helper["gm"] = mono.Make<IntPtr>(gm, "m_Instance");
 		vars.Helper["GameState"] = mono.Make<int>(gm, "m_Instance", "GameState");
 		vars.Helper["PauseMenuActive"] = mono.Make<bool>(gm, "m_Instance", "UIManager", "m_UIGameMenu", "IsActive");
 		vars.Helper["GMIsPaused"] = mono.Make<bool>(gm, "m_Instance", "IsPaused");
@@ -28,8 +28,7 @@ init
 
 update
 {
-	// this class is instantiated on every load
-	current.IsLoadingSection = current.asyncLoader != null;
+	current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
 	current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
 }
 
