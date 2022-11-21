@@ -2,7 +2,6 @@ state("Bendy and the Dark Revival") { }
 
 startup
 {
-	vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
 	vars.Helper.GameName = "Bendy and the Dark Revival";
 	vars.Helper.AlertLoadless();
