@@ -27,6 +27,13 @@ init
 		vars.Helper["GMIsPaused"] = mono.Make<bool>(gm, "m_Instance", "IsPaused");
 		vars.Helper["IsPauseReady"] = mono.Make<bool>(gm, "m_Instance", "IsPauseReady");
 
+		var sdo = mono["SectionDataObject"];
+		var cdo = mono["CutsceneDataObject"];
+		// Forgive me lord for what I am about to do
+		// we only need the status of the 13th cutscene [12] in the 2nd section [1]
+		// ..., 0x20 (m_Values), 0x10 (items), 0x28 (0x20 + 0x8*[1]), 0x20 (m_CutsceneData), 0x20 (m_Values), 0x10 (items), 0x80 (0x20 + 0x8*[12]), 0x18 (m_Status)
+		vars.Helper["standUpCutsceneStatus"] = mono.Make<int>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_SectionDirectory", 0x20, 0x10, 0x28, sdo["m_CutsceneData"], 0x20, 0x10, 0x80, cdo["m_Status"]);
+
 		#region Tasks / Objectives
 		// 0x20 refers to Data<Key, Value>#m_Values, i believe there is a conflict with the other Data class.
 		vars.Helper["tasks"] = mono.MakeList<IntPtr>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_TaskDirectory", 0x20);
@@ -82,7 +89,10 @@ update
 }
 
 start
-{}
+{
+	// Inactive -> Active
+	return old.standUpCutsceneStatus == 0 && current.standUpCutsceneStatus == 2;
+}
 
 split
 {
