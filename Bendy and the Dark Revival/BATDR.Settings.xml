@@ -2,7 +2,7 @@
 	<!-- requested by community -->
 	<Setting Id="remove_paused" Label="Pause timer while game is paused." State="true" />
 	<Setting Id="ch" Label="Split on completing chapter:" State="false">
-		<Setting Id="ch_intro" Label="Intro" State="false" Tooltip="Alias for Objective Complete FindFood." />
+		<Setting Id="ch_intro" Label="Intro" State="false" Tooltip="Alias for Objective Complete: Find some food." />
 	</Setting>
 	<Setting Id="obj" Label="Split on completing objective:" State="false">
 		<Setting Id="obj_10201" Label="Elevator" State="false" />
@@ -10,9 +10,9 @@
 		<Setting Id="obj_10301" Label="FollowWilson" State="false" />
 		<Setting Id="obj_10302" Label="Exhibits" State="false" />
 		<Setting Id="obj_10303" Label="Switch" State="false" />
-		<Setting Id="obj_10501" Label="Escape" State="false" />
+		<Setting Id="obj_10501" Label="Escape the studio" State="false" />
 		<Setting Id="obj_10601" Label="RunAndHIde" State="false" />
-		<Setting Id="obj_10602" Label="FindFood (Intro End)" State="false" />
+		<Setting Id="obj_10602" Label="Find some food (Intro End)" State="false" />
 		<Setting Id="obj_10701" Label="Maintenance" State="false" />
 		<Setting Id="obj_10801" Label="Lock" State="false" />
 		<Setting Id="obj_10802" Label="GentPipe" State="false" />
@@ -34,5 +34,17 @@
 		<Setting Id="obj_12601" Label="MusicBox" State="false" />
 		<Setting Id="obj_12602" Label="Distraction" State="false" />
 		<Setting Id="obj_13001" Label="TheEnd" State="false" />
+	</Setting>
+	<Setting Id="memory" Label="Split on collecting memory:" State="false">
+		<Setting Id="memory_105101" Label="Baseball" State="false" />
+		<Setting Id="memory_107101" Label="Paper Airlane" State="false" />
+		<Setting Id="memory_110101" Label="Duck" State="false" />
+		<Setting Id="memory_113101" Label="Oil Tin" State="false" />
+		<Setting Id="memory_115101" Label="Alarm Clock" State="false" />
+		<Setting Id="memory_118101" Label="Fashionable Hat" State="false" />
+		<Setting Id="memory_120101" Label="Crayons" State="false" />
+		<Setting Id="memory_122101" Label="Milk Carton" State="false" />
+		<Setting Id="memory_124101" Label="Cracked Mug" State="false" />
+		<Setting Id="memory_128101" Label="Hot Dog" State="false" />
 	</Setting>
 </Settings>

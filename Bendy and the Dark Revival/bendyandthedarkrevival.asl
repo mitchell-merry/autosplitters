@@ -41,6 +41,13 @@ init
 		});
 		#endregion
 
+		#region Memory
+		vars.Helper["memories"] = mono.MakeList<IntPtr>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_CollectableDirectory", "m_MemoryDirectory", 0x20);
+
+		var mdo = mono["MemoryDataObject"];
+		vars.ReadMDO = (Func<IntPtr, int>)(mdoP => { return vars.Helper.Read<int>(mdoP + mdo["m_DataID"]); });
+		#endregion
+
 		return true;
 	});
 
@@ -70,6 +77,8 @@ update
 {
 	current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
 	current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
+
+	current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
 }
 
 start
@@ -88,11 +97,21 @@ split
 			return true;
 		}
 	}
+
+	foreach(var memori in current.memories)
+	{
+		var mdo = vars.ReadMDO(memori);
+		string key = "memory_" + mdo;
+		if (vars.Setting(key) && (!vars.CompletedSplits.ContainsKey(key) || !vars.CompletedSplits[key]))
+		{
+			vars.Log("Memory collected | " + mdo);
+			vars.CompletedSplits[key] = true;
+			return true;
+		}
+	}
 }
 
 isLoading
 {
-	if (settings["remove_paused"] && current.IsPaused) return true;
-
-	return current.IsLoadingSection;
+	return current.IsLoading;
 }
