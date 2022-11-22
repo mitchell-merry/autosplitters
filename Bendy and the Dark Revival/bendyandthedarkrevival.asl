@@ -6,8 +6,14 @@ startup
 	vars.Helper.GameName = "Bendy and the Dark Revival";
 	vars.Helper.AlertLoadless();
 
-	// requested by community
-	settings.Add("remove_paused", false, "Pause timer when the game is paused.");
+	vars.Helper.Settings.CreateFromXml("Components/BATDR.Settings.xml");
+	vars.SettingAliases = new Dictionary<string, List<string>>() {
+		{ "obj_10602", new List<string>() { "ch_intro" }}
+	};
+
+	// ensures we don't double split the same condition
+	vars.CompletedSplits = new Dictionary<string, bool>();
+	vars.ResetSplits = (Action)(() => { foreach(var split in new List<string>(vars.CompletedSplits.Keys)) vars.CompletedSplits[split] = false; });
 }
 
 init
@@ -21,14 +27,67 @@ init
 		vars.Helper["GMIsPaused"] = mono.Make<bool>(gm, "m_Instance", "IsPaused");
 		vars.Helper["IsPauseReady"] = mono.Make<bool>(gm, "m_Instance", "IsPauseReady");
 
+		#region Tasks / Objectives
+		// 0x20 refers to Data<Key, Value>#m_Values, i believe there is a conflict with the other Data class.
+		vars.Helper["tasks"] = mono.MakeList<IntPtr>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_TaskDirectory", 0x20);
+		
+		var tdo = mono["TaskDataObject"];
+		vars.ReadTDO = (Func<IntPtr, dynamic>)(tdoP =>
+		{
+			dynamic ret = new ExpandoObject();
+			ret.ID = vars.Helper.Read<int>(tdoP + tdo["m_DataID"]);
+			ret.IsComplete = vars.Helper.Read<bool>(tdoP + tdo["m_IsComplete"]);
+			return ret;
+		});
+		#endregion
+
 		return true;
 	});
+
+	vars.Setting = (Func<string, bool>)(key =>
+	{
+		if (!settings.ContainsKey(key)) return false;
+		if (settings[key]) return true;
+		if (!vars.SettingAliases.ContainsKey(key)) return false;
+
+		foreach(var k in vars.SettingAliases[key])
+		{
+			if (settings[k]) return true;
+		}
+
+		return false;
+	});
+
+	vars.ResetSplits();
+}
+
+onStart
+{
+	vars.ResetSplits();
 }
 
 update
 {
 	current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
 	current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
+}
+
+start
+{}
+
+split
+{
+	foreach(var task in current.tasks)
+	{
+		var tdo = vars.ReadTDO(task);
+		string key = "obj_" + tdo.ID;
+		if (vars.Setting(key) && (!vars.CompletedSplits.ContainsKey(key) || !vars.CompletedSplits[key]) && tdo.IsComplete)
+		{
+			vars.Log("Objective Complete | " + tdo.ID);
+			vars.CompletedSplits[key] = true;
+			return true;
+		}
+	}
 }
 
 isLoading
