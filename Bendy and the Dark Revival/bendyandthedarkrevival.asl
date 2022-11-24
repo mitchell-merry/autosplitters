@@ -29,10 +29,13 @@ init
 
 		var sdo = mono["SectionDataObject"];
 		var cdo = mono["CutsceneDataObject"];
-		// Forgive me lord for what I am about to do
-		// we only need the status of the 13th cutscene [12] in the 2nd section [1]
-		// ..., 0x20 (m_Values), 0x10 (items), 0x28 (0x20 + 0x8*[1]), 0x20 (m_CutsceneData), 0x20 (m_Values), 0x10 (items), 0x80 (0x20 + 0x8*[12]), 0x18 (m_Status)
-		vars.Helper["standUpCutsceneStatus"] = mono.Make<int>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_SectionDirectory", 0x20, 0x10, 0x28, sdo["m_CutsceneData"], 0x20, 0x10, 0x80, cdo["m_Status"]);
+		// Grab the status of a specific section instead of reading all the sections
+		// ..., 0x20 (m_Values), 0x10 (items), 0x28 (0x20 + 0x8*[section]), 0x20 (m_CutsceneData), 0x20 (m_Values), 0x10 (items), 0x80 (0x20 + 0x8*[cutscene]), 0x18 (m_Status)
+		vars.Helper["sections"] = mono.Make<IntPtr>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_SectionDirectory", 0x20);
+		vars.ReadCutsceneStatus = (Func<IntPtr, int, int, int>)((sections, section, cutscene) =>
+		{
+			return vars.Helper.Read<int>(sections + 0x10, 0x20 + 0x8*section, sdo["m_CutsceneData"], 0x20, 0x10, 0x20 + 0x8*cutscene, cdo["m_Status"]);
+		});
 
 		#region Tasks / Objectives
 		// 0x20 refers to Data<Key, Value>#m_Values, i believe there is a conflict with the other Data class.
@@ -77,6 +80,7 @@ init
 
 onStart
 {
+	timer.IsGameTimePaused = current.IsLoading;
 	vars.ResetSplits();
 }
 
@@ -86,6 +90,8 @@ update
 	current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
 
 	current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
+	current.standUpCutsceneStatus = vars.ReadCutsceneStatus(current.sections, 1, 12);
+	current.inkDemonIntroCSStatus = vars.ReadCutsceneStatus(current.sections, 8, 7);
 }
 
 start
@@ -96,6 +102,13 @@ start
 
 split
 {
+	if (settings["ch_1"] && (!vars.CompletedSplits.ContainsKey("ch_1") || !vars.CompletedSplits["ch_1"]) && old.inkDemonIntroCSStatus == 2 && current.inkDemonIntroCSStatus == 3)
+	{
+		vars.Log("Chapter 1 Complete");
+		vars.CompletedSplits["ch_1"] = true;
+		return true;
+	}
+
 	foreach(var task in current.tasks)
 	{
 		var tdo = vars.ReadTDO(task);
