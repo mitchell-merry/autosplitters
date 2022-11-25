@@ -38,7 +38,6 @@
 		<Setting Id="obj_12501" Label="BanishAlice" State="false" />
 		<Setting Id="obj_12601" Label="MusicBox" State="false" />
 		<Setting Id="obj_12602" Label="Distraction" State="false" />
-		<Setting Id="obj_13001" Label="TheEnd" State="false" />
 	</Setting>
 	<Setting Id="memory" Label="Split on collecting memory:" State="false">
 		<Setting Id="memory_105101" Label="Baseball" State="false" />
