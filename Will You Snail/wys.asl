@@ -24,12 +24,10 @@ startup
 
 	// update these if they change
 	vars.StartupRoom = 24;
-	vars.PhotosensRoom = 16;
 	vars.LevelSelect = 144;
 	vars.Pause = 145;
 	vars.SaveSelect = 26;
 	vars.StartRoom = 29;
-	vars.Frustration = 9;
 	vars.Bosses = new List<int> { 50, 71, 93, 121, 140, 141 };
 	vars.ChapterStarts = new List<int> { 29, 52, 73, 95, 123 };
 	vars.ChapterEnds = new List<int> { 51, 72, 94, 122, 142 };
