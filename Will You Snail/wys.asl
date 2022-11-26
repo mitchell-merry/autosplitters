@@ -54,8 +54,6 @@ update {
 	// have to explicitly set the values for things that are sig-scanned
 	current.room = vars.Helper.Read<int>(vars.room);
 
-	if(old.room != current.room) print(current.room.ToString());
-
 	// handles OldRoomNotPause
 	if(old.room != current.room && current.room != vars.Pause)
 	{
