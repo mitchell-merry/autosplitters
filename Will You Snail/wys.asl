@@ -30,9 +30,9 @@ startup
 	vars.SaveSelect = 26;
 	vars.StartRoom = 29;
 	vars.Frustration = 9;
-	vars.Bosses = new List<int>() { 50, 71, 93, 121, 140, 141 };
-	vars.ChapterStarts = new List<int>() { 29, 52, 73, 95, 123 };
-	vars.ChapterEnds = new List<int>() { 51, 72, 94, 122, 142 };
+	vars.Bosses = new List<int> { 50, 71, 93, 121, 140, 141 };
+	vars.ChapterStarts = new List<int> { 29, 52, 73, 95, 123 };
+	vars.ChapterEnds = new List<int> { 51, 72, 94, 122, 142 };
 
 	// defaults
 	vars.OldRoomNotPause = -1;
@@ -41,8 +41,7 @@ startup
 
 init
 { 
-	var mms = modules.First().ModuleMemorySize;
-	switch (mms)
+	switch (vars.Helper.GetMemorySize())
 	{
 		case 0x142A000: version = "1.42"; break;
 		case 0x1347000: version = "1.3"; break;
@@ -53,21 +52,12 @@ init
 	// i posted old screenshots in the #livesplit or #memory channel ages ago going into more depth for
 	// this if you really want to get into the nitty-gritty
 
-	var mainModule = modules.First(); // "Will You Snail.exe"
-	var scr = new SignatureScanner(game, mainModule.BaseAddress, mainModule.ModuleMemorySize);
-	var levelTarget = new SigScanTarget(0xF, "3B 1D ?? ?? ?? ?? 7C E3 E8 ?? ?? ?? ?? 89 3D ?? ?? ?? ??");
- 
-	levelTarget.OnFound = (proc, scanner, address) => {
-		var RIPaddr = proc.ReadValue<int>(address);
-		return address + 0x4 + RIPaddr;
-	};
-
-	vars.room = scr.Scan(levelTarget);
+	vars.room = vars.Helper.ScanRel(0xF, "3B 1D ???????? 7C E3 E8 ???????? 89 3D");
 }
 
 update {
 	// have to explicitly set the values for things that are sig-scanned
-	current.room = game.ReadValue<int>((IntPtr) vars.room);
+	current.room = vars.Helper.Read<int>(vars.room);
 
 	if(old.room != current.room) print(current.room.ToString());
 
@@ -80,8 +70,6 @@ update {
 
 	if(old.room == current.room)
 		vars.OldRoomNotPause = vars.CurrentRoomNotPause;
-	
-	return true;
 }
 
 isLoading
