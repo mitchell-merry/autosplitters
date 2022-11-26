@@ -39,12 +39,23 @@ startup
 
 init
 {
-	int mms = vars.Helper.GetMemorySize();
+	int mms = 0;
+	// int mms = vars.Helper.GetMemorySize();
 	switch (mms)
 	{
 		case 0x142A000: version = "1.42"; break;
 		case 0x1347000: version = "1.3"; break;
-		default: version = "Unknown"; break;
+		default: 
+			var mbox = MessageBox.Show(
+				"You are using an unsupported version of Will You Snail? (MMS: 0x" + mms.ToString("X") + ")."
+				+ " Please contact diggitydingdong#3084 on Discord with the version you're currently running if you"
+				+ " would like added support.\n\nOnly room complete functionality will be enabled.",
+				"LiveSplit | Will You Snail?",
+				MessageBoxButtons.OK
+			);
+			
+			version = "Unknown";
+			break;
 	}
 
 	vars.room = vars.Helper.ScanRel(0xF, "3B 1D ?? ?? ?? ?? 7C E3 E8 ?? ?? ?? ?? 89 3D");
@@ -67,11 +78,14 @@ update {
 
 isLoading
 {
-	return true;
+	return version != "Unknown";
 }
 
 gameTime
 {
+	if (version == "Unknown")
+		return;
+	
 	// fairly self-explanatory
 	if(settings["chapter_timer"]) {
 		return TimeSpan.FromSeconds(current.chaptertime);
@@ -82,6 +96,9 @@ gameTime
 
 start
 {
+	if (version == "Unknown")
+		return false;
+	
 	// when in chapter mode:
 	if(settings["chapter_timer"])
 	{
@@ -98,7 +115,7 @@ start
 
 split {
 	// final split for chapters
-	if(settings["chapter_timer"] && current.showtimers && !old.showtimers
+	if(version != "Unknown" && settings["chapter_timer"] && current.showtimers && !old.showtimers
 		&& vars.ChapterEnds.Contains(current.room) // and we're at the end of a chapter
 		&& old.room == current.room     // and we didn't just load this room
 	) {
