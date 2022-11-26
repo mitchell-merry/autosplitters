@@ -49,11 +49,7 @@ init
 		default: version = "Unknown"; break;
 	}
 
-	// https://gist.github.com/just-ero/3b07dc98802ba3652cb13ff8313bbfee
-	// i posted old screenshots in the #livesplit or #memory channel ages ago going into more depth for
-	// this if you really want to get into the nitty-gritty
-
-	vars.room = vars.Helper.ScanRel(0xF, "3B 1D ???????? 7C E3 E8 ???????? 89 3D");
+	vars.room = vars.Helper.ScanRel(0xF, "3B 1D ?? ?? ?? ?? 7C E3 E8 ?? ?? ?? ?? 89 3D");
 }
 
 update {
