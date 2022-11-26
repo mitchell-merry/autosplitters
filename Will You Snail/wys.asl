@@ -40,8 +40,9 @@ startup
 }
 
 init
-{ 
-	switch (vars.Helper.GetMemorySize())
+{
+	int mms = vars.Helper.GetMemorySize();
+	switch (mms)
 	{
 		case 0x142A000: version = "1.42"; break;
 		case 0x1347000: version = "1.3"; break;
