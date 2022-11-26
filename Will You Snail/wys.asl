@@ -1,8 +1,8 @@
 state("Will You Snail", "1.3")
 {
-	double chaptertime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD50;
-	double fulltime: "Will You Snail.exe", 0x10243C0, 0x8, 0x150, 0xD60;
-	bool showtimers: "Will You Snail.exe", 0x0101CBB8, 0x0, 0xCD0, 0x18, 0x78;
+	double chaptertime: 0x10243C0, 0x8, 0x150, 0xD50;
+	double fulltime: 0x10243C0, 0x8, 0x150, 0xD60;
+	bool showtimers: 0x0101CBB8, 0x0, 0xCD0, 0x18, 0x78;
 }
 
 state("Will You Snail", "1.42")
@@ -10,14 +10,13 @@ state("Will You Snail", "1.42")
 	// these need to be updated every patch
 	// chaptertime is just 0x10 less on the last offset compared to fulltime
 	// leveltime is like 0x20 less than chaptertime or something. it's around there. if you ever need it
-	double chaptertime: "Will You Snail.exe", 0x10F40E0, 0x8, 0x170, 0xF30; 
-	double fulltime: "Will You Snail.exe", 0x10F40E0, 0x8, 0x170, 0xF40;
-	bool showtimers: "Will You Snail.exe", 0x010EC8D8, 0x0, 0xD50, 0x18, 0x60;
+	double chaptertime: 0x10F40E0, 0x8, 0x170, 0xF30; 
+	double fulltime: 0x10F40E0, 0x8, 0x170, 0xF40;
+	bool showtimers: 0x010EC8D8, 0x0, 0xD50, 0x18, 0x60;
 }
 
 startup
 {
-	vars.TimerModel = new TimerModel { CurrentState = timer };
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
 	vars.Helper.GameName = "Will You Snail?";
 	vars.Helper.Settings.CreateFromXml("Components/WYS.Settings.xml");
@@ -157,5 +156,5 @@ reset {
 exit
 {
 	if(settings["reset_ongameclose"])
-		vars.TimerModel.Reset();
+		vars.Helper.Timer.Reset();
 }
