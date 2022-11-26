@@ -2,12 +2,12 @@
 	<!-- requested by community -->
 	<Setting Id="remove_paused" Label="Pause timer while game is paused." State="true" />
 	<Setting Id="ch" Label="Split on completing chapter:" State="false">
-		<Setting Id="ch_intro" Label="Intro" State="false" Tooltip="Alias for Objective Complete: Find some food." />
+		<Setting Id="ch_intro" Label="Intro" State="false" ToolTip="Alias for Objective Complete: Find some food." />
 		<Setting Id="ch_1" Label="Chapter 1" State="false" />
-		<Setting Id="ch_2" Label="Chapter 2" State="false" Tooltip="NOT WORKING" />
-		<Setting Id="ch_3" Label="Chapter 3" State="false" Tooltip="NOT WORKING" />
-		<Setting Id="ch_4" Label="Chapter 4" State="false" Tooltip="NOT WORKING" />
-		<Setting Id="ch_5" Label="Chapter 5" State="false" Tooltip="NOT WORKING" />
+		<Setting Id="ch_2" Label="Chapter 2" State="false" ToolTip="NOT WORKING" />
+		<Setting Id="ch_3" Label="Chapter 3" State="false" ToolTip="NOT WORKING" />
+		<Setting Id="ch_4" Label="Chapter 4" State="false" ToolTip="NOT WORKING" />
+		<Setting Id="ch_5" Label="Chapter 5" State="false" ToolTip="NOT WORKING" />
 	</Setting>
 	<Setting Id="obj" Label="Split on completing objective:" State="false">
 		<Setting Id="obj_10201" Label="Elevator" State="false" />

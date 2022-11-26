@@ -82,6 +82,11 @@ onStart
 {
 	timer.IsGameTimePaused = current.IsLoading;
 	vars.ResetSplits();
+	foreach(var task in current.tasks)
+	{
+		var tdo = vars.ReadTDO(task);
+		vars.Log("==" + tdo.ID + ": " + tdo.IsComplete);
+	}
 }
 
 update

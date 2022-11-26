@@ -1,0 +1,137 @@
+<Settings>
+	<Setting Id="reset_onsaveselect" State="false" Label="Reset the autosplitter automatically when on the save select screen." />
+	<Setting Id="reset_ongameclose" State="true" Label="Reset the autosplitter automatically when the game closes." />
+	<Setting Id="chapter_timer" State="false" Label="Chapter timer mode." />
+	<Setting Id="room" State="true" Label="Split on room complete:">
+		<Setting Id="room_29" State="true" Label="A01" />
+		<Setting Id="room_30" State="true" Label="A01.1" />
+		<Setting Id="room_31" State="true" Label="A02" />
+		<Setting Id="room_22" State="true" Label="A02.1" />
+		<Setting Id="room_32" State="true" Label="A03" />
+		<Setting Id="room_13" State="true" Label="A03.1" />
+		<Setting Id="room_33" State="true" Label="A04" />
+		<Setting Id="room_34" State="true" Label="A05" />
+		<Setting Id="room_35" State="true" Label="A06" />
+		<Setting Id="room_36" State="true" Label="A07" />
+		<Setting Id="room_37" State="true" Label="A08" />
+		<Setting Id="room_38" State="true" Label="A09" />
+		<Setting Id="room_39" State="true" Label="A10" />
+		<Setting Id="room_12" State="true" Label="A10.1" />
+		<Setting Id="room_62" State="true" Label="A10.2" />
+		<Setting Id="room_40" State="true" Label="A11" />
+		<Setting Id="room_41" State="true" Label="A12" />
+		<Setting Id="room_42" State="true" Label="A13" />
+		<Setting Id="room_44" State="true" Label="A14" />
+		<Setting Id="room_6"  State="true" Label="A14.1" />
+		<Setting Id="room_45" State="true" Label="A15" />
+		<Setting Id="room_46" State="true" Label="A16" />
+		<Setting Id="room_47" State="true" Label="A17" />
+		<Setting Id="room_48" State="true" Label="A18" />
+		<Setting Id="room_49" State="true" Label="A19" />
+		<Setting Id="room_50" State="true" Label="A20" ToolTip="Splitty" />
+		<Setting Id="room_51" State="true" Label="A21" />
+
+		<Setting Id="room_52" State="true" Label="B01" />
+		<Setting Id="room_53" State="true" Label="B02" />
+		<Setting Id="room_54" State="true" Label="B03" />
+		<Setting Id="room_55" State="true" Label="B03.1" />
+		<Setting Id="room_56" State="true" Label="B04" />
+		<Setting Id="room_10" State="true" Label="B04.1" />
+		<Setting Id="room_20" State="true" Label="B04.2" />
+		<Setting Id="room_1"  State="true" Label="B04.3" />
+		<Setting Id="room_8"  State="true" Label="B04.4" />
+		<Setting Id="room_57" State="true" Label="B05" />
+		<Setting Id="room_58" State="true" Label="B06" />
+		<Setting Id="room_59" State="true" Label="B07" />
+		<Setting Id="room_60" State="true" Label="B08" />
+		<Setting Id="room_61" State="true" Label="B09" />
+		<Setting Id="room_63" State="true" Label="B10" />
+		<Setting Id="room_64" State="true" Label="B11" />
+		<Setting Id="room_65" State="true" Label="B12" />
+		<Setting Id="room_66" State="true" Label="B13" />
+		<Setting Id="room_67" State="true" Label="B14" />
+		<Setting Id="room_68" State="true" Label="B15" />
+		<Setting Id="room_69" State="true" Label="B16" />
+		<Setting Id="room_70" State="true" Label="B17" />
+		<Setting Id="room_71" State="true" Label="B18" ToolTip="Mr D.A.N.C.E" />
+		<Setting Id="room_72" State="true" Label="B19" />
+
+		<Setting Id="room_73" State="true" Label="C01" />
+		<Setting Id="room_21" State="true" Label="C01.1" />
+		<Setting Id="room_74" State="true" Label="C02" />
+		<Setting Id="room_75" State="true" Label="C03" />
+		<Setting Id="room_76" State="true" Label="C04" />
+		<Setting Id="room_77" State="true" Label="C05" />
+		<Setting Id="room_78" State="true" Label="C06" />
+		<Setting Id="room_79" State="true" Label="C07" />
+		<Setting Id="room_80" State="true" Label="C08" />
+		<Setting Id="room_81" State="true" Label="C09" />
+		<Setting Id="room_82" State="true" Label="C10" />
+		<Setting Id="room_83" State="true" Label="C11" />
+		<Setting Id="room_84" State="true" Label="C12" />
+		<Setting Id="room_85" State="true" Label="C13" />
+		<Setting Id="room_2"  State="true" Label="C13.1" />
+		<Setting Id="room_86" State="true" Label="C14" />
+		<Setting Id="room_87" State="true" Label="C15" />
+		<Setting Id="room_88" State="true" Label="C16" />
+		<Setting Id="room_89" State="true" Label="C17" />
+		<Setting Id="room_90" State="true" Label="C18" />
+		<Setting Id="room_91" State="true" Label="C19" />
+		<Setting Id="room_92" State="true" Label="C20" />
+		<Setting Id="room_93" State="true" Label="C21" ToolTip="Mama Squid" />
+		<Setting Id="room_94" State="true" Label="C22" />
+
+		<Setting Id="room_95"  State="true" Label="D01" />
+		<Setting Id="room_96"  State="true" Label="D02" />
+		<Setting Id="room_97"  State="true" Label="D03" />
+		<Setting Id="room_98"  State="true" Label="D03.1" />
+		<Setting Id="room_100" State="true" Label="D04" />
+		<Setting Id="room_101" State="true" Label="D05" />
+		<Setting Id="room_102" State="true" Label="D06" />
+		<Setting Id="room_103" State="true" Label="D06.1" />
+		<Setting Id="room_104" State="true" Label="D06.2" />
+		<Setting Id="room_105" State="true" Label="D06.3" />
+		<Setting Id="room_106" State="true" Label="D06.4" />
+		<Setting Id="room_107" State="true" Label="D06.5" />
+		<Setting Id="room_108" State="true" Label="D07" />
+		<Setting Id="room_109" State="true" Label="D08" />
+		<Setting Id="room_110" State="true" Label="D09" />
+		<Setting Id="room_111" State="true" Label="D10" />
+		<Setting Id="room_112" State="true" Label="D10.1" />
+		<Setting Id="room_113" State="true" Label="D11" />
+		<Setting Id="room_114" State="true" Label="D12" />
+		<Setting Id="room_115" State="true" Label="D13" />
+		<Setting Id="room_116" State="true" Label="D14" />
+		<Setting Id="room_117" State="true" Label="D15" />
+		<Setting Id="room_118" State="true" Label="D16" />
+		<Setting Id="room_119" State="true" Label="D17" ToolTip="Helpy" />
+		<Setting Id="room_120" State="true" Label="D18" />
+		<Setting Id="room_121" State="true" Label="D19" />
+		<Setting Id="room_122" State="true" Label="D20" />
+
+		<Setting Id="room_123" State="true" Label="E01" />
+		<Setting Id="room_124" State="true" Label="E02" />
+		<Setting Id="room_125" State="true" Label="E03" />
+		<Setting Id="room_126" State="true" Label="E03.1" />
+		<Setting Id="room_127" State="true" Label="E04" />
+		<Setting Id="room_128" State="true" Label="E05" />
+		<Setting Id="room_99"  State="true" Label="E06" />
+		<Setting Id="room_3"   State="true" Label="E06.1" />
+		<Setting Id="room_129" State="true" Label="E07" />
+		<Setting Id="room_130" State="true" Label="E08" />
+		<Setting Id="room_131" State="true" Label="E09" />
+		<Setting Id="room_132" State="true" Label="E10" />
+		<Setting Id="room_133" State="true" Label="E11" />
+		<Setting Id="room_134" State="true" Label="E12" />
+		<Setting Id="room_135" State="true" Label="E13" />
+		<Setting Id="room_136" State="true" Label="E14" />
+		<Setting Id="room_137" State="true" Label="E15" />
+		<Setting Id="room_138" State="true" Label="E15.1" />
+		<Setting Id="room_139" State="true" Label="E15.2" />
+		<Setting Id="room_17"  State="true" Label="E16" />
+		<Setting Id="room_140" State="true" Label="E17" ToolTip="Squid 1" />
+		<Setting Id="room_141" State="true" Label="E18" ToolTip="Squid 2" />
+		<Setting Id="room_142" State="true" Label="E19" ToolTip="Final Level" />
+		<Setting Id="room_11"  State="true" Label="E19.1" />
+	</Setting>
+</Settings>
