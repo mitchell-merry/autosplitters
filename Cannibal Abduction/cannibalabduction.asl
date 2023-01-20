@@ -10,14 +10,13 @@ startup
 
 init
 {
-	current.activeScene = current.loadingScene = current.nonLoadScene = "";
+	current.activeScene = current.loadingScene = "";
 }
 
 update
 {
 	current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
 	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
-	// current.nonLoadScene = (current.activeScene != "SceneLoader40") ? current.activeScene : current.nonLoadScene;
 
 	if (current.loadingScene != old.loadingScene)
 		vars.Log("loadingScene: " + old.loadingScene + " -> " + current.loadingScene);
