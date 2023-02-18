@@ -6,7 +6,7 @@ startup {
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
 	vars.Helper.GameName = "TWI";
 	vars.Helper.LoadSceneManager = true;
-	vars.AlertLoadless();
+	vars.Helper.AlertLoadless();
 
 	settings.Add("startOn", false, "Start on after the first cutscene, not before.");
 	settings.Add("sceneSplits", true, "Split on:");
@@ -32,9 +32,9 @@ isLoading
 
 start
 {
-	return settings[startOn]
+	return settings["startOn"]
 		? old.activeScene == "Cutscene01" && current.activeScene == "Map01"
-		: old.activeScene == "MainMenu" && current.activeScene == "Cutscene01"
+		: old.activeScene == "MainMenu" && current.activeScene == "Cutscene01";
 }
 
 split
