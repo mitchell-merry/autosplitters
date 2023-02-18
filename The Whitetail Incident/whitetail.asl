@@ -33,7 +33,7 @@ isLoading
 start
 {
 	return settings[startOn]
-		? old.activeScene == "Cutscene01" && current.activeScene == "Cutscene02"
+		? old.activeScene == "Cutscene01" && current.activeScene == "Map01"
 		: old.activeScene == "MainMenu" && current.activeScene == "Cutscene01"
 }
 
