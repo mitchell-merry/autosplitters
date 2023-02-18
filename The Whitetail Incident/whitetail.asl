@@ -8,7 +8,7 @@ startup {
 	vars.Helper.LoadSceneManager = true;
 	vars.AlertLoadless();
 
-	settings.Add("startOn", false, "Start on after the first cutscene, not before.")''
+	settings.Add("startOn", false, "Start on after the first cutscene, not before.");
 	settings.Add("sceneSplits", true, "Split on:");
 	settings.Add("Map01", false, "Reaching ritual cutscene", "sceneSplits");
 	settings.Add("Map02", false, "Interacting with Johnathon at the ritual", "sceneSplits");
