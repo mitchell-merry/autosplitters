@@ -93,7 +93,6 @@ update
 	if(current.activeScene != old.activeScene) vars.Log("SceneManager.activeScene: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
 	if(current.loadingScene != old.loadingScene) vars.Log("SceneManager.loadingScene: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
 
-	// if(current.manualUsable != old.manualUsable) vars.Log("manualUsable " + current.manualUsable);
 	if(current.day != old.day) vars.Log("day " + current.day);
 	if(current.lastScene != old.lastScene) vars.Log("progressManager.lastScene " + current.lastScene);
 	if(current.currentScene != old.currentScene) vars.Log("progressManager.currentScene " + current.currentScene);
@@ -118,8 +117,6 @@ isLoading
 
 split
 {
-	// MuseumInterior
-	// ParkingGarage
 
 	if (old.loadingScene != current.loadingScene
 		&& settings.ContainsKey(current.loadingScene)
