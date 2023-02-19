@@ -72,19 +72,17 @@ onStart
 		vars.CompletedSplits[split] = false;
 	}
 
-	vars.Log(current.activeScene);
-	vars.Log(current.loadingScene);
-	vars.Log(current.currentScene);
-	vars.Log(current.lastScene);
-	vars.Log(current.day);
+	vars.Log(current.activeScene);  // Apartment
+	vars.Log(current.loadingScene); // 
+	vars.Log(current.currentScene); // Apartment
+	vars.Log(current.lastScene);    // Dream
+	vars.Log(current.day);          // 0
 }
 
 update
 {
-	current.activeScene = vars.Helper.Scenes.Active.Name == null ? current.activeScene : vars.Helper.Scenes.Active.Name;
-	current.loadingScene = (vars.Helper.Scenes.Loaded.Count == 0 || vars.Helper.Scenes.Loaded[0].Name == null)
-							 ? current.loadingScene
-							 : vars.Helper.Scenes.Loaded[0].Name;
+	current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
+	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
 
 	current.isLoading = (current.lastScene == current.currentScene && current.currentScene != "Main Menu")
 		|| current.loadingScene != current.activeScene;
