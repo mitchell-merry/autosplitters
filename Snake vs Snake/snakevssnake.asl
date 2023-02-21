@@ -6,7 +6,6 @@ startup
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
 	vars.Helper.GameName = "Snake vs Snake";
 	vars.Helper.LoadSceneManager = true;
-	// vars.Helper.AlertLoadless();
 }
 
 init
