@@ -17,6 +17,7 @@ init
 		vars.Helper["timerRunning"] = mono.Make<bool>(gg, "isTimerRunning");
 		vars.Helper["time"] = mono.Make<float>(gg, "totalPlayTimeLevelsSpeedRun");
 		vars.Helper["gameState"] = mono.Make<int>(gg, "gameState");
+		vars.Helper["levelResult"] = mono.Make<int>(gg, "levelResult");
 
 		return true;
 	});
@@ -30,6 +31,6 @@ start
 
 split
 {
-	// running -> levelCompleted
-	return old.gameState == 1 && current.gameState == 2;
+	return old.gameState == 1 && current.gameState == 2 // running -> levelCompleted
+	    && current.levelResult == 1;                    // success
 }
