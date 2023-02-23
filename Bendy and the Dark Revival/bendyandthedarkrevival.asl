@@ -97,6 +97,7 @@ update
 	current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
 	current.standUpCutsceneStatus = vars.ReadCutsceneStatus(current.sections, 1, 12);
 	current.inkDemonIntroCSStatus = vars.ReadCutsceneStatus(current.sections, 8, 7);
+	current.bendyInTheCityCSStatus = vars.ReadCutsceneStatus(current.sections, 16, 0);
 }
 
 start
@@ -111,6 +112,14 @@ split
 	{
 		vars.Log("Chapter 1 Complete");
 		vars.CompletedSplits["ch_1"] = true;
+		return true;
+	}
+
+	if (settings["ch_3"] && (!vars.CompletedSplits.ContainsKey("ch_3") || !vars.CompletedSplits["ch_3"])
+	    && old.bendyInTheCityCSStatus == 2 && current.bendyInTheCityCSStatus == 3)
+	{
+		vars.Log("Chapter 3 Complete");
+		vars.CompletedSplits["ch_3"] = true;
 		return true;
 	}
 
