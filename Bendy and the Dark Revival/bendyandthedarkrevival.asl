@@ -7,8 +7,19 @@ startup
 	vars.Helper.AlertLoadless();
 
 	vars.Helper.Settings.CreateFromXml("Components/BATDR.Settings.xml");
+	/** because of the layout of the settings, some settings actually mean the same thing.
+	    notably, where an objective completing also completes a chapter
+	    we have settings for all chapters and all objectives, so this point actually appears twice
+	    so we provide the option for aliases
+	
+	    the idea is that the key here is the setting that's actually checked in-code
+	 */
 	vars.SettingAliases = new Dictionary<string, List<string>>() {
-		{ "obj_10602", new List<string>() { "ch_intro" }}
+		{ "obj_10602", new List<string>() { "ch_intro" } },
+		{ "csc_11008", new List<string>() { "ch_1" } },
+		{ "csc_11801", new List<string>() { "ch_3" } },
+		{ "csc_12301", new List<string>() { "ch_4" } },
+		{ "csp_13009", new List<string>() { "ch_5" } }
 	};
 
 	// ensures we don't double split the same condition
@@ -27,15 +38,9 @@ init
 		vars.Helper["GMIsPaused"] = mono.Make<bool>(gm, "m_Instance", "IsPaused");
 		vars.Helper["IsPauseReady"] = mono.Make<bool>(gm, "m_Instance", "IsPauseReady");
 
-		var sdo = mono["SectionDataObject"];
-		var cdo = mono["CutsceneDataObject"];
-		// Grab the status of a specific section instead of reading all the sections
-		// ..., 0x20 (m_Values), 0x10 (items), 0x28 (0x20 + 0x8*[section]), 0x20 (m_CutsceneData), 0x20 (m_Values), 0x10 (items), 0x80 (0x20 + 0x8*[cutscene]), 0x18 (m_Status)
-		vars.Helper["sections"] = mono.Make<IntPtr>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_SectionDirectory", 0x20);
-		vars.ReadCutsceneStatus = (Func<IntPtr, int, int, int>)((sections, section, cutscene) =>
-		{
-			return vars.Helper.Read<int>(sections + 0x10, 0x20 + 0x8*section, sdo["m_CutsceneData"], 0x20, 0x10, 0x20 + 0x8*cutscene, cdo["m_Status"]);
-		});
+		vars.Helper["cutsceneID"] = mono.Make<int>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "m_CutsceneID");
+		vars.Helper["cutscenePlaying"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsPlaying");
+		vars.Helper["cutsceneComplete"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsComplete");
 
 		#region Tasks / Objectives
 		// 0x20 refers to Data<Key, Value>#m_Values, i believe there is a conflict with the other Data class.
@@ -61,75 +66,74 @@ init
 		return true;
 	});
 
-	vars.Setting = (Func<string, bool>)(key =>
+	/** helper func to check settings */
+	vars.Setting = (Func<string, bool, bool>)((key, checkCompleted) =>
 	{
-		if (!settings.ContainsKey(key)) return false;
-		if (settings[key]) return true;
+		// if opted into, false if the setting has already been completed
+		if (checkCompleted && vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]) return false;
+
+		// true if the setting exists and is checked
+		// if the setting doesn't exist check the aliases
+		if (settings.ContainsKey(key) && settings[key]) return true;
+
+		// to do with aliases - if no alias entry exists, false
 		if (!vars.SettingAliases.ContainsKey(key)) return false;
 
+		// if any of the aliases are true, then this setting is true
 		foreach(var k in vars.SettingAliases[key])
 		{
 			if (settings[k]) return true;
 		}
 
+		// otherwise return false
 		return false;
 	});
-
-	vars.ResetSplits();
 }
 
 onStart
 {
 	timer.IsGameTimePaused = current.IsLoading;
 	vars.ResetSplits();
-	foreach(var task in current.tasks)
-	{
-		var tdo = vars.ReadTDO(task);
-		vars.Log("==" + tdo.ID + ": " + tdo.IsComplete);
-	}
+	
+	vars.Log(current.cutsceneID);
 }
 
 update
 {
 	current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
 	current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
-
 	current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
-	current.standUpCutsceneStatus = vars.ReadCutsceneStatus(current.sections, 1, 12);
 
-	current.inkDemonIntroCSStatus = vars.ReadCutsceneStatus(current.sections, 8, 7);
-	current.bendyInTheCityCSStatus = vars.ReadCutsceneStatus(current.sections, 16, 0);
-	current.keeperIntroCSStatus = vars.ReadCutsceneStatus(current.sections, 20, 8);
+
+	// TEMP
+	if (!old.cutscenePlaying && current.cutscenePlaying)
+		vars.Log("playing: " + current.cutsceneID + ", " + vars.Setting("csp_" + current.cutsceneID, true));
+
+	if (!old.cutsceneComplete && current.cutsceneComplete)
+		vars.Log("complete: " + current.cutsceneID + ", " + vars.Setting("csc_" + current.cutsceneID, true));
 }
 
 start
 {
 	// Inactive -> Active
-	return old.standUpCutsceneStatus == 0 && current.standUpCutsceneStatus == 2;
+	return current.cutsceneID == 10213 // StandUp
+	    && !old.cutscenePlaying && current.cutscenePlaying;
 }
 
 split
 {
-	if (settings["ch_1"] && (!vars.CompletedSplits.ContainsKey("ch_1") || !vars.CompletedSplits["ch_1"]) && old.inkDemonIntroCSStatus == 2 && current.inkDemonIntroCSStatus == 3)
+	// Cutscenes
+	if (!old.cutscenePlaying && current.cutscenePlaying && vars.Setting("csp_" + current.cutsceneID, true))
 	{
-		vars.Log("Chapter 1 Complete");
-		vars.CompletedSplits["ch_1"] = true;
+		vars.Log("Cutscene Playing | " + current.cutsceneID);
+		vars.CompletedSplits["csp_" + current.cutsceneID] = true;
 		return true;
 	}
 
-	if (settings["ch_3"] && (!vars.CompletedSplits.ContainsKey("ch_3") || !vars.CompletedSplits["ch_3"])
-	    && old.bendyInTheCityCSStatus == 2 && current.bendyInTheCityCSStatus == 3)
+	if (!old.cutsceneComplete && current.cutsceneComplete && vars.Setting("csc_" + current.cutsceneID, true))
 	{
-		vars.Log("Chapter 3 Complete");
-		vars.CompletedSplits["ch_3"] = true;
-		return true;
-	}
-
-	if (settings["ch_4"] && (!vars.CompletedSplits.ContainsKey("ch_4") || !vars.CompletedSplits["ch_4"])
-	    && old.keeperIntroCSStatus == 2 && current.keeperIntroCSStatus == 3)
-	{
-		vars.Log("Chapter 4 Complete");
-		vars.CompletedSplits["ch_4"] = true;
+		vars.Log("Cutscene Complete | " + current.cutsceneID);
+		vars.CompletedSplits["csc_" + current.cutsceneID] = true;
 		return true;
 	}
 
@@ -137,7 +141,8 @@ split
 	{
 		var tdo = vars.ReadTDO(task);
 		string key = "obj_" + tdo.ID;
-		if (vars.Setting(key) && (!vars.CompletedSplits.ContainsKey(key) || !vars.CompletedSplits[key]) && tdo.IsComplete)
+
+		if (vars.Setting(key, true) && tdo.IsComplete)
 		{
 			vars.Log("Objective Complete | " + tdo.ID);
 			vars.CompletedSplits[key] = true;
@@ -149,7 +154,7 @@ split
 	{
 		var mdo = vars.ReadMDO(memori);
 		string key = "memory_" + mdo;
-		if (vars.Setting(key) && (!vars.CompletedSplits.ContainsKey(key) || !vars.CompletedSplits[key]))
+		if (vars.Setting(key, true))
 		{
 			vars.Log("Memory collected | " + mdo);
 			vars.CompletedSplits[key] = true;
