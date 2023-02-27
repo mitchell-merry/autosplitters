@@ -41,6 +41,11 @@ init
 		vars.Helper["cutsceneID"] = mono.Make<int>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "m_CutsceneID");
 		vars.Helper["cutscenePlaying"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsPlaying");
 		vars.Helper["cutsceneComplete"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsComplete");
+		
+		// doesn't get detected by cutscene director
+		var sdo = mono["SectionDataObject"];
+		var cdo = mono["CutsceneDataObject"];
+		vars.Helper["standUpCutsceneStatus"] = mono.Make<int>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_SectionDirectory", 0x20, 0x10, 0x28, sdo["m_CutsceneData"], 0x20, 0x10, 0x80, cdo["m_Status"]);
 
 		#region Tasks / Objectives
 		// 0x20 refers to Data<Key, Value>#m_Values, i believe there is a conflict with the other Data class.
@@ -95,7 +100,7 @@ onStart
 	timer.IsGameTimePaused = current.IsLoading;
 	vars.ResetSplits();
 	
-	vars.Log(current.cutsceneID);
+	vars.Log(current.standUpCutsceneStatus);
 }
 
 update
@@ -116,8 +121,7 @@ update
 start
 {
 	// Inactive -> Active
-	return current.cutsceneID == 10213 // StandUp
-	    && !old.cutscenePlaying && current.cutscenePlaying;
+	return old.standUpCutsceneStatus == 0 && current.standUpCutsceneStatus == 2;
 }
 
 split
