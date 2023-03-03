@@ -42,8 +42,6 @@ init
 
 		vars.Helper["cutsceneID"] = mono.Make<int>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "m_CutsceneID");
 		vars.Helper["cutscenePlaying"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsPlaying");
-		vars.Helper["cutsceneSkipped"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsSkipped");
-		vars.Helper["cutsceneComplete"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsComplete");
 		
 		// doesn't get detected by cutscene director
 		var sdo = mono["SectionDataObject"];
@@ -102,12 +100,6 @@ onStart
 {
 	timer.IsGameTimePaused = current.IsLoading;
 	vars.ResetSplits();
-	
-	vars.Log(current.playerState);
-	vars.Log(current.cutsceneID);
-	vars.Log(current.cutscenePlaying);
-	vars.Log(current.cutsceneSkipped);
-	vars.Log(current.cutsceneComplete);
 }
 
 update
@@ -115,23 +107,6 @@ update
 	current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
 	current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
 	current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
-
-
-	// TEMP
-	if (old.playerState != current.playerState)
-		vars.Log("playerState: " + old.playerState + " -> " + current.playerState);
-		
-	if (old.cutsceneID != current.cutsceneID)
-		vars.Log("id: " + old.cutsceneID + " -> " + current.cutsceneID);
-
-	if (old.cutscenePlaying != current.cutscenePlaying)
-		vars.Log("playing [" + current.playerState + "] [" + current.cutsceneID + "]: " + old.cutscenePlaying + " -> " + current.cutscenePlaying);
-	
-	if (old.cutsceneSkipped != current.cutsceneSkipped)
-		vars.Log("skipped: [" + current.playerState + "] [" + current.cutsceneID + "]: " + old.cutsceneSkipped + " -> " + current.cutsceneSkipped);
-
-	if (old.cutsceneComplete != current.cutsceneComplete)
-		vars.Log("complete: [" + current.playerState + "] [" + current.cutsceneID + "]: " + old.cutsceneComplete + " -> " + current.cutsceneComplete);
 }
 
 start
