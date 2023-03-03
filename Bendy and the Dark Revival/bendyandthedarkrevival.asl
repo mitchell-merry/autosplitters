@@ -38,8 +38,11 @@ init
 		vars.Helper["GMIsPaused"] = mono.Make<bool>(gm, "m_Instance", "IsPaused");
 		vars.Helper["IsPauseReady"] = mono.Make<bool>(gm, "m_Instance", "IsPauseReady");
 
+		vars.Helper["playerState"] = mono.Make<int>(gm, "m_Instance", "Player", "CurrentState");
+
 		vars.Helper["cutsceneID"] = mono.Make<int>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "m_CutsceneID");
 		vars.Helper["cutscenePlaying"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsPlaying");
+		vars.Helper["cutsceneSkipped"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsSkipped");
 		vars.Helper["cutsceneComplete"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsComplete");
 		
 		// doesn't get detected by cutscene director
@@ -100,7 +103,11 @@ onStart
 	timer.IsGameTimePaused = current.IsLoading;
 	vars.ResetSplits();
 	
-	vars.Log(current.standUpCutsceneStatus);
+	vars.Log(current.playerState);
+	vars.Log(current.cutsceneID);
+	vars.Log(current.cutscenePlaying);
+	vars.Log(current.cutsceneSkipped);
+	vars.Log(current.cutsceneComplete);
 }
 
 update
@@ -111,11 +118,20 @@ update
 
 
 	// TEMP
-	if (!old.cutscenePlaying && current.cutscenePlaying)
-		vars.Log("playing: " + current.cutsceneID + ", " + vars.Setting("csp_" + current.cutsceneID, true));
+	if (old.playerState != current.playerState)
+		vars.Log("playerState: " + old.playerState + " -> " + current.playerState);
+		
+	if (old.cutsceneID != current.cutsceneID)
+		vars.Log("id: " + old.cutsceneID + " -> " + current.cutsceneID);
 
-	if (!old.cutsceneComplete && current.cutsceneComplete)
-		vars.Log("complete: " + current.cutsceneID + ", " + vars.Setting("csc_" + current.cutsceneID, true));
+	if (old.cutscenePlaying != current.cutscenePlaying)
+		vars.Log("playing [" + current.playerState + "] [" + current.cutsceneID + "]: " + old.cutscenePlaying + " -> " + current.cutscenePlaying);
+	
+	if (old.cutsceneSkipped != current.cutsceneSkipped)
+		vars.Log("skipped: [" + current.playerState + "] [" + current.cutsceneID + "]: " + old.cutsceneSkipped + " -> " + current.cutsceneSkipped);
+
+	if (old.cutsceneComplete != current.cutsceneComplete)
+		vars.Log("complete: [" + current.playerState + "] [" + current.cutsceneID + "]: " + old.cutsceneComplete + " -> " + current.cutsceneComplete);
 }
 
 start
@@ -134,7 +150,7 @@ split
 		return true;
 	}
 
-	if (!old.cutsceneComplete && current.cutsceneComplete && vars.Setting("csc_" + current.cutsceneID, true))
+	if (old.playerState == 1 && current.playerState == 3 && vars.Setting("csc_" + current.cutsceneID, true))
 	{
 		vars.Log("Cutscene Complete | " + current.cutsceneID);
 		vars.CompletedSplits["csc_" + current.cutsceneID] = true;
