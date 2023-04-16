@@ -1,3 +1,4 @@
 *.zip
 *.lss
 **/new.asl
+**/debug.asl

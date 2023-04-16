@@ -1,0 +1,9 @@
+<Settings>
+	<Setting Id="ch" Label="Split on completing chapter:" State="false">
+		<Setting Id="scene_ReporterDeath" Label="Just A Normal Day" State="false" />
+		<Setting Id="scene_02_MainScene" Label="The Closing Shift" State="false" />
+		<Setting Id="scene_03_SlaughterHouse_Part01" Label="Abduction" State="false" />
+		<Setting Id="scene_Sewer" Label="The Sewers" State="false" />
+		<Setting Id="scene_03_SlaughterHouse_Part02" Label="Revenge" State="false" />
+	</Setting>
+</Settings>
