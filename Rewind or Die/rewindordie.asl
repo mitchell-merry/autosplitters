@@ -2,7 +2,6 @@ state("Rewind Or Die") { }
 
 startup
 {
-	vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
 	vars.Helper.GameName = "Rewind or Die";
 	vars.Helper.LoadSceneManager = true;
@@ -23,19 +22,11 @@ init
     current.apartmentWaitingForStart = false;
 
     vars.CheckSplit = (Func<string, bool>)(key => {
-        // if the split doesn't exist, or it's off, or we've done it
-        if (!settings.ContainsKey(key)) {
-            vars.Log("SETTING DOESNT EXIST " + key);
-            return false;
-        }
-        
-        if (!settings[key]) {
-            vars.Log("SETTING NOT ENABLED " + key);
-            return false;
-        }
-        
-        if (vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]) {
-            vars.Log("SPLIT COMPLETED " + key);
+        // if the split doesn't exist, or it's off, or we've done it already
+        if (!settings.ContainsKey(key)
+          || !settings[key]
+          || vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]
+        ) {
             return false;
         }
 
@@ -52,7 +43,6 @@ onStart
     {
         vars.CompletedSplits[split] = false;
     }
-    vars.Log(current.apartmentWaitingForStart);
 }
 
 update
@@ -63,17 +53,8 @@ update
     if (old.activeScene != current.activeScene && current.activeScene == "Apartment") {
         current.apartmentWaitingForStart = true;
     } else if (current.activeScene != "Apartment") {
-        current.apartmentWaitingForStart = false;    }
-
-	if(current.activeScene != old.activeScene) {
-        vars.Log("ACTIVE FROM \"" + old.activeScene + "\" TO \"" + current.activeScene + "\"");
+        current.apartmentWaitingForStart = false;
     }
-	
-    if(current.loadingScene != old.loadingScene)
-        vars.Log("LOADING FROM \"" + old.loadingScene + "\" TO \"" + current.loadingScene + "\"");
-
-    
-    
 }
 
 isLoading
