@@ -8,31 +8,31 @@
 	</Setting>
     <Setting Id="boss_slaw" Label="Split on beating Slaw"    State="false" />
     <Setting Id="item"      Label="Split on collecting item" State="false">
-        <Setting Id="item_FrontDoorKey"    Label="Front Door Keys"         Tooltip="The key to the front door of the shop" State="false" />
-        <Setting Id="item_CustomerDocs"    Label="Customer Documents"      Tooltip="A list of all transactions from the last 12 months with customer names" State="false" />
-        <Setting Id="item_BinBag"          Label="Black Binbag"            Tooltip="It's filled with crap, I should really put it in the dumpster before it stinks up the place " State="false" />
-        <Setting Id="item_Tapes"           Label="Stack of VHS tapes"      Tooltip="A stack of returned tapes, they need putting back out on the shelves" State="false" />
-        <Setting Id="item_Wood"            Label="Pile of Wood"            Tooltip="Some wooden planks... They were out back for weeks, they've soggy and starting to rot" State="false" />
-        <Setting Id="item_Valve"           Label="Pipe valve"              Tooltip="The valve from the boiler pipes" State="false" />
-        <Setting Id="item_CellKey"         Label="Cell key"                Tooltip="A small and rusted key used to lock the cells in the pen area" State="false" />
-        <Setting Id="item_Crank"           Label="Crank"                   Tooltip="An old crank handle" State="false" />
-        <Setting Id="item_Fuse"            Label="Fuse"                    Tooltip="A rather large fuse, it must be from the door control panel" State="false" />
-        <Setting Id="item_BasementKey"     Label="Basement key"            Tooltip="A key, it has the word 'basement' written on the top" State="false" />
-        <Setting Id="item_ElecCube_Red"    Label="Red Electrical Cube"     Tooltip="A small electrical componenet with red lighting" State="false" />
-        <Setting Id="item_VanKey"          Label="Van Key"                 Tooltip="The key to the van out front. It's covered in blood and... Is that a piece of brain?" State="false" />
-        <Setting Id="item_ElecCube_Blue"   Label="Blue Electrical Cube"    Tooltip="A small electrical componenet with blue lighting" State="false" />
-        <Setting Id="item_FreezerLever"    Label="Freezer Lever"           Tooltip="A steel lever. Must have been removed from the freezer door" State="false" />
-        <Setting Id="item_Crowbar"         Label="Crowbar"                 Tooltip="An ordinary crowbar, covered in blood" State="false" />
-        <Setting Id="item_PlatformKey"     Label="Hydraulic Platform Key"  Tooltip="The key used to raise and lower the platforms in the sewer" State="false" />
-        <Setting Id="item_SEWER_PASS"      Label="Sewer Worker's Keycard"  Tooltip="A keycard belonging to the deceased sewer worker" State="false" />
-        <Setting Id="item_GeneratorLever"  Label="Generator Lever"         Tooltip="One of the levers from the sewer generator" State="false" />
-        <Setting Id="item_GasShutoffValve" Label="Gas Main shut off valve" Tooltip="A metal vale used to close off gas flow on pipework" State="false" />
-        <Setting Id="item_SmallKey"        Label="A small key"             Tooltip="A very small key, it must open a very small lock" State="false" />
-        <Setting Id="item_Power_Pack"      Label="Power pack"              Tooltip="A removable and portable battery power pack, it's fully charged" State="false" />
-        <Setting Id="item_LockerKey"       Label="Locker Key"              Tooltip="Aaron's locker key... Poor guy" State="false" />
-        <Setting Id="item_Pistol"          Label="Handgun"                 Tooltip="An old handgun... I hope it still works" State="false" />
-        <Setting Id="item_Circuit_Breaker" Label="CIRCUIT BREAKER"         Tooltip="A CIRCUIT BREAKER used in heavy machinery" State="false" />
-        <Setting Id="item_Keycard"         Label="Security keycard"        Tooltip="A keycard which belonged to the security guard on duty" State="false" />
+        <Setting Id="item_FrontDoorKey"    Label="Front Door Keys"          State="false" />
+        <Setting Id="item_CustomerDocs"    Label="Customer Documents"       State="false" />
+        <Setting Id="item_BinBag"          Label="Black Binbag"             State="false" />
+        <Setting Id="item_Tapes"           Label="Stack of VHS tapes"       State="false" />
+        <Setting Id="item_Wood"            Label="Pile of Wood"             State="false" />
+        <Setting Id="item_Valve"           Label="Pipe valve"               State="false" />
+        <Setting Id="item_CellKey"         Label="Cell key"                 State="false" />
+        <Setting Id="item_Crank"           Label="Crank"                    State="false" />
+        <Setting Id="item_Fuse"            Label="Fuse"                     State="false" />
+        <Setting Id="item_BasementKey"     Label="Basement key"             State="false" />
+        <Setting Id="item_ElecCube_Red"    Label="Red Electrical Cube"      State="false" />
+        <Setting Id="item_VanKey"          Label="Van Key"                  State="false" />
+        <Setting Id="item_ElecCube_Blue"   Label="Blue Electrical Cube"     State="false" />
+        <Setting Id="item_FreezerLever"    Label="Freezer Lever"            State="false" />
+        <Setting Id="item_Crowbar"         Label="Crowbar"                  State="false" />
+        <Setting Id="item_PlatformKey"     Label="Hydraulic Platform Key"   State="false" />
+        <Setting Id="item_SEWER_PASS"      Label="Sewer Worker's Keycard"   State="false" />
+        <Setting Id="item_GeneratorLever"  Label="Generator Lever"          State="false" />
+        <Setting Id="item_GasShutoffValve" Label="Gas Main shut off valve"  State="false" />
+        <Setting Id="item_SmallKey"        Label="A small key"              State="false" />
+        <Setting Id="item_Power_Pack"      Label="Power pack"               State="false" />
+        <Setting Id="item_LockerKey"       Label="Locker Key"               State="false" />
+        <Setting Id="item_Pistol"          Label="Handgun"                  State="false" />
+        <Setting Id="item_Circuit_Breaker" Label="CIRCUIT BREAKER"          State="false" />
+        <Setting Id="item_Keycard"         Label="Security keycard"         State="false" />
         <!-- Intentionally missing the following items:
         - Backpack
         -->
