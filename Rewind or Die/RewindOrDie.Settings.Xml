@@ -1,11 +1,12 @@
 <Settings>
-	<Setting Id="ch" Label="Split on completing chapter:" State="false">
-		<Setting Id="scene_ReporterDeath"            Label="Just A Normal Day" State="false" />
-		<Setting Id="scene_02_MainScene"             Label="The Closing Shift" State="false" />
-		<Setting Id="scene_03_SlaughterHouse_Part01" Label="Abduction" State="false" />
-		<Setting Id="scene_Sewer"                    Label="The Sewers" State="false" />
-		<Setting Id="scene_03_SlaughterHouse_Part02" Label="Revenge" State="true" />
-	</Setting>
+    <Setting Id="ch_start" Label="Start time on chapter start" State="false" />
+    <Setting Id="ch" Label="Split on completing chapter:" State="false">
+        <Setting Id="scene_ReporterDeath"            Label="Just A Normal Day" State="false" />
+        <Setting Id="scene_02_MainScene"             Label="The Closing Shift" State="false" />
+        <Setting Id="scene_03_SlaughterHouse_Part01" Label="Abduction" State="false" />
+        <Setting Id="scene_Sewer"                    Label="The Sewers" State="false" />
+        <Setting Id="scene_03_SlaughterHouse_Part02" Label="Revenge" State="true" />
+    </Setting>
     <Setting Id="boss_slaw" Label="Split on beating Slaw"    State="false" />
     <Setting Id="item"      Label="Split on collecting item" State="false">
         <Setting Id="item_FrontDoorKey"    Label="Front Door Keys"          State="false" />

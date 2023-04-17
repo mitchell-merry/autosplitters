@@ -75,6 +75,11 @@ isLoading
 
 start
 {
+    if (settings["ch_start"]
+     && old.activeScene == "01_MainMenu" && old.activeScene != current.activeScene) {
+        return true;
+    }
+
     return current.apartmentWaitingForStart
         && !old.moving && current.moving;
 }
