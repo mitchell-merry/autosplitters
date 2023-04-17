@@ -16,7 +16,17 @@ init
 	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
 	{
         vars.Helper["moving"] = mono.Make<bool>("FPS", "instance", "moving");
-		return true;
+        vars.Helper["bossIsDead"] = mono.Make<bool>("PigManBossFight", "instance", "isDead");
+		
+        var ItemData = mono["ItemData"];
+        vars.Helper["items"] = mono.MakeList<IntPtr>("Inventory", "allInventoryItems");
+        
+        vars.ParseItem = (Func<IntPtr, dynamic>)(item =>
+        {
+            return vars.Helper.ReadString(item + ItemData["UUID"]);
+        });
+
+        return true;
 	});
 
     current.apartmentWaitingForStart = false;
@@ -55,6 +65,7 @@ update
     } else if (current.activeScene != "Apartment") {
         current.apartmentWaitingForStart = false;
     }
+
 }
 
 isLoading
@@ -74,8 +85,19 @@ split
     if (old.loadingScene != current.loadingScene && current.loadingScene != "01_MainMenu")
     {
         var key = "scene_" + old.loadingScene;
-        if (vars.CheckSplit(key)) {
+        if (vars.CheckSplit(key))
             return true;
-        }
+    }
+
+    if (!old.bossIsDead && current.bossIsDead && vars.CheckSplit("boss_slaw"))
+        return true;
+
+    
+    // detect new items picked up
+    if (old.items.Count < current.items.Count) {
+        var newItem = vars.ParseItem(current.items[current.items.Count - 1]);
+        var key = "item_" + newItem;
+        if (vars.CheckSplit(key))
+            return true;
     }
 }
