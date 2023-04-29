@@ -1,0 +1,13 @@
+<Settings>
+    <Setting Id="scene" Label="Split on completing scene:" State="false">
+        <Setting Id="scene_Map01" Label="Map01" State="false" />
+        <Setting Id="scene_Map02" Label="Map02" State="false" />
+        <Setting Id="scene_Map03" Label="Map03" State="false" />
+        <Setting Id="scene_Map04" Label="Map04" State="false" />
+        <Setting Id="scene_Map05" Label="Map05" State="false" />
+        <Setting Id="scene_Map06" Label="Map06" State="false" />
+        <Setting Id="scene_Map07" Label="Map07" State="false" />
+        <Setting Id="scene_Map08" Label="Map08" State="false" />
+        <Setting Id="scene_Map09" Label="Map09" State="false" />
+    </Setting>
+</Settings>
