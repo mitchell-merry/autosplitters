@@ -1,6 +1,6 @@
 state("HITMAN3", "Steam")
 {
-    bool isLoading: "hitman3.exe", 0x39B0F6C;
+    bool isLoading: 0x39B0F6C;
 }
 
 state("HITMAN3", "Epic")
