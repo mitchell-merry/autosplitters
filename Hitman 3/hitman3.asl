@@ -18,7 +18,7 @@ init
 
     switch (MD5Hash){
         case "A6BCD7BA2587B589764FE00EF6942F7A": version = "Steam"; break;
-        case "Epic Hash Here": version = "Epic"; break;
+        case "768D99BD0B69EAEC97753DC326412CEB": version = "Epic"; break;
 
         default: version = "UNKNOWN"; break;
     }
