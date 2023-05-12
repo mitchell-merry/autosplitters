@@ -1,12 +1,12 @@
 state("HITMAN3", "Steam")
 {
-    bool isLoading: 0x39B0F6C;
+    bool isLoading: 0x39B220C;
 }
 
-state("HITMAN3", "Epic")
-{
-    bool isLoading: 0x14E4BC, 0xB0;
-}
+// state("HITMAN3", "Epic")
+// {
+//     bool isLoading: 0x14E4BC, 0xB0;
+// }
 
 init
 {
@@ -17,8 +17,8 @@ init
     print("Hash is: " + MD5Hash);
 
     switch (MD5Hash){
-        case "A6BCD7BA2587B589764FE00EF6942F7A": version = "Steam"; break;
-        case "768D99BD0B69EAEC97753DC326412CEB": version = "Epic"; break;
+        case "81F5EC2450D4369583D28495445311F6": version = "Steam"; break;
+        // case "768D99BD0B69EAEC97753DC326412CEB": version = "Epic"; break;
 
         default: version = "UNKNOWN"; break;
     }
