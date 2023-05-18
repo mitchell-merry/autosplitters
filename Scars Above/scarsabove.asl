@@ -52,5 +52,5 @@ isLoading
     return current.GWorld == 0 ||
         // if we are in the loading screen, but can't close (continue) yet
         // (i.e. we are loading)
-           current.inLoadingScreen && !current.canCloseLoadingScreen;
+        current.inLoadingScreen && !current.canCloseLoadingScreen;
 }
