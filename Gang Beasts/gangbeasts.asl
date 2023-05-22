@@ -14,7 +14,7 @@ startup
     settings.Add("stage", false, "Split on stage complete");
     settings.Add("stage_Grind", false, "Grind", "stage");
     settings.Add("stage_Incinerator", false, "Incinerator", "stage");
-    settings.Add("stage_Roof", false, "Roof", "stage");
+    settings.Add("stage_Rooftop", false, "Roof", "stage");
     settings.Add("stage_Subway", false, "Subway", "stage");
     settings.Add("wave", false, "Split on wave complete");
 }
@@ -22,15 +22,19 @@ startup
 init
 {
     vars.CheckSplit = (Func<string, bool, bool>)((key, checkSetting) => {
+        vars.Log("CHECKING SPLIT: " + key);
+
         // if we check the setting and it doesn't exist or it's off
         if (checkSetting && (!settings.ContainsKey(key) || !settings[key]))
         {
+            vars.Log("EXISTS? " + settings.ContainsKey(key));
+            vars.Log("ACTIVE? " + settings[key]);
             return false;
         }
 
         // if we've done it already
-        if (vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]
-        ) {
+        if (vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]) {
+            vars.Log("COMPLETED? " + vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]);
             return false;
         }
 
@@ -84,7 +88,11 @@ update
 	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
 
 	if(current.activeScene != old.activeScene) vars.Log("a: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
-	if(current.loadingScene != old.loadingScene) vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
+	if(current.loadingScene != old.loadingScene)
+    {
+        vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
+        vars.Log("WAVE: " + current.wave);
+    }
 
     current.realWave = current.state >= 32 ? current.realWave : current.wave;
 
@@ -100,19 +108,17 @@ start
 
 split
 {
-    // if ()
-
     if (current.realWave != 0 && current.realWave == old.realWave + 1)
     {
-        if (current.realWave == 4 && settings["stage"])
-        {
-            return vars.CheckSplit("stage_" + current.activeScene, true);
-        }
-
         if (settings["wave"])
         {
             return vars.CheckSplit("wave_" + current.activeScene + "_" + current.wave, false);
         }
+    }
+
+    if (current.wave == 4 && old.loadingScene != current.loadingScene && current.loadingScene == "Menu")
+    {
+        return vars.CheckSplit("stage_" + old.loadingScene, true);
     }
 }
 
