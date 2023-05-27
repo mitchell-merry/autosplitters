@@ -1,0 +1,148 @@
+<Settings>
+    <Setting Id="level" Label="Split on completing level:" State="true">
+        <Setting Id="world_WORLD_PINEMOUNTAINS" Label="Pine Mountains" State="false">
+            <Setting Id="level_LEVEL_TEN_METER_SIMPLE_BRIDGE" Label="1-01 LEVEL_TEN_METER_SIMPLE_BRIDGE" State="false" />
+            <Setting Id="level_LEVEL_A_NEW_SLOPE" Label="1-02 LEVEL_A_NEW_SLOPE" State="false" />
+            <Setting Id="level_LEVEL_BRIDGE_OF_STEEL" Label="1-03 LEVEL_BRIDGE_OF_STEEL" State="false" />
+            <Setting Id="level_LEVEL_FOURTEEN_METER_OVERPASS" Label="1-04 LEVEL_FOURTEEN_METER_OVERPASS" State="false" />
+            <Setting Id="level_LEVEL_CHECKPOINTS" Label="1-05 LEVEL_CHECKPOINTS" State="false" />
+            <Setting Id="level_LEVEL_FIRST_DRAWBRIDGE" Label="1-06 LEVEL_FIRST_DRAWBRIDGE" State="false" />
+            <Setting Id="level_LEVEL_TAXI_TASK" Label="1-07 LEVEL_TAXI_TASK" State="false" />
+            <Setting Id="level_LEVEL_ROPE_SUPPORT" Label="1-08 LEVEL_ROPE_SUPPORT" State="false" />
+            <Setting Id="level_LEVEL_BUDGET_CUTS" Label="1-09 LEVEL_BUDGET_CUTS" State="false" />
+            <Setting Id="level_LEVEL_FIRST_JUMP" Label="1-10 LEVEL_FIRST_JUMP" State="false" />
+            <Setting Id="level_LEVEL_STOP_N_GO" Label="1-11 LEVEL_STOP_N_GO" State="false" />
+            <Setting Id="level_LEVEL_ROCK_REST" Label="1-12 LEVEL_ROCK_REST" State="false" />
+            <Setting Id="level_LEVEL_REDRAW" Label="1-13 LEVEL_REDRAW" State="false" />
+            <Setting Id="level_LEVEL_LAND_BRACE" Label="1-14 LEVEL_LAND_BRACE" State="false" />
+            <Setting Id="level_LEVEL_HYDRAULIC_MANAGEMENT" Label="1-15 LEVEL_HYDRAULIC_MANAGEMENT" State="false" />
+            <Setting Id="level_LEVEL_LARGE_BRIDGE" Label="1-16 LEVEL_LARGE_BRIDGE" State="false" />
+        </Setting>
+        <Setting Id="world_WORLD_VOLCANO" Label="Glowing Gorge" State="false">
+            <Setting Id="level_LEVEL_UNITY" Label="2-01 LEVEL_UNITY" State="false" />
+            <Setting Id="level_LEVEL_LONG_DRAWBRIDGE" Label="2-02 LEVEL_LONG_DRAWBRIDGE" State="false" />
+            <Setting Id="level_LEVEL_LOW_RIDER" Label="2-03 LEVEL_LOW_RIDER" State="false" />
+            <Setting Id="level_LEVEL_BUGGY_BOUNCER" Label="2-04 LEVEL_BUGGY_BOUNCER" State="false" />
+            <Setting Id="level_LEVEL_ROCKIN" Label="2-05 LEVEL_ROCKIN" State="false" />
+            <Setting Id="level_LEVEL_ROUNDABOUT" Label="2-06 LEVEL_ROUNDABOUT" State="false" />
+            <Setting Id="level_LEVEL_DOUBLE_DECKER_HIGHWAY" Label="2-07 LEVEL_DOUBLE_DECKER_HIGHWAY" State="false" />
+            <Setting Id="level_LEVEL_SPLIT_LEVEL" Label="2-08 LEVEL_SPLIT_LEVEL" State="false" />
+            <Setting Id="level_LEVEL_ANCHORS_AWAY" Label="2-09 LEVEL_ANCHORS_AWAY" State="false" />
+            <Setting Id="level_LEVEL_FORK_IN_THE_ROAD" Label="2-10 LEVEL_FORK_IN_THE_ROAD" State="false" />
+            <Setting Id="level_LEVEL_AIR_SHOW" Label="2-11 LEVEL_AIR_SHOW" State="false" />
+            <Setting Id="level_LEVEL_MOMENTUM" Label="2-12 LEVEL_MOMENTUM" State="false" />
+            <Setting Id="level_LEVEL_COMPRESSION" Label="2-13 LEVEL_COMPRESSION" State="false" />
+            <Setting Id="level_LEVEL_DIP_N_DRAW" Label="2-14 LEVEL_DIP_N_DRAW" State="false" />
+            <Setting Id="level_LEVEL_WEIGHT_DISTRIBUTION" Label="2-15 LEVEL_WEIGHT_DISTRIBUTION" State="false" />
+            <Setting Id="level_LEVEL_STOW_AWAY" Label="2-16 LEVEL_STOW_AWAY" State="false" />
+        </Setting>
+        <Setting Id="world_WORLD_SAVANNA" Label="Tranquil Oasis" State="false">
+            <Setting Id="level_LEVEL_LOOP_HOLE" Label="3-01 LEVEL_LOOP_HOLE" State="false" />
+            <Setting Id="level_LEVEL_BIG_DIPPER" Label="3-02 LEVEL_BIG_DIPPER" State="false" />
+            <Setting Id="level_LEVEL_STRING_THEORY" Label="3-03 LEVEL_STRING_THEORY" State="false" />
+            <Setting Id="level_LEVEL_DOUBLING_DOWN" Label="3-04 LEVEL_DOUBLING_DOWN" State="false" />
+            <Setting Id="level_LEVEL_SEMI_SLOPE" Label="3-05 LEVEL_SEMI_SLOPE" State="false" />
+            <Setting Id="level_LEVEL_ROCK_SKIPPING" Label="3-06 LEVEL_ROCK_SKIPPING" State="false" />
+            <Setting Id="level_LEVEL_SUPPORT_CABLE" Label="3-07 LEVEL_SUPPORT_CABLE" State="false" />
+            <Setting Id="level_LEVEL_CROSSED_PATHS" Label="3-08 LEVEL_CROSSED_PATHS" State="false" />
+            <Setting Id="level_LEVEL_WIBBY_WOBBY" Label="3-09 LEVEL_WIBBY_WOBBY" State="false" />
+            <Setting Id="level_LEVEL_SHAFTED" Label="3-10 LEVEL_SHAFTED" State="false" />
+            <Setting Id="level_LEVEL_CROSS_JUMP" Label="3-11 LEVEL_CROSS_JUMP" State="false" />
+            <Setting Id="level_LEVEL_RESCUE_RESTRAINT" Label="3-12 LEVEL_RESCUE_RESTRAINT" State="false" />
+            <Setting Id="level_LEVEL_DIAGONAL_ELEVATOR" Label="3-13 LEVEL_DIAGONAL_ELEVATOR" State="false" />
+            <Setting Id="level_LEVEL_LOW_FLYER" Label="3-14 LEVEL_LOW_FLYER" State="false" />
+            <Setting Id="level_LEVEL_LOOPERS_REVENGE" Label="3-15 LEVEL_LOOPERS_REVENGE" State="false" />
+            <Setting Id="level_LEVEL_MONSTER_TRUCK_RALLY" Label="3-16 LEVEL_MONSTER_TRUCK_RALLY" State="false" />
+        </Setting>
+        <Setting Id="world_WORLD_WESTERN" Label="Sanguine Gulch" State="false">
+            <Setting Id="level_LEVEL_EDGY" Label="4-01 LEVEL_EDGY" State="false" />
+            <Setting Id="level_LEVEL_COLLISION_WARNING" Label="4-02 LEVEL_COLLISION_WARNING" State="false" />
+            <Setting Id="level_LEVEL_SLOPED_DRAWBRIDGE" Label="4-03 LEVEL_SLOPED_DRAWBRIDGE" State="false" />
+            <Setting Id="level_LEVEL_TRAPDOOR" Label="4-04 LEVEL_TRAPDOOR" State="false" />
+            <Setting Id="level_LEVEL_TRIPLE_DECKER_DRAWBRIDGE" Label="4-05 LEVEL_TRIPLE_DECKER_DRAWBRIDGE" State="false" />
+            <Setting Id="level_LEVEL_SAFETY_GAP" Label="4-06 LEVEL_SAFETY_GAP" State="false" />
+            <Setting Id="level_LEVEL_BIG_SPENDER" Label="4-07 LEVEL_BIG_SPENDER" State="false" />
+            <Setting Id="level_LEVEL_THREAD_THE_NEEDLE" Label="4-08 LEVEL_THREAD_THE_NEEDLE" State="false" />
+            <Setting Id="level_LEVEL_TIPPING_TOWER" Label="4-09 LEVEL_TIPPING_TOWER" State="false" />
+            <Setting Id="level_LEVEL_DRAWBRIDGE_IN_DISGUISE" Label="4-10 LEVEL_DRAWBRIDGE_IN_DISGUISE" State="false" />
+            <Setting Id="level_LEVEL_LEAN_ON_ME" Label="4-11 LEVEL_LEAN_ON_ME" State="false" />
+            <Setting Id="level_LEVEL_TRAILBLAZER" Label="4-12 LEVEL_TRAILBLAZER" State="false" />
+            <Setting Id="level_LEVEL_DIAGONAL_DRAWBRIDGE" Label="4-13 LEVEL_DIAGONAL_DRAWBRIDGE" State="false" />
+            <Setting Id="level_LEVEL_BIG_RIG" Label="4-14 LEVEL_BIG_RIG" State="false" />
+            <Setting Id="level_LEVEL_TWISTS_AND_TURNS" Label="4-15 LEVEL_TWISTS_AND_TURNS" State="false" />
+            <Setting Id="level_LEVEL_DONT_LEAVE_ME" Label="4-16 LEVEL_DONT_LEAVE_ME" State="false" />
+        </Setting>
+        <Setting Id="world_WORLD_ZEN" Label="Serenity Valley" State="false">
+            <Setting Id="level_LEVEL_BREAK_CHECK" Label="5-01 LEVEL_BREAK_CHECK" State="false" />
+            <Setting Id="level_LEVEL_SORTING" Label="5-02 LEVEL_SORTING" State="false" />
+            <Setting Id="level_LEVEL_SPRING_BOARD" Label="5-03 LEVEL_SPRING_BOARD" State="false" />
+            <Setting Id="level_LEVEL_SOURCE_OF_MOTION" Label="5-04 LEVEL_SOURCE_OF_MOTION" State="false" />
+            <Setting Id="level_LEVEL_OVERBRIDGE_TRUCK" Label="5-05 LEVEL_OVERBRIDGE_TRUCK" State="false" />
+            <Setting Id="level_LEVEL_FLOP_SPRING" Label="5-06 LEVEL_FLOP_SPRING" State="false" />
+            <Setting Id="level_LEVEL_SWAP" Label="5-07 LEVEL_SWAP" State="false" />
+            <Setting Id="level_LEVEL_OVERTAKE" Label="5-08 LEVEL_OVERTAKE" State="false" />
+            <Setting Id="level_LEVEL_DOUBLE_DROP" Label="5-09 LEVEL_DOUBLE_DROP" State="false" />
+            <Setting Id="level_LEVEL_SUSPENSION" Label="5-10 LEVEL_SUSPENSION" State="false" />
+            <Setting Id="level_LEVEL_WEAVE_LIFT" Label="5-11 LEVEL_WEAVE_LIFT" State="false" />
+            <Setting Id="level_LEVEL_UPS_AND_DOWNS" Label="5-12 LEVEL_UPS_AND_DOWNS" State="false" />
+            <Setting Id="level_LEVEL_WORMS" Label="5-13 LEVEL_WORMS" State="false" />
+            <Setting Id="level_LEVEL_MANY_CROSSED_PATHS" Label="5-14 LEVEL_MANY_CROSSED_PATHS" State="false" />
+            <Setting Id="level_LEVEL_LAUNCH_VELOCITY" Label="5-15 LEVEL_LAUNCH_VELOCITY" State="false" />
+            <Setting Id="level_LEVEL_HYDRAULIC_MULTIFUNCTION" Label="5-16 LEVEL_HYDRAULIC_MULTIFUNCTION" State="false" />
+        </Setting>
+        <Setting Id="world_WORLD_STEAMPUNK" Label="Steamtown" State="false">
+            <Setting Id="level_LEVEL_EARTHQUAKE" Label="6-01 LEVEL_EARTHQUAKE" State="false" />
+            <Setting Id="level_LEVEL_CANYON_CARRIAGE" Label="6-02 LEVEL_CANYON_CARRIAGE" State="false" />
+            <Setting Id="level_LEVEL_PARKADE_ELEVATOR" Label="6-03 LEVEL_PARKADE_ELEVATOR" State="false" />
+            <Setting Id="level_LEVEL_BRIDGE_LIKE_MOTION" Label="6-04 LEVEL_BRIDGE_LIKE_MOTION" State="false" />
+            <Setting Id="level_LEVEL_EDGEWORKS" Label="6-05 LEVEL_EDGEWORKS" State="false" />
+            <Setting Id="level_LEVEL_SPRING_LOADED" Label="6-06 LEVEL_SPRING_LOADED" State="false" />
+            <Setting Id="level_LEVEL_GET_A_GRIP" Label="6-07 LEVEL_GET_A_GRIP" State="false" />
+            <Setting Id="level_LEVEL_HOW_THE_TURN_TABLES" Label="6-08 LEVEL_HOW_THE_TURN_TABLES" State="false" />
+            <Setting Id="level_LEVEL_SQUEEZE_THOU" Label="6-09 LEVEL_SQUEEZE_THOU" State="false" />
+            <Setting Id="level_LEVEL_BRIDGE_IN_A_BOX" Label="6-10 LEVEL_BRIDGE_IN_A_BOX" State="false" />
+            <Setting Id="level_LEVEL_WALL_JUMPIN" Label="6-11 LEVEL_WALL_JUMPIN" State="false" />
+            <Setting Id="level_LEVEL_MIND_THE_GAP" Label="6-12 LEVEL_MIND_THE_GAP" State="false" />
+            <Setting Id="level_LEVEL_VESPIN_BALL" Label="6-13 LEVEL_VESPIN_BALL" State="false" />
+            <Setting Id="level_LEVEL_SPIN_CYCLE" Label="6-14 LEVEL_SPIN_CYCLE" State="false" />
+            <Setting Id="level_LEVEL_SPECIAL_DELIVERY" Label="6-15 LEVEL_SPECIAL_DELIVERY" State="false" />
+            <Setting Id="level_LEVEL_RUBE_GOLDBRIDGE" Label="6-16 LEVEL_RUBE_GOLDBRIDGE" State="false" />
+        </Setting>
+        <Setting Id="world_WORLD_VOLCANO2" Label="Glittering Gorge" State="false">
+            <Setting Id="level_LEVEL_B1-01" Label="B1-01 LEVEL_B1-01" State="false" />
+            <Setting Id="level_LEVEL_B1-02" Label="B1-02 LEVEL_B1-02" State="false" />
+            <Setting Id="level_LEVEL_B1-03" Label="B1-03 LEVEL_B1-03" State="false" />
+            <Setting Id="level_LEVEL_B1-04" Label="B1-04 LEVEL_B1-04" State="false" />
+            <Setting Id="level_LEVEL_B1-05" Label="B1-05 LEVEL_B1-05" State="false" />
+            <Setting Id="level_LEVEL_B1-06" Label="B1-06 LEVEL_B1-06" State="false" />
+            <Setting Id="level_LEVEL_B1-07" Label="B1-07 LEVEL_B1-07" State="false" />
+            <Setting Id="level_LEVEL_B1-08" Label="B1-08 LEVEL_B1-08" State="false" />
+            <Setting Id="level_LEVEL_B1-09" Label="B1-09 LEVEL_B1-09" State="false" />
+            <Setting Id="level_LEVEL_B1-10" Label="B1-10 LEVEL_B1-10" State="false" />
+            <Setting Id="level_LEVEL_B1-11" Label="B1-11 LEVEL_B1-11" State="false" />
+            <Setting Id="level_LEVEL_B1-12" Label="B1-12 LEVEL_B1-12" State="false" />
+            <Setting Id="level_LEVEL_B1-13" Label="B1-13 LEVEL_B1-13" State="false" />
+            <Setting Id="level_LEVEL_B1-14" Label="B1-14 LEVEL_B1-14" State="false" />
+            <Setting Id="level_LEVEL_B1-15" Label="B1-15 LEVEL_B1-15" State="false" />
+            <Setting Id="level_LEVEL_B1-16" Label="B1-16 LEVEL_B1-16" State="false" />
+        </Setting>
+        <Setting Id="world_WORLD_STEAMPUNK2" Label="Gleamtown" State="false">
+            <Setting Id="level_LEVEL_B2-01" Label="B2-01 LEVEL_B2-01" State="false" />
+            <Setting Id="level_LEVEL_B2-02" Label="B2-02 LEVEL_B2-02" State="false" />
+            <Setting Id="level_LEVEL_B2-03" Label="B2-03 LEVEL_B2-03" State="false" />
+            <Setting Id="level_LEVEL_B2-04" Label="B2-04 LEVEL_B2-04" State="false" />
+            <Setting Id="level_LEVEL_B2-05" Label="B2-05 LEVEL_B2-05" State="false" />
+            <Setting Id="level_LEVEL_B2-06" Label="B2-06 LEVEL_B2-06" State="false" />
+            <Setting Id="level_LEVEL_B2-07" Label="B2-07 LEVEL_B2-07" State="false" />
+            <Setting Id="level_LEVEL_B2-08" Label="B2-08 LEVEL_B2-08" State="false" />
+            <Setting Id="level_LEVEL_B2-09" Label="B2-09 LEVEL_B2-09" State="false" />
+            <Setting Id="level_LEVEL_B2-10" Label="B2-10 LEVEL_B2-10" State="false" />
+            <Setting Id="level_LEVEL_B2-11" Label="B2-11 LEVEL_B2-11" State="false" />
+            <Setting Id="level_LEVEL_B2-12" Label="B2-12 LEVEL_B2-12" State="false" />
+            <Setting Id="level_LEVEL_B2-13" Label="B2-13 LEVEL_B2-13" State="false" />
+            <Setting Id="level_LEVEL_B2-14" Label="B2-14 LEVEL_B2-14" State="false" />
+            <Setting Id="level_LEVEL_B2-15" Label="B2-15 LEVEL_B2-15" State="false" />
+            <Setting Id="level_LEVEL_B2-16" Label="B2-16 LEVEL_B2-16" State="false" />
+        </Setting> 
+    </Setting>
+</Settings>
