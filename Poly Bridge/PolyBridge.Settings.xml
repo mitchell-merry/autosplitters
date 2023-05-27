@@ -1,0 +1,144 @@
+<Settings>
+    <Setting Id="level" Label="Split on completing level:" State="true">
+        <Setting Id="world_0" Label="Tutorial" State="false">
+            <Setting Id="level_Tutorial_01" Label="Building Basics" State="false" />
+            <Setting Id="level_Tutorial_02" Label="Single Wood Support" State="false" />
+            <Setting Id="level_Tutorial_03" Label="Truss Bridge" State="false" />
+            <Setting Id="level_Tutorial_06" Label="Copy &amp; Paste" State="false" />
+            <Setting Id="level_Tutorial_04" Label="Suspension Bridge" State="false" />
+            <Setting Id="level_Tutorial_05" Label="Hydraulic Draw" State="false" />
+            <Setting Id="level_Tutorial_07" Label="Jump" State="false" />
+        </Setting>
+        <Setting Id="world_1" Label="Alpine Meadows" State="false">
+            <Setting Id="level_Easy_001" Label="1-1 8m Simple Bridge" State="false" />
+            <Setting Id="level_Easy_002" Label="1-2 10m Simple Bridge" State="false" />
+            <Setting Id="level_Easy_003" Label="1-3 12m Simple Bridge" State="false" />
+            <Setting Id="level_Easy_004" Label="1-4 Slanted Bridge" State="false" />
+            <Setting Id="level_Easy_007" Label="1-5 Two Part Bridge" State="false" />
+            <Setting Id="level_Easy_010" Label="1-6 Over Bridge" State="false" />
+            <Setting Id="level_Easy_008" Label="1-7 Simple Jump" State="false" />
+            <Setting Id="level_Hard_001" Label="1-8 Overpass" State="false" />
+            <Setting Id="level_Easy_005" Label="1-9 Paddleboat Drawbridge" State="false" />
+            <Setting Id="level_110Checkpoint" Label="1-10 Checkpoint" State="false" />
+            <Setting Id="level_12mLowBudgetDump" Label="1-11 Low Budget Bridge" State="false" />
+            <Setting Id="level_Medium_004" Label="1-12 Double Decker" State="false" />
+            <Setting Id="level_113DoubleDown" Label="1-13 Double Down" State="false" />
+            <Setting Id="level_114ThereAndBack" Label="1-14 There And Back Again" State="false" />
+            <Setting Id="level_115easyelevator_B" Label="1-15 Easy Elevator" State="false" />
+        </Setting>
+        <Setting Id="world_2" Label="Desert Winds" State="false">
+            <Setting Id="level_Easy_006" Label="2-1 Wooden High Bridge" State="false" />
+            <Setting Id="level_Easy_011" Label="2-2 Drawbridge" State="false" />
+            <Setting Id="level_203EyeEye" Label="2-3 Eye Eye" State="false" />
+            <Setting Id="level_Exp_002" Label="2-4 Double Overpass Drawbridge" State="false" />
+            <Setting Id="level_Easy_009" Label="2-5 Slanted Drawbridge" State="false" />
+            <Setting Id="level_206HillsAndVales" Label="2-6 Hills &amp; Valleys" State="false" />
+            <Setting Id="level_Medium_006" Label="2-7 Suspension Bridge" State="false" />
+            <Setting Id="level_Level_033" Label="2-8 Split" State="false" />
+            <Setting Id="level_209SlopedDrawbridge" Label="2-9 Sloped Drawbridge" State="false" />
+            <Setting Id="level_Level_030" Label="2-10 Double Overpass" State="false" />
+            <Setting Id="level_211LiftMeUp" Label="2-11 Lift Me Up" State="false" />
+            <Setting Id="level_LandBraceMedium" Label="2-12 Land Brace" State="false" />
+            <Setting Id="level_410Schedule" Label="2-13 Schedule" State="false" />
+            <Setting Id="level_214MovinOnUp" Label="2-14 Movin' On Up" State="false" />
+            <Setting Id="level_215OffAndOn" Label="2-15 Off &amp; On" State="false" />
+        </Setting>
+        <Setting Id="world_3" Label="Snow Drift" State="false">
+            <Setting Id="level_LoopBack4" Label="3-1 Loop Back" State="false" />
+            <Setting Id="level_JumpTripleSplit" Label="3-2 Triple Split" State="false" />
+            <Setting Id="level_303Looper" Label="3-3 Looper" State="false" />
+            <Setting Id="level_BridgeJump" Label="3-4 Hydraulic Jump" State="false" />
+            <Setting Id="level_SteelDtSlope" Label="3-5 Dump Slope" State="false" />
+            <Setting Id="level_306UpAndAway" Label="3-6 Up &amp; Away" State="false" />
+            <Setting Id="level_BackwardsAlt" Label="3-7 Swing Back" State="false" />
+            <Setting Id="level_CliffBalloonFixed" Label="3-8 Swing Jumps" State="false" />
+            <Setting Id="level_309Routing" Label="3-9 Routing" State="false" />
+            <Setting Id="level_Under" Label="3-10 Under Bridge" State="false" />
+            <Setting Id="level_Tall4SymmetricV2" Label="3-11 Tall Bridge" State="false" />
+            <Setting Id="level_45DegreesV2" Label="3-12 Dump Down, Dump Up" State="false" />
+            <Setting Id="level_2DeckerBoat" Label="3-13 Elevation" State="false" />
+            <Setting Id="level_314StopAndGo" Label="3-14 Stop &amp; Go" State="false" />
+            <Setting Id="level_315HighLow" Label="3-15 High &amp; Low" State="false" />
+        </Setting>
+        <Setting Id="world_4" Label="Ancient Ruins" State="false">
+            <Setting Id="level_Medium_007_MonsterTruckJump" Label="4-1 Balloon Jump" State="false" />
+            <Setting Id="level_Level_034" Label="4-2 Triple Decker" State="false" />
+            <Setting Id="level_NiceLanding" Label="4-3 Nice Landing" State="false" />
+            <Setting Id="level_404Sorting" Label="4-4 Sorting" State="false" />
+            <Setting Id="level_Level_036" Label="4-5 Double Monster Jump" State="false" />
+            <Setting Id="level_Hard_005" Label="4-6 Criss Cross" State="false" />
+            <Setting Id="level_Level_038" Label="4-7 Fork Jump" State="false" />
+            <Setting Id="level_DownwardTube" Label="4-8 Downward Tube" State="false" />
+            <Setting Id="level_PendulumDrop2SimpleBridge" Label="4-9 Falling Tower" State="false" />
+            <Setting Id="level_213FlipFlop" Label="4-10 Flip Flop" State="false" />
+            <Setting Id="level_Level_037" Label="4-11 Cross Jump" State="false" />
+            <Setting Id="level_Level_035" Label="4-12 Steel Arch Bridge" State="false" />
+            <Setting Id="level_DoubleDangle" Label="4-13 Double Dangle" State="false" />
+            <Setting Id="level_Skipper" Label="4-14 Skipper" State="false" />
+            <Setting Id="level_415UpsAndDowns" Label="4-15 Ups &amp; Downs" State="false" />
+        </Setting>
+        <Setting Id="world_5" Label="Fun Land" State="false">
+            <Setting Id="level_DoubleDouble" Label="5-1 Double Double" State="false" />
+            <Setting Id="level_EdgeHugger" Label="5-2 Edge Hugger" State="false" />
+            <Setting Id="level_2jump" Label="5-3 Jump, Jump Again" State="false" />
+            <Setting Id="level_DropBridge01" Label="5-4 Drop Bridge" State="false" />
+            <Setting Id="level_Level_040" Label="5-5 Low Budget Overpass" State="false" />
+            <Setting Id="level_Level_039" Label="5-6 Shipping Canal" State="false" />
+            <Setting Id="level_Hard_003" Label="5-7 Double Jump" State="false" />
+            <Setting Id="level_20mReverseCrissCross" Label="5-8 Reverse Criss Cross" State="false" />
+            <Setting Id="level_Level_041" Label="5-9 Double Deck Lift" State="false" />
+            <Setting Id="level_Level_031" Label="5-10 Double Drawbridge" State="false" />
+            <Setting Id="level_NotEnoughRoad" Label="5-11 Not Enough Road" State="false" />
+            <Setting Id="level_512Makeway" Label="5-12 Make Way" State="false" />
+            <Setting Id="level_513WaterUnderTheBridge" Label="5-13 Water Under The Bridge" State="false" />
+            <Setting Id="level_514Transformer" Label="5-14 Transformer" State="false" />
+            <Setting Id="level_CollisionCourse" Label="5-15 Collision Course" State="false" />
+        </Setting>
+        <Setting Id="world_6" Label="Zen Gardens" State="false">
+            <Setting Id="level_601CantWait" Label="6-1 Can't Wait" State="false" />
+            <Setting Id="level_SeeSaw" Label="6-2 Seesaw" State="false" />
+            <Setting Id="level_36m3DT" Label="6-3 Triple Dump" State="false" />
+            <Setting Id="level_2x2Lift" Label="6-4 Two by Two" State="false" />
+            <Setting Id="level_DangleDrop2car" Label="6-5 Dangle Drop" State="false" />
+            <Setting Id="level_EnergyEfficientZ" Label="6-6 Only One" State="false" />
+            <Setting Id="level_HotPursuit2" Label="6-7 Hot Pursuit" State="false" />
+            <Setting Id="level_DoubleDoubleLongSpan" Label="6-8 Drawn In" State="false" />
+            <Setting Id="level_Elivator03" Label="6-9 Elevator" State="false" />
+            <Setting Id="level_609APlaceForEverything" Label="6-10 A Place for Everything" State="false" />
+            <Setting Id="level_3DtDrawBridge2" Label="6-11 Triple Dump Drawbridge" State="false" />
+            <Setting Id="level_611Transference" Label="6-12 Transference" State="false" />
+            <Setting Id="level_SixPack" Label="6-13 Six Pack" State="false" />
+            <Setting Id="level_4CarChaos" Label="6-14 Criss Cross Chaos" State="false" />
+            <Setting Id="level_100m" Label="6-15 100m Bridge" State="false" />
+        </Setting>
+        <Setting Id="world_9" Label="Tropical Paradise" State="false">
+            <Setting Id="level_701TrapDoors" Label="7-1 Trap Doors" State="false" />
+            <Setting Id="level_702ThreeBoatsOneStone" Label="7-2 Three Boats, One Stone" State="false" />
+            <Setting Id="level_703PloughAhead" Label="7-3 Plough Ahead" State="false" />
+            <Setting Id="level_704DoubleCrossed" Label="7-4 Double Crossed" State="false" />
+            <Setting Id="level_705WantingRoads" Label="7-5 Wanting Roads" State="false" />
+            <Setting Id="level_706TightFit" Label="7-6 Tight Fit" State="false" />
+            <Setting Id="level_707ReturnoftheBridge" Label="7-7 Return Of The Bridge" State="false" />
+            <Setting Id="level_708SuspendedBridge" Label="7-8 Suspended Bridge" State="false" />
+            <Setting Id="level_709Switchbacks" Label="7-9 Switchbacks" State="false" />
+            <Setting Id="level_710FlipTwo" Label="7-10 Flip Two" State="false" />
+            <Setting Id="level_711SwingABridge" Label="7-11 Swing, Swing a Bridge" State="false" />
+            <Setting Id="level_712FellowshipJump" Label="7-12 Fellowship Of The Jump" State="false" />
+            <Setting Id="level_713DropMeOff" Label="7-13 Drop Me Off" State="false" />
+            <Setting Id="level_714CantTakeSky" Label="7-14 Can't Take The Sky From Me" State="false" />
+            <Setting Id="level_613TheTwoTowers" Label="7-15 The Two Towers" State="false" />
+        </Setting>
+        <Setting Id="world_10" Label="Area 52" State="false">
+            <Setting Id="level_801Raiders" Label="8-1 Raiders of the Lost Bridge" State="false" />
+            <Setting Id="level_802marblesorter" Label="8-2 Marble Sorter" State="false" />
+            <Setting Id="level_803swingshot" Label="8-3 Swing Shot" State="false" />
+            <Setting Id="level_804leverittome" Label="8-4 Lever It To Me" State="false" />
+            <Setting Id="level_805turbolift" Label="8-5 Turbolift" State="false" />
+            <Setting Id="level_806NestingBuses" Label="8-6 Nesting Buses" State="false" />
+            <Setting Id="level_807fallingtoweragainagain" Label="8-7 Falling Tower, Again &amp; Again" State="false" />
+            <Setting Id="level_808crane" Label="8-8 Crane" State="false" />
+            <Setting Id="level_809catapult" Label="8-9 Catapult" State="false" />
+            <Setting Id="level_810CircleMaze" Label="8-10 Circle Maze" State="false" />
+        </Setting>
+    </Setting>
+</Settings>
