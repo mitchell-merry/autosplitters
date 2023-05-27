@@ -5,7 +5,7 @@ startup
     vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Poly Bridge";
-	vars.Helper.Settings.CreateFromXml("Components/PolyBridge.Settings.xml");
+    vars.Helper.Settings.CreateFromXml("Components/PolyBridge.Settings.xml");
 
     vars.Level1s = new List<string>() {
         "Easy_001", "Easy_006", "LoopBack4", "Medium_007_MonsterTruckJump", "DoubleDouble", "601CantWait", "701TrapDoors", "801Raiders"
