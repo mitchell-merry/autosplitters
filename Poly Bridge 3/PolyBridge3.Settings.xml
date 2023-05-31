@@ -1,0 +1,5 @@
+<Settings>
+    <Setting Id="level" Label="Split on completing level:" State="true">
+        <Setting Id="TODO" Label="TODO - more coming soon" State="false" /> 
+    </Setting>
+</Settings>
