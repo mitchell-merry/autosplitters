@@ -1,5 +1,183 @@
 <Settings>
+    <Setting Id="il" Label="Start timer on any level (For Individual Levels)" State="false" />
     <Setting Id="level" Label="Split on completing level:" State="true">
-        <Setting Id="TODO" Label="TODO - more coming soon" State="false" /> 
+        <Setting Id="world_CR" Label="Classic Rock" State="false">
+            <Setting Id="level_LEVEL_900" Label="CR-T Basics Tutorial" State="false" />
+            <Setting Id="level_LEVEL_001" Label="CR-01 Abridged" State="false" />
+            <Setting Id="level_LEVEL_002" Label="CR-02 Unabridged" State="false" />
+            <Setting Id="level_LEVEL_003" Label="CR-03 On the Rocks" State="false" />
+            <Setting Id="level_LEVEL_007" Label="CR-04 Industrial Metal" State="false" />
+            <Setting Id="level_LEVEL_008" Label="CR-05 Mixed Materials" State="false" />
+            <Setting Id="level_LEVEL_004" Label="CR-06 Two Bridges" State="false" />
+            <Setting Id="level_LEVEL_010" Label="CR-07 Under Plane" State="false" />
+            <Setting Id="level_LEVEL_009" Label="CR-08 Over The Boat" State="false" />
+            <Setting Id="level_LEVEL_012" Label="CR-09 Rock Star" State="false" />
+            <Setting Id="level_LEVEL_011" Label="CR-10 Go for the Gold" State="false" />
+        </Setting>
+        <Setting Id="world_MM" Label="Miner Mountains" State="false">
+            <Setting Id="level_LEVEL_013" Label="MM-01 Learn the Ropes" State="false" />
+            <Setting Id="level_LEVEL_014" Label="MM-02 Cable-Stayed" State="false" />
+            <Setting Id="level_LEVEL_015" Label="MM-03 Jumping Off Point" State="false" />
+            <Setting Id="level_LEVEL_016" Label="MM-04 Quantum Leap" State="false" />
+            <Setting Id="level_LEVEL_017" Label="MM-05 Perched Path" State="false" />
+            <Setting Id="level_LEVEL_018" Label="MM-06 Cliff Brace" State="false" />
+            <Setting Id="level_LEVEL_024" Label="MM-T Hydraulics Tutorial" State="false" />
+            <Setting Id="level_LEVEL_019" Label="MM-07 On Your Own" State="false" />
+            <Setting Id="level_LEVEL_020" Label="MM-08 Don't Copy Me" State="false" />
+            <Setting Id="level_LEVEL_021" Label="MM-09 Offside" State="false" />
+            <Setting Id="level_LEVEL_022" Label="MM-10 Laying Foundations" State="false" />
+            <Setting Id="level_LEVEL_023" Label="MM-11 Long Haul" State="false" />
+        </Setting>
+        <Setting Id="world_RB" Label="Rustic Barrens" State="false">
+            <Setting Id="level_LEVEL_030" Label="RB-01 Preplanned" State="false" />
+            <Setting Id="level_LEVEL_074" Label="RB-02 Diamond in the Dock" State="false" />
+            <Setting Id="level_LEVEL_031" Label="RB-03 On the Ropes" State="false" />
+            <Setting Id="level_LEVEL_032" Label="RB-04 Rerouting..." State="false" />
+            <Setting Id="level_LEVEL_039" Label="RB-05 Faulty Foundation" State="false" />
+            <Setting Id="level_LEVEL_033" Label="RB-06 Under Tension" State="false" />
+            <Setting Id="level_LEVEL_034" Label="RB-07 Waveform" State="false" />
+            <Setting Id="level_LEVEL_079" Label="RB-08 Smooth Roads" State="false" />
+            <Setting Id="level_LEVEL_035" Label="RB-09 Meet Me in the Middle" State="false" />
+            <Setting Id="level_LEVEL_036" Label="RB-10 Dangling Roads" State="false" />
+            <Setting Id="level_LEVEL_037" Label="RB-11 Smooth Landing" State="false" />
+            <Setting Id="level_LEVEL_038" Label="RB-12 Checkbox" State="false" />
+            <Setting Id="level_LEVEL_075" Label="RB-13 Rolling Start" State="false" />
+        </Setting>
+        <Setting Id="world_BB" Label="Bifrost Bend" State="false">
+            <Setting Id="level_LEVEL_040" Label="BB-01 Forced Drawbridge" State="false" />
+            <Setting Id="level_LEVEL_041" Label="BB-02 Joint Work" State="false" />
+            <Setting Id="level_LEVEL_042" Label="BB-03 Raisin' Bridge" State="false" />
+            <Setting Id="level_LEVEL_043" Label="BB-04 Return to Sender" State="false" />
+            <Setting Id="level_LEVEL_028" Label="BB-05 Start it Up" State="false" />
+            <Setting Id="level_LEVEL_044" Label="BB-T Hydraulic Controller Tutorial" State="false" />
+            <Setting Id="level_LEVEL_029" Label="BB-06 Total Control" State="false" />
+            <Setting Id="level_LEVEL_045" Label="BB-07 Check Your Staging" State="false" />
+            <Setting Id="level_LEVEL_046" Label="BB-08 Down and Around" State="false" />
+            <Setting Id="level_LEVEL_047" Label="BB-09 Drawn-Out Bridge" State="false" />
+            <Setting Id="level_LEVEL_027" Label="BB-10 Drawing Oblique" State="false" />
+            <Setting Id="level_LEVEL_048" Label="BB-11 Swales and Sails" State="false" />
+            <Setting Id="level_LEVEL_049" Label="BB-12 Switch Flip" State="false" />
+        </Setting>
+        <Setting Id="world_LL" Label="Lava Lagoon" State="false">
+            <Setting Id="level_LEVEL_061" Label="LL-01 Make Ends Meet" State="false" />
+            <Setting Id="level_LEVEL_060" Label="LL-02 Anchors Asway" State="false" />
+            <Setting Id="level_LEVEL_062" Label="LL-03 Wavy Way" State="false" />
+            <Setting Id="level_LEVEL_076" Label="LL-04 Cramped Quarters" State="false" />
+            <Setting Id="level_LEVEL_063" Label="LL-05 Headspace" State="false" />
+            <Setting Id="level_LEVEL_064" Label="LL-06 Speed is Key" State="false" />
+            <Setting Id="level_LEVEL_077" Label="LL-07 Fit to Form" State="false" />
+            <Setting Id="level_LEVEL_065" Label="LL-08 Go Your Own Way" State="false" />
+            <Setting Id="level_LEVEL_066" Label="LL-09 Big Boat" State="false" />
+            <Setting Id="level_LEVEL_067" Label="LL-10 Lonely Island" State="false" />
+            <Setting Id="level_LEVEL_078" Label="LL-11 Under Over" State="false" />
+            <Setting Id="level_LEVEL_068" Label="LL-12 Back to Foundations" State="false" />
+            <Setting Id="level_LEVEL_069" Label="LL-13 Tri-Line" State="false" />
+        </Setting>
+        <Setting Id="world_VT" Label="Vaulty Towers" State="false">
+            <Setting Id="level_LEVEL_070" Label="VT-01 First Hurdle" State="false" />
+            <Setting Id="level_LEVEL_050" Label="VT-02 New Heights" State="false" />
+            <Setting Id="level_LEVEL_071" Label="VT-03 Flying Leaps" State="false" />
+            <Setting Id="level_LEVEL_051" Label="VT-04 Skipper" State="false" />
+            <Setting Id="level_LEVEL_052" Label="VT-05 Risky Business" State="false" />
+            <Setting Id="level_LEVEL_053" Label="VT-06 Airspace Infringement" State="false" />
+            <Setting Id="level_LEVEL_054" Label="VT-07 Crossing Streams" State="false" />
+            <Setting Id="level_LEVEL_072" Label="VT-08 Powerline" State="false" />
+            <Setting Id="level_LEVEL_056" Label="VT-09 U-Turn" State="false" />
+            <Setting Id="level_LEVEL_073" Label="VT-10 Arch Support" State="false" />
+            <Setting Id="level_LEVEL_057" Label="VT-11 Layers" State="false" />
+            <Setting Id="level_LEVEL_058" Label="VT-12 Tower Bridge" State="false" />
+            <Setting Id="level_LEVEL_059" Label="VT-13 Near Miss" State="false" />
+        </Setting>
+        <Setting Id="world_SC" Label="Serene Cyclades" State="false">
+            <Setting Id="level_LEVEL_101" Label="SC-01 Braces" State="false" />
+            <Setting Id="level_LEVEL_102" Label="SC-02 Double Back" State="false" />
+            <Setting Id="level_LEVEL_103" Label="SC-03 Just Passing Through" State="false" />
+            <Setting Id="level_LEVEL_104" Label="SC-04 Scraping By" State="false" />
+            <Setting Id="level_LEVEL_105" Label="SC-05 Skip Swing Skip" State="false" />
+            <Setting Id="level_LEVEL_106" Label="SC-06 Shipping Lane" State="false" />
+            <Setting Id="level_LEVEL_107" Label="SC-07 Looper Rising" State="false" />
+            <Setting Id="level_LEVEL_108" Label="SC-08 Batteries Included" State="false" />
+            <Setting Id="level_LEVEL_111" Label="SC-09 Two at a Time" State="false" />
+            <Setting Id="level_LEVEL_112" Label="SC-10 Out of Order" State="false" />
+            <Setting Id="level_LEVEL_114" Label="SC-11 Middle of Nowhere" State="false" />
+            <Setting Id="level_LEVEL_115" Label="SC-12 It's a Trap... Door" State="false" />
+            <Setting Id="level_LEVEL_109" Label="SC-13 Drag Race" State="false" />
+            <Setting Id="level_LEVEL_110" Label="SC-14 Byte Sized" State="false" />
+        </Setting>
+        <Setting Id="world_DS" Label="Desert Springs" State="false">
+            <Setting Id="level_LEVEL_121" Label="DS-01 Skipping Stone" State="false" />
+            <Setting Id="level_LEVEL_122" Label="DS-02 Stretch Bridge" State="false" />
+            <Setting Id="level_LEVEL_124" Label="DS-03 Splash Down" State="false" />
+            <Setting Id="level_LEVEL_126" Label="DS-04 Cushion" State="false" />
+            <Setting Id="level_LEVEL_123" Label="DS-05 Flex Gap" State="false" />
+            <Setting Id="level_LEVEL_130" Label="DS-06 Collapsing Column" State="false" />
+            <Setting Id="level_LEVEL_129" Label="DS-07 Soft Landing" State="false" />
+            <Setting Id="level_LEVEL_131" Label="DS-08 That's a Stretch" State="false" />
+            <Setting Id="level_LEVEL_127" Label="DS-09 Backflip" State="false" />
+            <Setting Id="level_LEVEL_125" Label="DS-10 Zoning Laws" State="false" />
+            <Setting Id="level_LEVEL_132" Label="DS-11 Over Stretch" State="false" />
+            <Setting Id="level_LEVEL_133" Label="DS-12 Feather Falling" State="false" />
+        </Setting>
+        <Setting Id="world_RM" Label="Radical Melt-Town" State="false">
+            <Setting Id="level_LEVEL_080" Label="RMT-01 Waste Disposal" State="false" />
+            <Setting Id="level_LEVEL_081" Label="RMT-02 Bucket Scoop" State="false" />
+            <Setting Id="level_LEVEL_082" Label="RMT-03 Hanging in the Balance" State="false" />
+            <Setting Id="level_LEVEL_083" Label="RMT-04 Construction Askew" State="false" />
+            <Setting Id="level_LEVEL_084" Label="RMT-05 Spiked" State="false" />
+            <Setting Id="level_LEVEL_085" Label="RMT-06 Sunk Cost" State="false" />
+            <Setting Id="level_LEVEL_091" Label="RMT-07 Out of Time" State="false" />
+            <Setting Id="level_LEVEL_086" Label="RMT-08 Proceed with Caution" State="false" />
+            <Setting Id="level_LEVEL_087" Label="RMT-09 Rally Rollover" State="false" />
+            <Setting Id="level_LEVEL_088" Label="RMT-10 Seesaw" State="false" />
+            <Setting Id="level_LEVEL_089" Label="RMT-11 Controlled Demolition" State="false" />
+            <Setting Id="level_LEVEL_090" Label="RMT-12 Scaled Up" State="false" />
+        </Setting>
+        <Setting Id="world_AT" Label="Arctic Tundra" State="false">
+            <Setting Id="level_LEVEL_181" Label="AT-01 Steer Clear" State="false" />
+            <Setting Id="level_LEVEL_182" Label="AT-02 Skipping Traffic" State="false" />
+            <Setting Id="level_LEVEL_183" Label="AT-03 Dropped Camo" State="false" />
+            <Setting Id="level_LEVEL_184" Label="AT-04 Ski Jump" State="false" />
+            <Setting Id="level_LEVEL_185" Label="AT-05 Fifty Fifty" State="false" />
+            <Setting Id="level_LEVEL_186" Label="AT-06 No Wrong Way" State="false" />
+            <Setting Id="level_LEVEL_187" Label="AT-07 Rolling By" State="false" />
+            <Setting Id="level_LEVEL_188" Label="AT-08 Turbulent Tethers" State="false" />
+            <Setting Id="level_LEVEL_189" Label="AT-09 Splitting Lanes" State="false" />
+            <Setting Id="level_LEVEL_190" Label="AT-10 Bus Barrier" State="false" />
+            <Setting Id="level_LEVEL_191" Label="AT-11 Helping Hand" State="false" />
+            <Setting Id="level_LEVEL_192" Label="AT-12 Cross Country" State="false" />
+            <Setting Id="level_LEVEL_193" Label="AT-13 Coast Uphill" State="false" />
+            <Setting Id="level_LEVEL_194" Label="AT-14 Dredging" State="false" />
+        </Setting>
+        <Setting Id="world_TT" Label="Twisted Turnpike" State="false">
+            <Setting Id="level_LEVEL_161" Label="TT-01 Bully Bus" State="false" />
+            <Setting Id="level_LEVEL_162" Label="TT-02 Just a Phase" State="false" />
+            <Setting Id="level_LEVEL_164" Label="TT-03 It Takes All Sorts" State="false" />
+            <Setting Id="level_LEVEL_163" Label="TT-04 Unfolding" State="false" />
+            <Setting Id="level_LEVEL_175" Label="TT-05 Interchange" State="false" />
+            <Setting Id="level_LEVEL_165" Label="TT-06 Locked in a Box" State="false" />
+            <Setting Id="level_LEVEL_176" Label="TT-07 Eye-Draulic" State="false" />
+            <Setting Id="level_LEVEL_168" Label="TT-08 Switching Sides" State="false" />
+            <Setting Id="level_LEVEL_169" Label="TT-09 Fetch Quest" State="false" />
+            <Setting Id="level_LEVEL_173" Label="TT-10 Solo Act" State="false" />
+            <Setting Id="level_LEVEL_171" Label="TT-11 Elevated Highway" State="false" />
+            <Setting Id="level_LEVEL_166" Label="TT-12 Transfer of Power" State="false" />
+            <Setting Id="level_LEVEL_170" Label="TT-13 Get a Lift" State="false" />
+        </Setting>
+        <Setting Id="world_FR" Label="Forgotten Realm" State="false">
+            <Setting Id="level_LEVEL_201" Label="FR-01 Interlaced" State="false" />
+            <Setting Id="level_LEVEL_202" Label="FR-02 Smash Course" State="false" />
+            <Setting Id="level_LEVEL_167" Label="FR-03 Bridge is a Box" State="false" />
+            <Setting Id="level_LEVEL_204" Label="FR-04 Bustin' Through" State="false" />
+            <Setting Id="level_LEVEL_205" Label="FR-05 Falling Roads" State="false" />
+            <Setting Id="level_LEVEL_172" Label="FR-06 Zig Zag" State="false" />
+            <Setting Id="level_LEVEL_206" Label="FR-07 Both Sides" State="false" />
+            <Setting Id="level_LEVEL_207" Label="FR-08 Cat Flaps" State="false" />
+            <Setting Id="level_LEVEL_208" Label="FR-09 Rampin' Up" State="false" />
+            <Setting Id="level_LEVEL_209" Label="FR-10 Under Dump" State="false" />
+            <Setting Id="level_LEVEL_128" Label="FR-11 Forbidden Checkpoint" State="false" />
+            <Setting Id="level_LEVEL_174" Label="FR-12 Warped Reflection" State="false" />
+            <Setting Id="level_LEVEL_203" Label="FR-13 Aroundward Tube" State="false" />
+        </Setting> 
+
     </Setting>
 </Settings>
