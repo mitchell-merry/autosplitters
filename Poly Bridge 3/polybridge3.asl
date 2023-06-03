@@ -12,6 +12,10 @@ startup
     vars.Level1s = new List<string>() {
         "LEVEL_900", "LEVEL_001", "LEVEL_013", "LEVEL_030", "LEVEL_040", "LEVEL_061", "LEVEL_070", "LEVEL_101", "LEVEL_121", "LEVEL_080", "LEVEL_181", "LEVEL_161", "LEVEL_201"
     };
+    
+    vars.FinalLevels = new List<string>() {
+        "LEVEL_011", "LEVEL_023", "LEVEL_075", "LEVEL_049", "LEVEL_069", "LEVEL_059", "LEVEL_110", "LEVEL_133", "LEVEL_090", "LEVEL_194", "LEVEL_170", "LEVEL_203"
+    };
 }
 
 init
@@ -80,7 +84,7 @@ split
 
     var goingToMenu = old.nonLoadingState == 5 && current.nonLoadingState == 2;
 
-    if (current.level == "LEVEL_203" && goingToMenu && current.levelPassed)
+    if (vars.FinalLevels.Contains(current.level) && goingToMenu && current.levelPassed)
         return vars.CheckSplit("level_" + old.level);
 
     return settings["level"]
