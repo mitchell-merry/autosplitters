@@ -1,5 +1,7 @@
 <Settings>
-    <Setting Id="il" Label="Start timer on any level (For Individual Levels)" State="false" />
+    <Setting Id="il" Label="IL Timer Mode" State="false">
+        <Setting Id="il_reset" Label="Reset timer on level change or leaving to the main menu." State="false" />
+    </Setting>
     <Setting Id="level" Label="Split on completing level:" State="true">
         <Setting Id="world_CR" Label="Classic Rock" State="false">
             <Setting Id="level_LEVEL_900" Label="CR-T Basics Tutorial" State="false" />

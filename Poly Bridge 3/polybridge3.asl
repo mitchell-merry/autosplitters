@@ -18,7 +18,7 @@ init
 {
     vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
     {
-        vars.Helper["levelName"] = mono.MakeString("Campaign", "m_CurrentLevel", "m_DisplayNameLocID");
+        vars.Helper["level"] = mono.MakeString("Campaign", "m_CurrentLevel", "m_DisplayNameLocID");
         vars.Helper["state"] = mono.Make<int>("GameStateManager", "m_GameState");
         vars.Helper["levelPassed"] = mono.Make<bool>("GameStateSim", "m_LevelPassed");
         return true;
@@ -45,32 +45,47 @@ onStart
     {
         vars.CompletedSplits[split] = false;
     }
-    
-    vars.Log(current.levelName);
-    vars.Log(current.state);
 }
 
 update
 {
-    vars.Watch("levelName");
-    vars.Watch("state");
-    vars.Watch("levelPassed");
-
     current.nonLoadingState = current.state != 7 ? current.state : current.nonLoadingState;
+
+    var levelChanged = old.level != current.level;
+    var goingToMenu = old.nonLoadingState == 5 && current.nonLoadingState == 2;
+
+    if (settings["il"] && settings["il_reset"] && (levelChanged || goingToMenu)
+    ) {
+		vars.Helper.Timer.Reset();
+    }
 }
 
 start
 {
-    return old.state == 2 && current.state == 3 && (settings["il"] || vars.Level1s.Contains(current.levelName));
+    var goingToLevel = old.state == 2 && current.state == 3;
+    
+    if (settings["il"])
+        return goingToLevel || old.level != current.level; 
+
+    return goingToLevel && vars.Level1s.Contains(current.level);
 }
 
 split
-{
-    // if (old.nonLoadingState == 3 && current.nonLoadingState == 2)
+{   
+    if (settings["il"])
+        return !old.levelPassed && current.levelPassed;
+    
+    if (!settings["level"])
+        return false;
+
+    var goingToMenu = old.nonLoadingState == 5 && current.nonLoadingState == 2;
+
+    if (current.level == "LEVEL_203" && goingToMenu && current.levelPassed)
+        return vars.CheckSplit("level_" + old.level);
 
     return settings["level"]
-        && !old.levelPassed && current.levelPassed
-        && vars.CheckSplit("level_" + old.levelName);
+        && old.level != current.level
+        && vars.CheckSplit("level_" + old.level);
 }
 
 isLoading
