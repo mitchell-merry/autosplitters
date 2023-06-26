@@ -4,7 +4,6 @@
     <CheatEntry>
       <ID>0</ID>
       <Description>"World"</Description>
-      <LastState Value="000001FEDA1B88F0" RealAddress="7FF7A25D6B60"/>
       <ShowAsHex>1</ShowAsHex>
       <VariableType>8 Bytes</VariableType>
       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -13,7 +12,6 @@
           <ID>18</ID>
           <Description>"GameInstance"</Description>
           <Options moManualExpandCollapse="1"/>
-          <LastState Value="000001FEE0AE4030" RealAddress="1FEDA1B8A70"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
@@ -25,7 +23,6 @@
             <CheatEntry>
               <ID>19</ID>
               <Description>"GameStateDesired"</Description>
-              <LastState Value="3" RealAddress="1FEE0AE48E2"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -37,7 +34,6 @@
             <CheatEntry>
               <ID>21</ID>
               <Description>"bHideLoadingScreen"</Description>
-              <LastState Value="0" RealAddress="1FEE0AE4940"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -49,7 +45,6 @@
             <CheatEntry>
               <ID>20</ID>
               <Description>"bUnlimitedAmmo"</Description>
-              <LastState Value="01" RealAddress="1FEE0AE4945"/>
               <ShowAsHex>1</ShowAsHex>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
@@ -62,7 +57,6 @@
             <CheatEntry>
               <ID>22</ID>
               <Description>"CampaignLevelID"</Description>
-              <LastState RealAddress="1FEE0AE4F58"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>String</VariableType>
               <Length>10</Length>
@@ -78,7 +72,6 @@
             <CheatEntry>
               <ID>23</ID>
               <Description>"CampaignData"</Description>
-              <LastState Value="000001FEF4D7FB20" RealAddress="1FEE0AE5200"/>
               <ShowAsHex>1</ShowAsHex>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>8 Bytes</VariableType>
@@ -91,7 +84,6 @@
                 <CheatEntry>
                   <ID>25</ID>
                   <Description>"CampaignData"</Description>
-                  <LastState Value="000001FEF4D7FB20" RealAddress="1FEE0AE5200"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>8 Bytes</VariableType>
@@ -106,7 +98,6 @@
             <CheatEntry>
               <ID>24</ID>
               <Description>"bIsDemo"</Description>
-              <LastState Value="1" RealAddress="1FEE0AE5208"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -119,7 +110,6 @@
               <ID>35</ID>
               <Description>"LastLoadedZone"</Description>
               <Options moManualExpandCollapse="1"/>
-              <LastState Value="000001FE97F9D060" RealAddress="1FEE0AE4F40"/>
               <ShowAsHex>1</ShowAsHex>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>8 Bytes</VariableType>
@@ -132,7 +122,6 @@
                 <CheatEntry>
                   <ID>36</ID>
                   <Description>"bHasBeenCleared"</Description>
-                  <LastState Value="01" RealAddress="1FE97F9D368"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
@@ -146,7 +135,6 @@
                 <CheatEntry>
                   <ID>37</ID>
                   <Description>"NonHumanCount"</Description>
-                  <LastState Value="00000087" RealAddress="1FE97F9D380"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
@@ -160,7 +148,6 @@
                 <CheatEntry>
                   <ID>38</ID>
                   <Description>"ZoneStatus"</Description>
-                  <LastState Value="02" RealAddress="1FE97F9D3F0"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
@@ -174,7 +161,6 @@
                 <CheatEntry>
                   <ID>39</ID>
                   <Description>"SpawnCount"</Description>
-                  <LastState Value="30" RealAddress="1FE97F9D570"/>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -187,8 +173,7 @@
                 <CheatEntry>
                   <ID>55</ID>
                   <Description>"BattleCountForUI"</Description>
-                  <LastState Value="30" RealAddress="1FE97F9D578"/>
-                  <ShowAsSigned>0</ShowAsSigned>
+                  <ShowAsSigned>1</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
                   <Offsets>
@@ -201,7 +186,6 @@
                   <ID>40</ID>
                   <Description>"MyEnemies - Data"</Description>
                   <Options moManualExpandCollapse="1"/>
-                  <LastState Value="0000000000000000" RealAddress="1FE97F9D588"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>8 Bytes</VariableType>
@@ -215,7 +199,6 @@
                     <CheatEntry>
                       <ID>41</ID>
                       <Description>"MyEnemies - Data"</Description>
-                      <LastState Value="0000000000000000" RealAddress="1FE97F9D588"/>
                       <ShowAsHex>1</ShowAsHex>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>8 Bytes</VariableType>
@@ -229,7 +212,6 @@
                     <CheatEntry>
                       <ID>42</ID>
                       <Description>"MyEnemies - Count"</Description>
-                      <LastState Value="0" RealAddress="1FE97F9D590"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -242,7 +224,6 @@
                     <CheatEntry>
                       <ID>43</ID>
                       <Description>"MyEnemies - Max"</Description>
-                      <LastState Value="0" RealAddress="1FE97F9D594"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -258,7 +239,6 @@
                   <ID>44</ID>
                   <Description>"MyAmbientEnemies"</Description>
                   <Options moManualExpandCollapse="1"/>
-                  <LastState Value="000001FEFBB3F640" RealAddress="1FE97F9D598"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>8 Bytes</VariableType>
@@ -272,7 +252,6 @@
                     <CheatEntry>
                       <ID>45</ID>
                       <Description>"MyAmbientEnemies - Data"</Description>
-                      <LastState Value="000001FEFBB3F640" RealAddress="1FE97F9D598"/>
                       <ShowAsHex>1</ShowAsHex>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>8 Bytes</VariableType>
@@ -286,7 +265,6 @@
                     <CheatEntry>
                       <ID>46</ID>
                       <Description>"MyAmbientEnemies - Count"</Description>
-                      <LastState Value="18" RealAddress="1FE97F9D5A0"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -299,7 +277,6 @@
                     <CheatEntry>
                       <ID>47</ID>
                       <Description>"MyAmbientEnemies - Max"</Description>
-                      <LastState Value="24" RealAddress="1FE97F9D5A4"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -314,7 +291,6 @@
                 <CheatEntry>
                   <ID>48</ID>
                   <Description>"MaxEnemyCountAtOnce"</Description>
-                  <LastState Value="10" RealAddress="1FE97F9D5B0"/>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -327,7 +303,6 @@
                 <CheatEntry>
                   <ID>49</ID>
                   <Description>"bIsSafeZone"</Description>
-                  <LastState Value="00" RealAddress="1FE97F9D5B4"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
@@ -341,7 +316,6 @@
                 <CheatEntry>
                   <ID>50</ID>
                   <Description>"Difficulty"</Description>
-                  <LastState Value="01" RealAddress="1FE97F9D600"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
@@ -360,7 +334,6 @@
           <ID>26</ID>
           <Description>"AuthorityGameMode"</Description>
           <Options moManualExpandCollapse="1"/>
-          <LastState Value="000001FF4E64E020" RealAddress="1FEDA1B8A08"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
@@ -372,7 +345,6 @@
             <CheatEntry>
               <ID>27</ID>
               <Description>"KillsToRespawn"</Description>
-              <LastState Value="0000000000000007" RealAddress="1FF4E64E384"/>
               <ShowAsHex>1</ShowAsHex>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>8 Bytes</VariableType>
@@ -385,7 +357,6 @@
             <CheatEntry>
               <ID>28</ID>
               <Description>"PlayerControllers"</Description>
-              <LastState Value="000001FF5065A800" RealAddress="1FF4E64E3E8"/>
               <ShowAsHex>1</ShowAsHex>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>8 Bytes</VariableType>
@@ -398,7 +369,6 @@
                 <CheatEntry>
                   <ID>30</ID>
                   <Description>"PlayerControllers - Data"</Description>
-                  <LastState Value="000001FF5065A800" RealAddress="1FF4E64E3E8"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>8 Bytes</VariableType>
@@ -411,7 +381,6 @@
                     <CheatEntry>
                       <ID>31</ID>
                       <Description>"PlayerControllers - First"</Description>
-                      <LastState Value="000001FEDB1C09A0" RealAddress="1FF5065A800"/>
                       <ShowAsHex>1</ShowAsHex>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>8 Bytes</VariableType>
@@ -425,7 +394,6 @@
                         <CheatEntry>
                           <ID>32</ID>
                           <Description>"MyHUD"</Description>
-                          <LastState Value="000001FEA59EE680" RealAddress="1FEDB1C0C50"/>
                           <ShowAsHex>1</ShowAsHex>
                           <ShowAsSigned>0</ShowAsSigned>
                           <VariableType>8 Bytes</VariableType>
@@ -440,7 +408,6 @@
                             <CheatEntry>
                               <ID>33</ID>
                               <Description>"WB_ShooterHUD"</Description>
-                              <LastState Value="000001FEE9946400" RealAddress="1FEA59EEAF0"/>
                               <ShowAsHex>1</ShowAsHex>
                               <ShowAsSigned>0</ShowAsSigned>
                               <VariableType>8 Bytes</VariableType>
@@ -456,7 +423,6 @@
                                 <CheatEntry>
                                   <ID>34</ID>
                                   <Description>"WB_Timer"</Description>
-                                  <LastState Value="000001FEFEE22380" RealAddress="1FEE99466B8"/>
                                   <ShowAsHex>1</ShowAsHex>
                                   <ShowAsSigned>0</ShowAsSigned>
                                   <VariableType>8 Bytes</VariableType>
@@ -473,7 +439,6 @@
                                     <CheatEntry>
                                       <ID>51</ID>
                                       <Description>"ETimerMode"</Description>
-                                      <LastState Value="00000000" RealAddress="1FEFEE22658"/>
                                       <ShowAsHex>1</ShowAsHex>
                                       <ShowAsSigned>0</ShowAsSigned>
                                       <VariableType>4 Bytes</VariableType>
@@ -491,7 +456,6 @@
                                     <CheatEntry>
                                       <ID>53</ID>
                                       <Description>"Overall_Minutes"</Description>
-                                      <LastState Value="00000000" RealAddress="1FEFEE22670"/>
                                       <ShowAsHex>1</ShowAsHex>
                                       <ShowAsSigned>0</ShowAsSigned>
                                       <VariableType>4 Bytes</VariableType>
@@ -509,7 +473,6 @@
                                     <CheatEntry>
                                       <ID>52</ID>
                                       <Description>"Overall_Seconds"</Description>
-                                      <LastState Value="00000000" RealAddress="1FEFEE22674"/>
                                       <ShowAsHex>1</ShowAsHex>
                                       <ShowAsSigned>0</ShowAsSigned>
                                       <VariableType>4 Bytes</VariableType>
@@ -539,7 +502,6 @@
             <CheatEntry>
               <ID>29</ID>
               <Description>"RespawnTime"</Description>
-              <LastState Value="5" RealAddress="1FF4E64E448"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Float</VariableType>
               <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -554,7 +516,6 @@
           <ID>1</ID>
           <Description>"GameState"</Description>
           <Options moManualExpandCollapse="1"/>
-          <LastState Value="000001FE9A25BAF0" RealAddress="1FEDA1B8A10"/>
           <ShowAsHex>1</ShowAsHex>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>8 Bytes</VariableType>
@@ -566,7 +527,6 @@
             <CheatEntry>
               <ID>2</ID>
               <Description>"CurrentActiveZone"</Description>
-              <LastState Value="000001FE97F9D060" RealAddress="1FE9A25BF00"/>
               <ShowAsHex>1</ShowAsHex>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>8 Bytes</VariableType>
@@ -579,7 +539,6 @@
                 <CheatEntry>
                   <ID>4</ID>
                   <Description>"bHasBeenCleared"</Description>
-                  <LastState Value="01" RealAddress="1FE97F9D368"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
@@ -593,7 +552,6 @@
                 <CheatEntry>
                   <ID>3</ID>
                   <Description>"NonHumanCount"</Description>
-                  <LastState Value="00000087" RealAddress="1FE97F9D380"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
@@ -607,7 +565,6 @@
                 <CheatEntry>
                   <ID>5</ID>
                   <Description>"ZoneStatus"</Description>
-                  <LastState Value="02" RealAddress="1FE97F9D3F0"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
@@ -621,7 +578,6 @@
                 <CheatEntry>
                   <ID>6</ID>
                   <Description>"SpawnCount"</Description>
-                  <LastState Value="30" RealAddress="1FE97F9D570"/>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -634,7 +590,6 @@
                 <CheatEntry>
                   <ID>54</ID>
                   <Description>"BattleCountForUI"</Description>
-                  <LastState Value="30" RealAddress="1FE97F9D578"/>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -648,7 +603,6 @@
                   <ID>9</ID>
                   <Description>"MyEnemies - Data"</Description>
                   <Options moManualExpandCollapse="1"/>
-                  <LastState Value="0000000000000000" RealAddress="1FE97F9D588"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>8 Bytes</VariableType>
@@ -662,7 +616,6 @@
                     <CheatEntry>
                       <ID>10</ID>
                       <Description>"MyEnemies - Data"</Description>
-                      <LastState Value="0000000000000000" RealAddress="1FE97F9D588"/>
                       <ShowAsHex>1</ShowAsHex>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>8 Bytes</VariableType>
@@ -676,7 +629,6 @@
                     <CheatEntry>
                       <ID>11</ID>
                       <Description>"MyEnemies - Count"</Description>
-                      <LastState Value="0" RealAddress="1FE97F9D590"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -689,7 +641,6 @@
                     <CheatEntry>
                       <ID>12</ID>
                       <Description>"MyEnemies - Max"</Description>
-                      <LastState Value="0" RealAddress="1FE97F9D594"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -705,7 +656,6 @@
                   <ID>13</ID>
                   <Description>"MyAmbientEnemies"</Description>
                   <Options moManualExpandCollapse="1"/>
-                  <LastState Value="000001FEFBB3F640" RealAddress="1FE97F9D598"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>8 Bytes</VariableType>
@@ -719,7 +669,6 @@
                     <CheatEntry>
                       <ID>14</ID>
                       <Description>"MyAmbientEnemies - Data"</Description>
-                      <LastState Value="000001FEFBB3F640" RealAddress="1FE97F9D598"/>
                       <ShowAsHex>1</ShowAsHex>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>8 Bytes</VariableType>
@@ -733,7 +682,6 @@
                     <CheatEntry>
                       <ID>15</ID>
                       <Description>"MyAmbientEnemies - Count"</Description>
-                      <LastState Value="18" RealAddress="1FE97F9D5A0"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -746,7 +694,6 @@
                     <CheatEntry>
                       <ID>16</ID>
                       <Description>"MyAmbientEnemies - Max"</Description>
-                      <LastState Value="24" RealAddress="1FE97F9D5A4"/>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>4 Bytes</VariableType>
                       <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -761,7 +708,6 @@
                 <CheatEntry>
                   <ID>7</ID>
                   <Description>"MaxEnemyCountAtOnce"</Description>
-                  <LastState Value="10" RealAddress="1FE97F9D5B0"/>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>"Greylock-Win64-Shipping.exe"+56A6B60</Address>
@@ -774,7 +720,6 @@
                 <CheatEntry>
                   <ID>17</ID>
                   <Description>"bIsSafeZone"</Description>
-                  <LastState Value="00" RealAddress="1FE97F9D5B4"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
@@ -788,7 +733,6 @@
                 <CheatEntry>
                   <ID>8</ID>
                   <Description>"Difficulty"</Description>
-                  <LastState Value="01" RealAddress="1FE97F9D600"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
