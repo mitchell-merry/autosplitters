@@ -13,14 +13,14 @@ init
 {
 	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
 	{
-        vars.Helper["state"] = mono.Make<int>("MenuManager", "instance", "currentGameState");
+		vars.Helper["state"] = mono.Make<int>("MenuManager", "instance", "currentGameState");
 		return true;
 	});
 }
 
 isLoading
 {
-    return current.loadingScene != current.activeScene
-        || current.state == 0
-        || current.state == 2;
+	return current.loadingScene != current.activeScene
+		|| current.state == 0
+		|| current.state == 2;
 }
