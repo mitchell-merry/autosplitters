@@ -1,5 +1,24 @@
 # Load remover for Hitman 3
 
+This README details how you can update this ASL with different versions, or different updates.
+
+## Basic Tooling
+
+- LiveSplit, setup with a layout that has a ScriptableAutosplitter component with the ASL in this repo (`hitman3.asl`) loaded.
+- [DebugView](https://learn.microsoft.com/en-us/sysinternals/downloads/debugview) allows you to see the logs of LiveSplit.
+
+Also see the [LiveSplit docs on ASL](https://github.com/LiveSplit/LiveSplit.AutoSplitters).
+
+## Adding a new "state"
+
+There are a few blocks at the beginning of the function that look like `state("HITMAN3", <version>) {}`. These correspond to different published versions of the game.
+
+We differentiate the versions by calculating the MD5 hash of the HITMAN3 executable file. Try running the loading the ASL once; if you're using a supported version, then you should see `Chose version: Steam` or similar in the logs. If it is not supported, you will see `UNKNOWN` in place of Steam. Above that log will be a `Hash is: ` line. Copy the hash from there and add it as a case to the switch block, setting the version to an appropriate identifier (if an update has come out, you will need to replace the appropriate version with the new hash. the old version is presumably no longer playable, so no need to keep it around).
+
+Once you've done this you can add a new state block to the script.
+
+Next, you need to find the values used in the script. The addresses used in other versions will not work in another version or update (That is why we differentiate them in the first place).
+
 ## isLoading
 
 The address we're finding is a value that is 1 during specific loading screens, and 0 everywhere else. 
