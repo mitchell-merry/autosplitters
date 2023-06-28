@@ -16,6 +16,7 @@ startup
         bool d = i == 100;
         settings.Add("round_" + i, d, "Round " + i, "round");
     }
+    settings.Add("ee", true, "Split on beating EE");
 }
 
 init
@@ -46,9 +47,13 @@ start
 
 split
 {
-    return old.round != current.round &&
+    return (old.round != current.round &&
            settings.ContainsKey("round_" + current.round) &&
-           settings["round_" + current.round];
+           settings["round_" + current.round]) || 
+
+           settings.ContainsKey("ee") &&
+           (vars.Levels.Contains(current.activeScene) && !vars.Levels.Contains(old.activeScene)) &&
+           old.activeScene != "Main Menu";
 }
 
 isLoading
