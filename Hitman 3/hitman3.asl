@@ -13,6 +13,20 @@ state("HITMAN3", "Game Pass")
     bool isLoading: 0x3AA4BFC;
 }
 
+startup
+{
+    if (timer.CurrentTimingMethod == TimingMethod.RealTime)
+    {
+        var mbox = MessageBox.Show(
+            "HITMAN 3 Freelancer uses load-removed time.\nWould you like to switch to it?",
+            "LiveSplit | HITMAN 3 Freelancer",
+            MessageBoxButtons.YesNo);
+
+        if (mbox == DialogResult.Yes)
+            timer.CurrentTimingMethod = TimingMethod.GameTime;
+    }
+}
+
 init
 {
     var mms = modules.First().ModuleMemorySize.ToString("X");
