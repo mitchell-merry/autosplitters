@@ -8,19 +8,23 @@ state("HITMAN3", "Epic")
     bool isLoading: 0x14D530, 0xFEC;
 }
 
+state("HITMAN3", "Game Pass")
+{
+    bool isLoading: 0x3AA4BFC;
+}
+
 init
 {
-    string MD5Hash;
-    var md5 = System.Security.Cryptography.MD5.Create();
-    var s = File.Open(modules.First().FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-    MD5Hash = md5.ComputeHash(s).Select(x => x.ToString("X2")).Aggregate((a, b) => a + b);
-    print("Hash is: " + MD5Hash);
+    var mms = modules.First().ModuleMemorySize.ToString("X");
+    print("MMS is: " + mms);
 
-    switch (MD5Hash){
-        case "81F5EC2450D4369583D28495445311F6": version = "Steam"; break;
-        case "F9B0347F278B533ACE9A744B5B5353F9": version = "Epic"; break;
+    // MMS as a workaround to the Game Pass not working (#4)
+    switch (mms) {
+        case "4A67000": version = "Epic"; break;
+        case "4A71000": version = "Steam"; break;
+        case "4ABE000": version = "Game Pass"; break;
 
-        default: version = "UNKNOWN"; break;
+        default: version = "UNKNOWN - raise an issue on GitHub if you want support for this version"; break;
     }
 
     print("Chose version " + version);
