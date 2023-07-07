@@ -1,0 +1,39 @@
+<Settings>
+    <Setting Id="objective" Label="Split on (something) objective:" State="false">
+        <Setting Id="objective_1"  Label="Mr. Jenkins said he left the Management key in the Master Suite." State="false" />
+        <Setting Id="objective_2"  Label="Use that weird Phone-thing?" State="false" />
+        <Setting Id="objective_3"  Label="What's this din coming from the Overlook?" State="false" />
+        <Setting Id="objective_4"  Label="Take back the car and get away from here before the storm arrives!" State="false" />
+        <Setting Id="objective_5"  Label="The garage door's stuck... Maybe Irving knows how to open it." State="false" />
+        <Setting Id="objective_6"  Label="I need a shower, but I must restart the furnace for the hot water." State="false" />
+        <Setting Id="objective_7"  Label="I'm dead tired. I'll sleep in my old room in the Master Suite." State="false" />
+        <Setting Id="objective_8"  Label="Irving says there are baked beans in the pantry or in the ice house." State="false" />
+        <Setting Id="objective_9"  Label="The microwave could be useful to heat the beans." State="false" />
+        <Setting Id="objective_10" Label="Irving suggests to inspect the Second Floor first." State="false" />
+        <Setting Id="objective_11" Label="Who would call a deserted hotel? I should probably answer." State="false" />
+        <Setting Id="objective_12" Label="Irving said I must enter the crawlspace in the First Floor Staff Area." State="false" />
+        <Setting Id="objective_14" Label="These cables should lead me to the Emergency Generator." State="false" />
+        <Setting Id="objective_15" Label="Something's not right in Rachel's story. I have to investigate the clues in Leonard room and shed light!" State="false" />
+        <Setting Id="objective_17" Label="The Ghost Hunters mention room 117 on the tape. I want to check but... where is it?" State="false" />
+        <Setting Id="objective_18" Label="I need a screwdriver to open the bracket. Could find it in the basement, maybe in the Boiler Room or in the Generator Room?" State="false" />
+        <Setting Id="objective_19" Label="Got the screwdriver, now I can have access to room 117." State="false" />
+        <Setting Id="objective_20" Label="Let's check the room and the equipment those dumbasses left." State="false" />
+        <Setting Id="objective_22" Label="Maybe the parabolic microphone I found could help me locating where this clinking comes from!" State="false" />
+        <Setting Id="objective_23" Label="I have to find the clinking source." State="false" />
+        <Setting Id="objective_24" Label="I have to go back to the church. Don't want, really, but my sleepwalking must be a sign." State="false" />
+        <Setting Id="objective_25" Label="If I solve the riddle I could finally find the old Storage Room." State="false" />
+        <Setting Id="objective_26" Label="I must investigate this weird Secret Room and figure out what's going on here." State="false" />
+        <Setting Id="objective_27" Label="The key I found belongs to the music box in Leonard's Room. I'm going to open it. Open it. Open it. Open it." State="false" />
+        <Setting Id="objective_28" Label="I have to Investigate Claire's car." State="false" />
+        <Setting Id="objective_29" Label="I'd better take a look in the Mezzanine. In the middle the better things find their proper position." State="false" />
+        <Setting Id="objective_30" Label="Irving, what are you doing? What's hiding behind Second Floor's sealed door?" State="false" />
+        <Setting Id="objective_31" Label="I need to investigate the Attic before it investigates me. She'll reveal the truth." State="false" />
+        <Setting Id="objective_32" Label="Inside Claire's car!" State="false" />
+        <Setting Id="objective_33" Label="What's in this blanket? WASH IT WASH IT WASH IT WASH IT WASH IT WASH IT WASH IT WASH IT WASH IT WASH IT" State="false" />
+        <Setting Id="objective_35" Label="I have to open the garage door. Hope it's working." State="false" />
+        <Setting Id="objective_36" Label="I need to find a way to the Attic. The Attic is important." State="false" />
+        <Setting Id="objective_38" Label="There's something strange in the Emergency Generator room. I need to check it." State="false" />
+        <Setting Id="objective_39" Label="Voicemail? Should be in the office in front of the museum, I guess." State="false" />
+        <Setting Id="objective_40" Label="Irving, where are you?" State="false" />
+    </Setting>
+</Settings>
