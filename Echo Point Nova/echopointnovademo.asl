@@ -8,6 +8,7 @@ state("Greylock-Win64-Shipping")
     // World -> GameState -> CurrentActiveZone
     long ActiveZone: 0x56A6B60, 0x120, 0x410;
     long zoneFName: 0x56A6B60, 0x120, 0x410, 0x18;
+    string32 Filename: 0x56A6B60, 0x120, 0x410, 0x500, 0x0;
     // World -> GameState -> CurrentActiveZone -> SpawnCount
     int SpawnCount: 0x56A6B60, 0x120, 0x410, 0x510;       // total number of guys that spawn
     // World -> GameState -> CurrentActiveZone -> BattleCountForUI
