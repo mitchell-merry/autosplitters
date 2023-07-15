@@ -8,7 +8,6 @@ state("Greylock-Win64-Shipping")
     // World -> GameState -> CurrentActiveZone
     long ActiveZone: 0x56A6B60, 0x120, 0x410;
     long zoneFName: 0x56A6B60, 0x120, 0x410, 0x18;
-    string32 Filename: 0x56A6B60, 0x120, 0x410, 0x500, 0x0;
     // World -> GameState -> CurrentActiveZone -> SpawnCount
     int SpawnCount: 0x56A6B60, 0x120, 0x410, 0x510;       // total number of guys that spawn
     // World -> GameState -> CurrentActiveZone -> BattleCountForUI
@@ -23,11 +22,15 @@ state("Greylock-Win64-Shipping")
 startup
 {
 	vars.Log = (Action<object>)(output => print("[Echo Point Nova] " + output));
-    settings.Add("split_zone", true, "Split on completing a fight");
-    settings.Add("split_Zone_4", false, "Wind Temple", "split_zone");
-    settings.Add("split_Zone_5", false, "Ice Castle", "split_zone");
-    settings.Add("split_movetome", false, "Fire Temple", "split_zone");
-    settings.Add("split_Zone_11", true, "Final Fight", "split_zone");
+    settings.Add("split_zone", true, "Split on orb event");
+    settings.Add("split_Zone_enter", false, "Enter Wind Temple", "split_zone");
+    settings.Add("split_Zone", false, "Beat Wind Temple", "split_zone");
+    settings.Add("split_ICICLES_enter", false, "Enter Ice Castle", "split_zone");
+    settings.Add("split_ICICLES", false, "Beat Ice Castle", "split_zone");
+    settings.Add("split_SENTRY_enter", false, "Enter Fire Temple", "split_zone");
+    settings.Add("split_SENTRY", false, "Beat Fire Temple", "split_zone");
+    settings.Add("split_desert_enter", false, "Enter Final Fight", "split_zone");
+    settings.Add("split_desert", true, "Beat Final Fight", "split_zone");
 }
 
 init
@@ -59,6 +62,23 @@ init
 
         vars.CachedFNames[fname] = name;
         return name;
+    });
+    
+    vars.CompletedSplits = new Dictionary<string, bool>();
+    // this function is a helper for checking splits that may or may not exist in settings,
+    // and if we want to do them only once
+    vars.CheckSplit = (Func<string, bool>)(key => {
+        // if the split doesn't exist, or it's off, or we've done it already
+        if (!settings.ContainsKey(key)
+          || !settings[key]
+          || vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]
+        ) {
+            return false;
+        }
+
+        vars.CompletedSplits[key] = true;
+        vars.Log("Completed: " + key);
+        return true;
     });
 
     current.hasMovedInWorld = false;
@@ -105,14 +125,28 @@ start
     return !old.hasMovedInWorld && current.hasMovedInWorld;
 }
 
+onStart
+{
+    vars.CompletedSplits = new Dictionary<string, bool>();
+}
+
 split
 {
-    if (old.BattleCountForUI > current.BattleCountForUI 
-        && current.BattleCountForUI <= 0
-        && settings.ContainsKey("split_" + old.Filename)
-        && settings["split_" + old.Filename]) {
-            return true;
-        }
+    // start
+    if (old.zone != current.zone &&
+        old.zone == "None" &&
+        vars.CheckSplit("split_" + current.zone + "_enter")
+    ) {
+        return true;
+    }
+
+    // beat fight
+    if (old.BattleCountForUI > current.BattleCountForUI &&
+        current.BattleCountForUI <= 0 &&
+        vars.CheckSplit("split_" + old.zone)
+    ) {
+        return true;
+    }
 }
 
 reset
