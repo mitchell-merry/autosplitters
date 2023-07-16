@@ -16,7 +16,8 @@ startup
         bool d = i == 100;
         settings.Add("round_" + i, d, "Round " + i, "round");
     }
-    settings.Add("ee", true, "Split on beating EE");
+
+    settings.Add("ee", false, "Split on beating EE");
 }
 
 init
@@ -47,13 +48,16 @@ start
 
 split
 {
-    return (old.round != current.round &&
-           settings.ContainsKey("round_" + current.round) &&
-           settings["round_" + current.round]) || 
+    if (settings["ee"] &&
+        old.activeScene == "Level 2 Quest Area" &&
+        current.activeScene == "Level 2")
+    {
+        return true;
+    }
 
-           settings.ContainsKey("ee") &&
-           (vars.Levels.Contains(current.activeScene) && !vars.Levels.Contains(old.activeScene)) &&
-           old.activeScene != "Main Menu";
+    return old.round != current.round &&
+           settings.ContainsKey("round_" + current.round) &&
+           settings["round_" + current.round];
 }
 
 isLoading
