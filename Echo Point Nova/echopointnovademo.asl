@@ -31,6 +31,8 @@ startup
     settings.Add("split_SENTRY", false, "Beat Fire Temple", "split_zone");
     settings.Add("split_desert_enter", false, "Enter Final Fight", "split_zone");
     settings.Add("split_desert", true, "Beat Final Fight", "split_zone");
+
+    settings.Add("start_zone_enter", false, "Start time on entering a fight");
 }
 
 init
@@ -122,6 +124,13 @@ update
 
 start
 {
+    if (settings["start_zone_enter"] &&
+        old.zone != current.zone &&
+        old.zone == "None"
+    ) {
+        return true;
+    }
+
     return !old.hasMovedInWorld && current.hasMovedInWorld;
 }
 
@@ -132,7 +141,7 @@ onStart
 
 split
 {
-    // start
+    // start an orb fight
     if (old.zone != current.zone &&
         old.zone == "None" &&
         vars.CheckSplit("split_" + current.zone + "_enter")
