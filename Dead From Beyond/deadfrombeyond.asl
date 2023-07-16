@@ -16,6 +16,8 @@ startup
         bool d = i == 100;
         settings.Add("round_" + i, d, "Round " + i, "round");
     }
+
+    settings.Add("ee", false, "Split on beating EE");
 }
 
 init
@@ -46,6 +48,13 @@ start
 
 split
 {
+    if (settings["ee"] &&
+        old.activeScene == "Level 2 Quest Area" &&
+        current.activeScene == "Level 2")
+    {
+        return true;
+    }
+
     return old.round != current.round &&
            settings.ContainsKey("round_" + current.round) &&
            settings["round_" + current.round];
