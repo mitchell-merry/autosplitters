@@ -67,10 +67,9 @@ start
 
 split
 {
-    // return old.activeScene == "SC_Theatre_Prologue" && current.activeScene == "SC_Loading";
     return old.activeScene != current.activeScene
-        && (current.activeScene == "SC_Loading" || current.activeScene == "SC_Loading_BlackScreen")
-        && vars.CheckSplit("scene_" + old.activeScene);
+        && (old.activeScene == "SC_Loading" || old.activeScene == "SC_Loading_BlackScreen")
+        && vars.CheckSplit("scene_" + current.activeScene);
 }
 
 isLoading

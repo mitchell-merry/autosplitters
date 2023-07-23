@@ -1,8 +1,8 @@
 <Settings>
     <Setting Id="scene" Label="Split on beating level">
-        <Setting Id="scene_SC_Theatre_Prologue" Label="Theatre" State="false" />
-        <Setting Id="scene_SC_TheatreUnderground_Prologue_TrialOne" Label="Trial One" State="false" />
-        <Setting Id="scene_SC_TheatreUnderground_Prologue_TrialTwo" Label="Trial Two" State="false" />
-        <Setting Id="scene_SC_Theatre_Prologue_Escape" Label="Escape" State="true" />
+        <Setting Id="scene_SC_TheatreUnderground_Prologue_TrialOne" Label="Theatre" State="false" />
+        <Setting Id="scene_SC_TheatreUnderground_Prologue_TrialTwo" Label="Trial One" State="false" />
+        <Setting Id="scene_SC_Theatre_Prologue_Escape" Label="Trial Two" State="false" />
+        <Setting Id="scene_SC_Cutscene_Scarlet" Label="Escape" State="true" />
     </Setting>
 </Settings>
