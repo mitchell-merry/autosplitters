@@ -13,7 +13,7 @@ startup
 {
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
 	vars.Helper.GameName = "Sanguine Soul";
-	vars.Helper.AlertLoadless();
+	vars.Helper.AlertRealTime();
     vars.Helper.Settings.CreateFromXml("Components/SanguineSoul.Settings.xml");
 }
 
