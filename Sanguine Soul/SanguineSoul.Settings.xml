@@ -1,0 +1,18 @@
+<Settings>
+    <Setting Id="level" Label="Split on beating level" State="true">
+        <Setting Id="level__VerticalSliceMap__Level2_Cutscene" Label="Level 1" State="false" />
+        <Setting Id="level__Bazaar__Level3_Cutscene" Label="Level 2" State="false" />
+        <Setting Id="level__Level_3_Whitebox__Final_Cutscene" Label="Level 3" State="true" />
+    </Setting>
+</Settings>
+
+<!--
+[20816] [Sanguine Souls] world: MainMenuLevel -> Level1_Cutscene 
+[20816] [Sanguine Souls] world: Level1_Cutscene -> VerticalSliceMap 
+[20816] [Sanguine Souls] world: VerticalSliceMap -> Level2_Cutscene 
+[20816] [Sanguine Souls] world: Level2_Cutscene -> Bazaar 
+[20816] [Sanguine Souls] world: Bazaar -> Level3_Cutscene 
+[20816] [Sanguine Souls] world: Level3_Cutscene -> Level_3_Whitebox 
+[20816] [Sanguine Souls] world: Level_3_Whitebox -> Final_Cutscene 
+[20816] [Sanguine Souls] world: Final_Cutscene -> MainMenuLevel
+-->
