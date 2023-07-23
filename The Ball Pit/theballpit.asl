@@ -7,6 +7,8 @@ startup
 	vars.Helper.GameName = "The Ball Pit";
 	vars.Helper.LoadSceneManager = true;
 	vars.Helper.AlertLoadless();
+
+    settings.Add("scene_McDongs", false, "Split on falling down the hole.");
 }
 
 init
@@ -18,21 +20,10 @@ init
 	current.activeScene = current.loadingScene = "";
 }
 
-onStart
-{
-	// vars.Log(current.activeScene);
-	// vars.Log(current.loadingScene);
-
-    vars.Log(vars.Helper.Scenes.Active.Address.ToString("X"));
-}
-
 update
 {
 	current.activeScene = vars.ReadSceneName(vars.Helper.Scenes.Active.Address);
 	current.loadingScene = vars.ReadSceneName(vars.Helper.Scenes.Loaded[0].Address);
-
-	if(current.activeScene != old.activeScene) vars.Log("a: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
-	if(current.loadingScene != old.loadingScene) vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
 }
 
 start
@@ -42,7 +33,15 @@ start
 
 split
 {
-	// return !old.gameEnd && current.gameEnd;
+    if (settings["scene_McDongs"] && old.loadingScene != current.loadingScene && old.loadingScene == "McDongs")
+    {
+        return true;
+    }
+}
+
+reset
+{
+    return old.loadingScene != current.activeScene && current.activeScene == "Menu";
 }
 
 isLoading
