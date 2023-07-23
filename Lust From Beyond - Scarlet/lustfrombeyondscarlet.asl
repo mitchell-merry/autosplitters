@@ -57,7 +57,8 @@ update
     if(current.activeScene != old.activeScene) vars.Log("a: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
     if(current.loadingScene != old.loadingScene) vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
 
-    current.isLoading = current.activeScene == "SC_Loading" || current.loadingScene == "SC_Loading";
+    current.isLoading = current.activeScene == "SC_Loading" || current.loadingScene == "SC_Loading"
+                     || current.activeScene == "SC_Loading_BlackScreen" || current.loadingScene == "SC_Loading_BlackScreen";
 }
 
 start
