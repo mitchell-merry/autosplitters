@@ -2,11 +2,11 @@ state("Lust From Beyond - Scarlet") { }
 
 startup
 {
-    vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Lust From Beyond - Scarlet";
     vars.Helper.LoadSceneManager = true;
     vars.Helper.AlertLoadless();
+	vars.Helper.Settings.CreateFromXml("Components/LFBScarlet.Settings.xml");
 }
 
 init
@@ -21,6 +21,23 @@ init
         string path = vars.Helper.ReadString(256, ReadStringType.UTF8, scene + 0x18, 0x0);
         string name = System.IO.Path.GetFileNameWithoutExtension(path);
         return name == "" ? null : name;
+    });
+
+    vars.CompletedSplits = new List<string>();
+    // this function is a helper for checking splits that may or may not exist in settings,
+    // and if we want to do them only once
+    vars.CheckSplit = (Func<string, bool>)(key => {
+        // if the split doesn't exist, or it's off, or we've done it already
+        if (!settings.ContainsKey(key)
+          || !settings[key]
+          || vars.CompletedSplits.Contains(key)
+        ) {
+            return false;
+        }
+
+        vars.CompletedSplits.Add(key);
+        vars.Log("Completed: " + key);
+        return true;
     });
 }
 
@@ -50,8 +67,10 @@ start
 
 split
 {
-    // TODO implement
     // return old.activeScene == "SC_Theatre_Prologue" && current.activeScene == "SC_Loading";
+    return old.activeScene != current.activeScene
+        && (current.activeScene == "SC_Loading" || current.activeScene == "SC_Loading_BlackScreen")
+        && vars.CheckSplit("scene_" + old.activeScene);
 }
 
 isLoading
