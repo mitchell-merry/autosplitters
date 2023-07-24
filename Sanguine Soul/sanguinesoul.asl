@@ -13,39 +13,42 @@ startup
 {
 	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
 	vars.Helper.GameName = "Sanguine Soul";
+	vars.Helper.Settings.CreateFromXml("Components/SanguineSoul.Settings.xml");
+
+	vars.CompletedSplits = new HashSet<string>();
+
 	vars.Helper.AlertRealTime();
-    vars.Helper.Settings.CreateFromXml("Components/SanguineSoul.Settings.xml");
 }
 
 init
 {
     // `fname` is the index into the GNames array
-    vars.CachedFNames = new Dictionary<long, string>();
-    vars.ReadFName = (Func<long, string>)(fname => 
+    var cachedFNames = new Dictionary<int, string>();
+    vars.ReadFName = (Func<int, string>)(fname => 
     {
-        if (vars.CachedFNames.ContainsKey(fname)) return vars.CachedFNames[fname];
+	string name;
+        if (cachedFNames.TryGetValue(fname, out name)) return name;
 
         int chunk_index  = (int) fname / 0x4000;
         int element_index = (int) fname % 0x4000;
 
-        var name = vars.Helper.ReadString(256, ReadStringType.UTF8, (IntPtr) current.GNames + chunk_index * 0x8, element_index * 0x8, 0x10);
-        vars.CachedFNames[fname] = name;
+        name = vars.Helper.ReadString(256, ReadStringType.UTF8, (IntPtr) current.GNames + chunk_index * 0x8, element_index * 0x8, 0x10);
+        cachedFNames[fname] = name;
+
         return name;
     });
 
-    vars.CompletedSplits = new Dictionary<string, bool>();
     // this function is a helper for checking splits that may or may not exist in settings,
     // and if we want to do them only once
     vars.CheckSplit = (Func<string, bool>)(key => {
         // if the split doesn't exist, or it's off, or we've done it already
         if (!settings.ContainsKey(key)
           || !settings[key]
-          || vars.CompletedSplits.ContainsKey(key) && vars.CompletedSplits[key]
+          || !vars.CompletedSplits.Add(key)
         ) {
             return false;
         }
 
-        vars.CompletedSplits[key] = true;
         vars.Log("Completed: " + key);
         return true;
     });
@@ -54,36 +57,41 @@ init
 update
 {
     // Deref useful FNames here
-    IDictionary<string, object> currdict = current;
-    foreach (var fname in new List<string>(currdict.Keys))
+    IDictionary<string, object> currentLookup = current;
+    foreach (var entry in currentLookup)
     {
-        if (!fname.EndsWith("FName"))
+	string key = entry.Key;
+	object value = entry.Value
+
+        if (!key.EndsWith("FName"))
             continue;
         
         // e.g. missionFName -> mission
-        var key = fname.Substring(0, fname.Length-5);
-        var val = vars.ReadFName((long)currdict[fname]);
-        if (val == "None" && currdict.ContainsKey(key))
+        key = key.Substring(0, fname.Length - 5);
+
+	string fNameEntry = vars.ReadFName(value);
+        if (fNameEntry == "None")
             continue;
 
         // Debugging and such
-        if (!currdict.ContainsKey(key))
+	object oldValue;
+        if (!currentLookup.TryGetValue(key, out oldValue))
         {
-            vars.Log(key + ": " + val);
+            vars.Log(key + ": " + fNameEntry);
         }
-        else if (currdict[key] != val)
+        else if (oldValue != fNameEntry)
         {
-            vars.Log(key + ": " + currdict[key] + " -> " + val);
+            vars.Log(key + ": " + oldValue + " -> " + fNameEntry);
         }
 
-        currdict[key] = val;
+        currentLookup[key] = fNameEntry;
     }
 }
 
 onStart
 {
     // refresh all splits when we start the run, none are yet completed
-    vars.CompletedSplits = new Dictionary<string, bool>();
+    vars.CompletedSplits.Clear();
 }
 
 start
