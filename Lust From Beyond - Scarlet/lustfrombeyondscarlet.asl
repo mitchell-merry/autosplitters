@@ -6,7 +6,7 @@ startup
     vars.Helper.GameName = "Lust From Beyond - Scarlet";
     vars.Helper.LoadSceneManager = true;
     vars.Helper.AlertLoadless();
-	vars.Helper.Settings.CreateFromXml("Components/LFBScarlet.Settings.xml");
+    vars.Helper.Settings.CreateFromXml("Components/LFBScarlet.Settings.xml");
 }
 
 init

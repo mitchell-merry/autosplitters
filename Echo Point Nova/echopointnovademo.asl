@@ -21,7 +21,7 @@ state("Greylock-Win64-Shipping")
 
 startup
 {
-	vars.Log = (Action<object>)(output => print("[Echo Point Nova] " + output));
+    vars.Log = (Action<object>)(output => print("[Echo Point Nova] " + output));
     settings.Add("split_zone", true, "Split on orb event");
     settings.Add("split_Zone_enter", false, "Enter Wind Temple", "split_zone");
     settings.Add("split_Zone", false, "Beat Wind Temple", "split_zone");

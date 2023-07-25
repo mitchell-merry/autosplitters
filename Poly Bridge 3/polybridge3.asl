@@ -60,7 +60,7 @@ update
 
     if (settings["il"] && settings["il_reset"] && (levelChanged || goingToMenu)
     ) {
-		vars.Helper.Timer.Reset();
+        vars.Helper.Timer.Reset();
     }
 }
 
