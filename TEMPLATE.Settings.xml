@@ -1,0 +1,5 @@
+<Settings>
+    <Setting Id="level" Label="Split on beating level" State="false">
+        <Setting Id="level_" Label="Some Level" State="false" />
+    </Setting>
+</Settings>
