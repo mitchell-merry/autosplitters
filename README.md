@@ -11,3 +11,9 @@ Scripts I've worked on outside of this repo:
 I have worked on other autosplitters, those that are either
 full LiveSplit components or use the Auto Splitting Runtime (ASR):
 - **Aliens versus Predator 2:** https://github.com/mitchell-merry/LiveSplit.AVP2
+
+## Templates
+This repository contains a number of template files that I use frequently in my autosplitters.
+You are free to use these, but I don't guarantee that they are at all good.
+
+Note that these all require the use of [asl-help](https://github.com/just-ero/asl-help/).
