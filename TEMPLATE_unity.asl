@@ -11,7 +11,7 @@ startup
     {
         var oldValue = oldLookup[key];
         var currentValue = currentLookup[key];
-        if(oldValue != currentValue)
+        if (oldValue != currentValue)
             vars.Log(key + ": " + oldValue + " -> " + currentValue);
     });
 
