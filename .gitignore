@@ -1,4 +1,8 @@
 *.zip
 *.lss
+*.CT
 **/new.asl
 **/debug.asl
+
+# WIP Autosplitters
+\[WIP\]*/
