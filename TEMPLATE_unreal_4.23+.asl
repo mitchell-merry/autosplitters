@@ -31,10 +31,12 @@ init
     // The following code derefences FName structs to their string counterparts by
     // indexing the FNamePool table
     // `fname` is the actual struct, not a pointer to the struct
-    vars.CachedFNames = new Dictionary<long, string>();
+    var cachedFNames = new Dictionary<long, string>();
     vars.ReadFName = (Func<long, string>)(fname => 
     {
-        if (vars.CachedFNames.ContainsKey(fname)) return vars.CachedFNames[fname];
+        string name;
+        if (cachedFNames.TryGetValue(fname, out name))
+            return name;
 
         int name_offset  = (int) fname & 0xFFFF;
         int chunk_offset = (int) (fname >> 0x10) & 0xFFFF;
@@ -50,9 +52,9 @@ init
         IntPtr name_addr;
         base_ptr.DerefOffsets(game, out name_addr);
         // 2 bytes here for the name_metadata
-        string name = game.ReadString(name_addr + 0x2, size);
+        name = game.ReadString(name_addr + 0x2, size);
 
-        vars.CachedFNames[fname] = name;
+        cachedFNames[fname] = name;
         return name;
     });
 
@@ -68,7 +70,6 @@ init
             return false;
         }
 
-        vars.CompletedSplits[key] = true;
         vars.Log("Completed: " + key);
         return true;
     });

@@ -30,20 +30,22 @@ startup
 init
 {
     // `fname` is the index into the GNames array
-    vars.CachedFNames = new Dictionary<long, string>();
-    vars.ReadFName = (Func<long, string>)(fname => 
+    var cachedFNames = new Dictionary<int, string>();
+    vars.ReadFName = (Func<int, string>)(fname => 
     {
-        if (vars.CachedFNames.ContainsKey(fname)) return vars.CachedFNames[fname];
+        string name;
+        if (cachedFNames.TryGetValue(fname, out name))
+            return name;
 
         int chunk_index  = (int) fname / 0x4000;
         int element_index = (int) fname % 0x4000;
 
-        var name = vars.Helper.ReadString(256, ReadStringType.UTF8, (IntPtr) current.GNames + chunk_index * 0x8, element_index * 0x8, 0x10);
-        vars.CachedFNames[fname] = name;
+        name = vars.Helper.ReadString(256, ReadStringType.UTF8, (IntPtr) current.GNames + chunk_index * 0x8, element_index * 0x8, 0x10);
+
+        cachedFNames[fname] = name;
         return name;
     });
 
-    vars.CompletedSplits = new Dictionary<string, bool>();
     // this function is a helper for checking splits that may or may not exist in settings,
     // and if we want to do them only once
     vars.CheckSplit = (Func<string, bool>)(key =>
@@ -56,7 +58,6 @@ init
             return false;
         }
 
-        vars.CompletedSplits[key] = true;
         vars.Log("Completed: " + key);
         return true;
     });
