@@ -73,6 +73,7 @@ update
         if (newName == "None" && newKeyExists)
             continue;
         
+        // Debugging and such
         if (!newKeyExists)
         {
             vars.Log(newKey + ": " + newName);
