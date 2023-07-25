@@ -2,11 +2,11 @@ state("Dead From Beyond") { }
 
 startup
 {
-	vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
-	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
-	vars.Helper.GameName = "Dead From Beyond";
-	vars.Helper.LoadSceneManager = true;
-	vars.Helper.AlertLoadless();
+    vars.Watch = (Action<string>)(key => { if(vars.Helper[key].Changed) vars.Log(key + ": " + vars.Helper[key].Old + " -> " + vars.Helper[key].Current); });
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+    vars.Helper.GameName = "Dead From Beyond";
+    vars.Helper.LoadSceneManager = true;
+    vars.Helper.AlertLoadless();
 
     vars.Levels = new List<string>() { "Level1 Finalized", "Level 2", "Level 3 Withered" };
     
@@ -22,21 +22,21 @@ startup
 
 init
 {
-	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
-	{
+    vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
+    {
         var GameDirector = mono["GameDirector"];
         vars.Helper["round"] = GameDirector.Make<int>("currentWave");
-		return true;
-	});
+        return true;
+    });
 }
 
 update
 {
-	current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
-	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
+    current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
+    current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
 
-	if(current.activeScene != old.activeScene) vars.Log("a: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
-	if(current.loadingScene != old.loadingScene) vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
+    if(current.activeScene != old.activeScene) vars.Log("a: \"" + old.activeScene + "\", \"" + current.activeScene + "\"");
+    if(current.loadingScene != old.loadingScene) vars.Log("l: \"" + old.loadingScene + "\", \"" + current.loadingScene + "\"");
 }
 
 start

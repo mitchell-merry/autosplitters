@@ -2,29 +2,29 @@ state("Night at the Gates of Hell") {}
 
 startup
 {
-	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
-	vars.Helper.GameName = "NatGoH";
-	vars.Helper.LoadSceneManager = true;
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+    vars.Helper.GameName = "NatGoH";
+    vars.Helper.LoadSceneManager = true;
 
-	vars.Helper.AlertLoadless();
+    vars.Helper.AlertLoadless();
 }
 
 init
 {
-	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
-	{
-		var gm = mono["GameManager"];
-		vars.Helper["GameState"] = mono.Make<int>(gm, "instance", "currentGameState");
+    vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
+    {
+        var gm = mono["GameManager"];
+        vars.Helper["GameState"] = mono.Make<int>(gm, "instance", "currentGameState");
 
-		return true;
-	});
+        return true;
+    });
 }
 
 onStart
 {
-	vars.Log(vars.Helper["GameState"]);}
+    vars.Log(vars.Helper["GameState"]);}
 
 isLoading
 {
-	return current.GameState == 2;
+    return current.GameState == 2;
 }

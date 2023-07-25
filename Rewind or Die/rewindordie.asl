@@ -2,22 +2,22 @@ state("Rewind Or Die") { }
 
 startup
 {
-	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
-	vars.Helper.GameName = "Rewind or Die";
-	vars.Helper.LoadSceneManager = true;
-	vars.Helper.AlertLoadless();
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+    vars.Helper.GameName = "Rewind or Die";
+    vars.Helper.LoadSceneManager = true;
+    vars.Helper.AlertLoadless();
 
-	vars.Helper.Settings.CreateFromXml("Components/RewindOrDie.Settings.xml");
+    vars.Helper.Settings.CreateFromXml("Components/RewindOrDie.Settings.xml");
     vars.CompletedSplits = new Dictionary<string, bool>();
 }
 
 init
 {
-	vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
-	{
+    vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
+    {
         vars.Helper["moving"] = mono.Make<bool>("FPS", "instance", "moving");
         vars.Helper["bossIsDead"] = mono.Make<bool>("PigManBossFight", "instance", "isDead");
-		
+        
         var ItemData = mono["ItemData"];
         vars.Helper["items"] = mono.MakeList<IntPtr>("Inventory", "allInventoryItems");
         
@@ -27,7 +27,7 @@ init
         });
 
         return true;
-	});
+    });
 
     current.apartmentWaitingForStart = false;
 
@@ -57,8 +57,8 @@ onStart
 
 update
 {
-	current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
-	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
+    current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
+    current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
 
     if (old.activeScene != current.activeScene && current.activeScene == "Apartment") {
         current.apartmentWaitingForStart = true;

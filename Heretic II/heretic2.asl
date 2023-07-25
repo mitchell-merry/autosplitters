@@ -13,15 +13,15 @@ startup
     vars.StartScenes = new List<string>() { "tutorial", "ssdocks" };
 
     if (timer.CurrentTimingMethod == TimingMethod.RealTime)
-	{
-		var mbox = MessageBox.Show(
-			"\"Heretic II\" uses in-game time.\nWould you like to switch to it?",
-			"LiveSplit | \"Heretic II\"",
-			MessageBoxButtons.YesNo);
+    {
+        var mbox = MessageBox.Show(
+            "\"Heretic II\" uses in-game time.\nWould you like to switch to it?",
+            "LiveSplit | \"Heretic II\"",
+            MessageBoxButtons.YesNo);
 
-		if (mbox == DialogResult.Yes)
-			timer.CurrentTimingMethod = TimingMethod.GameTime;
-	}
+        if (mbox == DialogResult.Yes)
+            timer.CurrentTimingMethod = TimingMethod.GameTime;
+    }
 }
 
 update
@@ -51,6 +51,6 @@ start
 split
 {
     return old.scene != current.scene                   // changing scenes
-		&& old.scene != "" && current.scene != ""		// non-value								
+        && old.scene != "" && current.scene != ""        // non-value                                
         && !vars.Cutscenes.Contains(old.scene);         // and we didnt change from a cutscene
 }

@@ -2,12 +2,12 @@ state("Exhibition of Memories") { }
 
 startup
 {
-	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
-	vars.Helper.GameName = "Exhibition of Memories";
-	vars.Helper.LoadSceneManager = true;
-	vars.Helper.AlertLoadless();
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+    vars.Helper.GameName = "Exhibition of Memories";
+    vars.Helper.LoadSceneManager = true;
+    vars.Helper.AlertLoadless();
 
-	vars.Helper.Settings.CreateFromXml("Components/ExhibitionOfMemories.Settings.xml");
+    vars.Helper.Settings.CreateFromXml("Components/ExhibitionOfMemories.Settings.xml");
 }
 
 init
@@ -27,8 +27,8 @@ init
 
 update
 {
-	current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
-	current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
+    current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
+    current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
 }
 
 start

@@ -1,54 +1,54 @@
 <Settings>
-	<!-- requested by community -->
-	<Setting Id="remove_paused" Label="Pause timer while game is paused." State="true" />
-	<Setting Id="ch" Label="Split on completing chapter:" State="false">
-		<Setting Id="ch_intro" Label="Intro" State="false" ToolTip="Same as Objective Complete: Find some food." />
-		<Setting Id="ch_1" Label="Chapter 1" State="false" />
-		<Setting Id="ch_2" Label="Chapter 2" State="false" ToolTip="NOT WORKING" />
-		<Setting Id="ch_3" Label="Chapter 3" State="false" />
-		<Setting Id="ch_4" Label="Chapter 4" State="false" />
-		<Setting Id="ch_5" Label="Chapter 5" State="false" />
-	</Setting>
-	<Setting Id="obj" Label="Split on completing objective:" State="false">
-		<Setting Id="obj_10201" Label="Elevator" State="false" />
-		<Setting Id="obj_10202" Label="Keys" State="false" />
-		<Setting Id="obj_10301" Label="FollowWilson" State="false" />
-		<Setting Id="obj_10302" Label="Exhibits" State="false" />
-		<Setting Id="obj_10303" Label="Switch" State="false" />
-		<Setting Id="obj_10501" Label="Escape the studio" State="false" />
-		<Setting Id="obj_10601" Label="RunAndHIde" State="false" />
-		<Setting Id="obj_10602" Label="Find some food (Intro End)" State="false" />
-		<Setting Id="obj_10701" Label="Maintenance" State="false" />
-		<Setting Id="obj_10801" Label="Lock" State="false" />
-		<Setting Id="obj_10802" Label="GentPipe" State="false" />
-		<Setting Id="obj_10803" Label="AtriumSupply" State="false" />
-		<Setting Id="obj_10901" Label="AnimationAlley" State="false" />
-		<Setting Id="obj_11001" Label="Pictures" State="false" />
-		<Setting Id="obj_11101" Label="LowerPipe" State="false" />
-		<Setting Id="obj_11102" Label="HelpLostOne" State="false" />
-		<Setting Id="obj_11201" Label="GentPipeUpgrade" State="false" />
-		<Setting Id="obj_11202" Label="GentPipeCharge" State="false" />
-		<Setting Id="obj_11301" Label="Elevators" State="false" />
-		<Setting Id="obj_11801" Label="GentBuilding" State="false" />
-		<Setting Id="obj_11901" Label="IdCard" State="false" />
-		<Setting Id="obj_12201" Label="HeIdi" State="false" />
-		<Setting Id="obj_12401" Label="Gilson" State="false" />
-		<Setting Id="obj_12402" Label="Bedroom" State="false" />
-		<Setting Id="obj_12403" Label="BettyTask" State="false" />
-		<Setting Id="obj_12501" Label="BanishAlice" State="false" />
-		<Setting Id="obj_12601" Label="MusicBox" State="false" />
-		<Setting Id="obj_12602" Label="Distraction" State="false" />
-	</Setting>
-	<Setting Id="memory" Label="Split on collecting memory:" State="false">
-		<Setting Id="memory_105101" Label="Baseball" State="false" />
-		<Setting Id="memory_107101" Label="Paper Airlane" State="false" />
-		<Setting Id="memory_110101" Label="Duck" State="false" />
-		<Setting Id="memory_113101" Label="Oil Tin" State="false" />
-		<Setting Id="memory_115101" Label="Alarm Clock" State="false" />
-		<Setting Id="memory_118101" Label="Fashionable Hat" State="false" />
-		<Setting Id="memory_120101" Label="Crayons" State="false" />
-		<Setting Id="memory_122101" Label="Milk Carton" State="false" />
-		<Setting Id="memory_124101" Label="Cracked Mug" State="false" />
-		<Setting Id="memory_128101" Label="Hot Dog" State="false" />
-	</Setting>
+    <!-- requested by community -->
+    <Setting Id="remove_paused" Label="Pause timer while game is paused." State="true" />
+    <Setting Id="ch" Label="Split on completing chapter:" State="false">
+        <Setting Id="ch_intro" Label="Intro" State="false" ToolTip="Same as Objective Complete: Find some food." />
+        <Setting Id="ch_1" Label="Chapter 1" State="false" />
+        <Setting Id="ch_2" Label="Chapter 2" State="false" ToolTip="NOT WORKING" />
+        <Setting Id="ch_3" Label="Chapter 3" State="false" />
+        <Setting Id="ch_4" Label="Chapter 4" State="false" />
+        <Setting Id="ch_5" Label="Chapter 5" State="false" />
+    </Setting>
+    <Setting Id="obj" Label="Split on completing objective:" State="false">
+        <Setting Id="obj_10201" Label="Elevator" State="false" />
+        <Setting Id="obj_10202" Label="Keys" State="false" />
+        <Setting Id="obj_10301" Label="FollowWilson" State="false" />
+        <Setting Id="obj_10302" Label="Exhibits" State="false" />
+        <Setting Id="obj_10303" Label="Switch" State="false" />
+        <Setting Id="obj_10501" Label="Escape the studio" State="false" />
+        <Setting Id="obj_10601" Label="RunAndHIde" State="false" />
+        <Setting Id="obj_10602" Label="Find some food (Intro End)" State="false" />
+        <Setting Id="obj_10701" Label="Maintenance" State="false" />
+        <Setting Id="obj_10801" Label="Lock" State="false" />
+        <Setting Id="obj_10802" Label="GentPipe" State="false" />
+        <Setting Id="obj_10803" Label="AtriumSupply" State="false" />
+        <Setting Id="obj_10901" Label="AnimationAlley" State="false" />
+        <Setting Id="obj_11001" Label="Pictures" State="false" />
+        <Setting Id="obj_11101" Label="LowerPipe" State="false" />
+        <Setting Id="obj_11102" Label="HelpLostOne" State="false" />
+        <Setting Id="obj_11201" Label="GentPipeUpgrade" State="false" />
+        <Setting Id="obj_11202" Label="GentPipeCharge" State="false" />
+        <Setting Id="obj_11301" Label="Elevators" State="false" />
+        <Setting Id="obj_11801" Label="GentBuilding" State="false" />
+        <Setting Id="obj_11901" Label="IdCard" State="false" />
+        <Setting Id="obj_12201" Label="HeIdi" State="false" />
+        <Setting Id="obj_12401" Label="Gilson" State="false" />
+        <Setting Id="obj_12402" Label="Bedroom" State="false" />
+        <Setting Id="obj_12403" Label="BettyTask" State="false" />
+        <Setting Id="obj_12501" Label="BanishAlice" State="false" />
+        <Setting Id="obj_12601" Label="MusicBox" State="false" />
+        <Setting Id="obj_12602" Label="Distraction" State="false" />
+    </Setting>
+    <Setting Id="memory" Label="Split on collecting memory:" State="false">
+        <Setting Id="memory_105101" Label="Baseball" State="false" />
+        <Setting Id="memory_107101" Label="Paper Airlane" State="false" />
+        <Setting Id="memory_110101" Label="Duck" State="false" />
+        <Setting Id="memory_113101" Label="Oil Tin" State="false" />
+        <Setting Id="memory_115101" Label="Alarm Clock" State="false" />
+        <Setting Id="memory_118101" Label="Fashionable Hat" State="false" />
+        <Setting Id="memory_120101" Label="Crayons" State="false" />
+        <Setting Id="memory_122101" Label="Milk Carton" State="false" />
+        <Setting Id="memory_124101" Label="Cracked Mug" State="false" />
+        <Setting Id="memory_128101" Label="Hot Dog" State="false" />
+    </Setting>
 </Settings>

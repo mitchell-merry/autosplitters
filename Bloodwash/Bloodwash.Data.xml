@@ -1,46 +1,46 @@
 <Settings>
-	<Setting ID="split_chapter" Name="Split on completing chapter.">
-		<Setting ID="split_chapter_0" Name="Prologue" OneTimeSplit="true" />
-		<Setting ID="split_chapter_1" Name="Plaza" OneTimeSplit="true" />
-		<Setting ID="split_chapter_2" Name="Officer Burton (NOT WORKING)" OneTimeSplit="true" />
-		<Setting ID="split_chapter_3" Name="The Womb Ripper (Any% End)" OneTimeSplit="true" />
-		<Setting ID="split_chapter_5" Name="Epilogue (100% End)" OneTimeSplit="true" />
-	</Setting>
-	<Setting ID="split_change" Name="Split on getting change from the change machine." OneTimeSplit="true"/>
-	<Setting ID="split_janitor" Name="Split on achieving Janitor: Enter both bathrooms." OneTimeSplit="true"/>
-	<Setting ID="split_phonenumber" Name="Split on finding the call girl's phone number." OneTimeSplit="true"/>
-	<Setting ID="split_callgirl" Name="Split on achieving Late Night Girl: Talk to the call girl." OneTimeSplit="true"/>
-	<Setting ID="split_tv" Name="Split on achieving Couch Potato: Watch all TV channels." OneTimeSplit="true"/>
-	<Setting ID="split_ouija" Name="Split on achieving Spirit Summoner: Find the Ouija board." OneTimeSplit="true"/>
-	<Setting ID="split_porksy" Name="Split on achieving Highscore Killer: 15 points in Porsky's Revenge." OneTimeSplit="true"/>
-	<Setting ID="split_runbum" Name="Split on achieving Capitalist Casualty: 5000 points in RunBums." OneTimeSplit="true"/>
-	<Setting ID="split_evidence" Name="Split on collecting evidence." />
-	<Setting ID="split_comic" Name="Split on collecting a comic.">
-		<Setting ID="split_urban_legends_1" Name="Urban Legends #1" OneTimeSplit="true" />
-		<Setting ID="split_sineater_1" Name="SinEater #1" OneTimeSplit="true" />
-		<Setting ID="split_sineater_2" Name="SinEater #2" OneTimeSplit="true" />
-		<Setting ID="split_sineater_3" Name="SinEater #3" OneTimeSplit="true" />
-		<Setting ID="split_reapers_1" Name="Reapers #1" OneTimeSplit="true" />
-		<Setting ID="split_reapers_2" Name="Reapers #2" OneTimeSplit="true" />
-		<Setting ID="split_reapers_3" Name="Reapers #3" OneTimeSplit="true" />
-	</Setting>
-	<Setting ID="split_item" Name="Split on collecting item">
-		<Setting ID="split_purse" Name="Purse" OneTimeSplit="true" />
-		<Setting ID="split_remote" Name="Remote" OneTimeSplit="true" />
-		<Setting ID="split_bathroom_key" Name="Bathroom Key" OneTimeSplit="true" />
-		<Setting ID="split_game_toy" Name="Game Toy" OneTimeSplit="true" />
-	</Setting>
-	<Setting ID="split_npc" Name="Split on talking to an NPC.">
-		<Setting ID="split_npc_0" Name="Hobo Jo" OneTimeSplit="true" />
-		<Setting ID="split_npc_1" Name="Stan" OneTimeSplit="true" />
-		<Setting ID="split_npc_2" Name="Junkie" OneTimeSplit="true" />
-		<Setting ID="split_npc_3" Name="Homeless Man" OneTimeSplit="true" />
-		<Setting ID="split_npc_4" Name="Bus Driver" OneTimeSplit="true" />
-		<Setting ID="split_npc_5" Name="Laundry Employee" OneTimeSplit="true" />
-		<Setting ID="split_npc_6" Name="Laundry Patron" OneTimeSplit="true" />
-		<Setting ID="split_npc_7" Name="Peepaw" OneTimeSplit="true" />
-		<Setting ID="split_npc_8" Name="Pizza Dude" OneTimeSplit="true" />
-		<Setting ID="split_npc_9" Name="Appliance Manager" OneTimeSplit="true" />
-		<Setting ID="split_npc_10" Name="Old Lady" OneTimeSplit="true" />
-	</Setting>
+    <Setting ID="split_chapter" Name="Split on completing chapter.">
+        <Setting ID="split_chapter_0" Name="Prologue" OneTimeSplit="true" />
+        <Setting ID="split_chapter_1" Name="Plaza" OneTimeSplit="true" />
+        <Setting ID="split_chapter_2" Name="Officer Burton (NOT WORKING)" OneTimeSplit="true" />
+        <Setting ID="split_chapter_3" Name="The Womb Ripper (Any% End)" OneTimeSplit="true" />
+        <Setting ID="split_chapter_5" Name="Epilogue (100% End)" OneTimeSplit="true" />
+    </Setting>
+    <Setting ID="split_change" Name="Split on getting change from the change machine." OneTimeSplit="true"/>
+    <Setting ID="split_janitor" Name="Split on achieving Janitor: Enter both bathrooms." OneTimeSplit="true"/>
+    <Setting ID="split_phonenumber" Name="Split on finding the call girl's phone number." OneTimeSplit="true"/>
+    <Setting ID="split_callgirl" Name="Split on achieving Late Night Girl: Talk to the call girl." OneTimeSplit="true"/>
+    <Setting ID="split_tv" Name="Split on achieving Couch Potato: Watch all TV channels." OneTimeSplit="true"/>
+    <Setting ID="split_ouija" Name="Split on achieving Spirit Summoner: Find the Ouija board." OneTimeSplit="true"/>
+    <Setting ID="split_porksy" Name="Split on achieving Highscore Killer: 15 points in Porsky's Revenge." OneTimeSplit="true"/>
+    <Setting ID="split_runbum" Name="Split on achieving Capitalist Casualty: 5000 points in RunBums." OneTimeSplit="true"/>
+    <Setting ID="split_evidence" Name="Split on collecting evidence." />
+    <Setting ID="split_comic" Name="Split on collecting a comic.">
+        <Setting ID="split_urban_legends_1" Name="Urban Legends #1" OneTimeSplit="true" />
+        <Setting ID="split_sineater_1" Name="SinEater #1" OneTimeSplit="true" />
+        <Setting ID="split_sineater_2" Name="SinEater #2" OneTimeSplit="true" />
+        <Setting ID="split_sineater_3" Name="SinEater #3" OneTimeSplit="true" />
+        <Setting ID="split_reapers_1" Name="Reapers #1" OneTimeSplit="true" />
+        <Setting ID="split_reapers_2" Name="Reapers #2" OneTimeSplit="true" />
+        <Setting ID="split_reapers_3" Name="Reapers #3" OneTimeSplit="true" />
+    </Setting>
+    <Setting ID="split_item" Name="Split on collecting item">
+        <Setting ID="split_purse" Name="Purse" OneTimeSplit="true" />
+        <Setting ID="split_remote" Name="Remote" OneTimeSplit="true" />
+        <Setting ID="split_bathroom_key" Name="Bathroom Key" OneTimeSplit="true" />
+        <Setting ID="split_game_toy" Name="Game Toy" OneTimeSplit="true" />
+    </Setting>
+    <Setting ID="split_npc" Name="Split on talking to an NPC.">
+        <Setting ID="split_npc_0" Name="Hobo Jo" OneTimeSplit="true" />
+        <Setting ID="split_npc_1" Name="Stan" OneTimeSplit="true" />
+        <Setting ID="split_npc_2" Name="Junkie" OneTimeSplit="true" />
+        <Setting ID="split_npc_3" Name="Homeless Man" OneTimeSplit="true" />
+        <Setting ID="split_npc_4" Name="Bus Driver" OneTimeSplit="true" />
+        <Setting ID="split_npc_5" Name="Laundry Employee" OneTimeSplit="true" />
+        <Setting ID="split_npc_6" Name="Laundry Patron" OneTimeSplit="true" />
+        <Setting ID="split_npc_7" Name="Peepaw" OneTimeSplit="true" />
+        <Setting ID="split_npc_8" Name="Pizza Dude" OneTimeSplit="true" />
+        <Setting ID="split_npc_9" Name="Appliance Manager" OneTimeSplit="true" />
+        <Setting ID="split_npc_10" Name="Old Lady" OneTimeSplit="true" />
+    </Setting>
 </Settings>
