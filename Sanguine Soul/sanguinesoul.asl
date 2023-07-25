@@ -1,23 +1,21 @@
-// unreal 4.23+
-
 state("SanguineSoul-Win64-Shipping")
 {
     // doesn't seem to work
     // bool IfLoading: 0x3018048, 0x140, 0x38, 0x0, 0x30, 0x358, 0x8BA;
     
     long GNames: 0x2EC0B48;
-    long worldFName: 0x3018048, 0x18;
+    int worldFName: 0x3018048, 0x18;
 }
 
 startup
 {
-	Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
-	vars.Helper.GameName = "Sanguine Soul";
-	vars.Helper.Settings.CreateFromXml("Components/SanguineSoul.Settings.xml");
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
+    vars.Helper.GameName = "Sanguine Soul";
+    vars.Helper.Settings.CreateFromXml("Components/SanguineSoul.Settings.xml");
 
-	vars.CompletedSplits = new HashSet<string>();
+    vars.CompletedSplits = new HashSet<string>();
 
-	vars.Helper.AlertRealTime();
+    vars.Helper.AlertRealTime();
 }
 
 init
@@ -26,8 +24,9 @@ init
     var cachedFNames = new Dictionary<int, string>();
     vars.ReadFName = (Func<int, string>)(fname => 
     {
-	string name;
-        if (cachedFNames.TryGetValue(fname, out name)) return name;
+        string name;
+        if (cachedFNames.TryGetValue(fname, out name))
+            return name;
 
         int chunk_index  = (int) fname / 0x4000;
         int element_index = (int) fname % 0x4000;
@@ -58,33 +57,29 @@ update
 {
     // Deref useful FNames here
     IDictionary<string, object> currentLookup = current;
-    foreach (var entry in currentLookup)
+    foreach (var key in new List<string>(currentLookup.Keys))
     {
-	string key = entry.Key;
-	object value = entry.Value;
+        object value = currentLookup[key];
 
-        if (!key.EndsWith("FName"))
+        if (!key.EndsWith("FName") || value.GetType() != typeof(int))
             continue;
         
         // e.g. missionFName -> mission
-        string newKey = key.Substring(0, fname.Length - 5);
-	string newName = vars.ReadFName(value);
+        string newKey = key.Substring(0, key.Length - 5);
+        string newName = vars.ReadFName((int) value);
 
-        // Debugging and such
-	object oldName;
-        if (!currentLookup.TryGetValue(key, out oldName))
+        object oldName;
+        bool newKeyExists = currentLookup.TryGetValue(newKey, out oldName);
+        if (newName == "None" && newKeyExists)
+            continue;
+        
+        if (!newKeyExists)
         {
             vars.Log(newKey + ": " + newName);
         }
-	else
-	{
-		if (newName == "None")
-			continue;
-
-		if (oldName != newName)
-		{
-			vars.Log(newKey + ": " + oldName + " -> " + newName);
-		}
+        else if (oldName != newName)
+        {
+            vars.Log(newKey + ": " + oldName + " -> " + newName);
         }
 
         currentLookup[newKey] = newName;
