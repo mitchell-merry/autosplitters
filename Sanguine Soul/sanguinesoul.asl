@@ -61,30 +61,33 @@ update
     foreach (var entry in currentLookup)
     {
 	string key = entry.Key;
-	object value = entry.Value
+	object value = entry.Value;
 
         if (!key.EndsWith("FName"))
             continue;
         
         // e.g. missionFName -> mission
-        key = key.Substring(0, fname.Length - 5);
-
-	string fNameEntry = vars.ReadFName(value);
-        if (fNameEntry == "None")
-            continue;
+        string newKey = key.Substring(0, fname.Length - 5);
+	string newName = vars.ReadFName(value);
 
         // Debugging and such
-	object oldValue;
-        if (!currentLookup.TryGetValue(key, out oldValue))
+	object oldName;
+        if (!currentLookup.TryGetValue(key, out oldName))
         {
-            vars.Log(key + ": " + fNameEntry);
+            vars.Log(newKey + ": " + newName);
         }
-        else if (oldValue != fNameEntry)
-        {
-            vars.Log(key + ": " + oldValue + " -> " + fNameEntry);
+	else
+	{
+		if (newName == "None")
+			continue;
+
+		if (oldName != newName)
+		{
+			vars.Log(newKey + ": " + oldName + " -> " + newName);
+		}
         }
 
-        currentLookup[key] = fNameEntry;
+        currentLookup[newKey] = newName;
     }
 }
 
