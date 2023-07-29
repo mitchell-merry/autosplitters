@@ -19,11 +19,19 @@ init
         vars.Helper["finalTime"] = mono.Make<float>(pgm, "FinalTime");
         return true;
     });
+
+    vars.ReadSceneName = (Func<IntPtr, string>)(scene => {
+        // this seems to work best?
+        string name = vars.Helper.ReadString(256, ReadStringType.UTF8, scene + 0x38);
+        return name == "" ? null : name;
+    });
 }
 
 update
 {
-    current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
+    current.scene = vars.ReadSceneName(vars.Helper.Scenes.Loaded[0].Address);
+
+    if (old.scene != current.scene) vars.Log("scene: " + old.scene + " -> " + current.scene);
 }
 
 start
@@ -39,5 +47,5 @@ split
 
 reset
 {
-    return old.loadingScene != current.loadingScene && current.loadingScene == "MainMenu";
+    return old.scene != current.scene && current.scene == "MainMenu";
 }
