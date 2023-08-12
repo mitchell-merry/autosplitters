@@ -3,17 +3,26 @@ state("Clay_3-Win64-Shipping")
     long FNamePool: 0x6404EB0;
  
     long worldFName: 0x6684E78, 0x18;
+
+    double x: 0x6684E78, 0x1B8, 0x38, 0x0, 0x30, 0x2E0, 0x328, 0x128;
+    double z: 0x6684E78, 0x1B8, 0x38, 0x0, 0x30, 0x2E0, 0x328, 0x130;
+    double y: 0x6684E78, 0x1B8, 0x38, 0x0, 0x30, 0x2E0, 0x328, 0x138;
 }
 
 startup
 {
+    double epsilon = 0.01;
+    vars.Eq = (Func<double, double, bool>)((first, second) =>
+    {
+        return Math.Abs(first - second) < epsilon;
+    });
+
     // as desired by the community /shrug
     vars.LoadingScreens = new List<string>() { "None", "Main_Menu", "Disclaimer" };
-}
 
-isLoading
-{
-    return vars.LoadingScreens.Contains(current.world);
+    vars.StartX = 32.55;
+    vars.StartZ = 2586.16;
+    vars.StartY = 111.48;
 }
 
 init
@@ -81,6 +90,16 @@ update
     }
 }
 
+start
+{
+    return (vars.Eq(old.x, vars.StartX) && vars.Eq(old.z, vars.StartZ) && vars.Eq(old.y, vars.StartY))
+        && (!vars.Eq(old.x, current.x) || !vars.Eq(old.z, current.z) || !vars.Eq(old.y, current.y));
+}
+
+isLoading
+{
+    return vars.LoadingScreens.Contains(current.world);
+}
 
 exit
 {
