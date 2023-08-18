@@ -1,6 +1,6 @@
-state("HITMAN3", "Epic May 2023")
+state("HITMAN3", "Epic August 2023")
 {
-    bool isLoading: 0x398A029;
+    bool isLoading: 0x398A229;
 }
 
 state("HITMAN3", "Steam May 2023")
