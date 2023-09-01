@@ -3,7 +3,7 @@ state("HITMAN3", "Epic August 2023")
     bool isLoading: 0x398A229;
 }
 
-state("HITMAN3", "Steam May 2023")
+state("HITMAN3", "Steam August 2023")
 {
     bool isLoading: 0x39B220C;
 }
@@ -35,7 +35,7 @@ init
     // MMS as a workaround to the Game Pass not working (#4)
     switch (mms) {
         case "4A67000": version = "Epic August 2023"; break;
-        case "4A71000": version = "Steam May 2023"; break;
+        case "4A71000": version = "Steam August 2023"; break;
         case "4ABE000": version = "Game Pass May 2023"; break;
 
         default: version = "UNKNOWN - raise an issue on GitHub if you want support for this version"; break;
