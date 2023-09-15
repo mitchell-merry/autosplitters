@@ -2,7 +2,7 @@ state("Pandemic")
 {
     long FNamePool: 0x5CC9620;
 
-    long testFName: 0x5EFDDE0, 0x30, 0x258, 0x3F0, 0x228, 0x10, 0x18;
+    // long testFName: 0x5EFDDE0, 0x30, 0x258, 0x3F0, 0x228, 0x10, 0x18;
 
     long UWorld: 0x5EFDDE0;
     long worldFName: 0x5EFDDE0, 0x18;
@@ -28,7 +28,7 @@ startup
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
     vars.Helper.GameName = "SCP: 5K";
     vars.Helper.Settings.CreateFromXml("Components/SCP5K.Settings.xml");
-    vars.Helper.StartFileLogger("SCP5K.log");
+    // vars.Helper.StartFileLogger("SCP5K.log");
     
     vars.CompletedSplits = new HashSet<string>();
     
