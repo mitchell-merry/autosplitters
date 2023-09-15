@@ -1,0 +1,99 @@
+<Settings>
+    <Setting Id="obj" Label="Split on completing objective" State="false">
+        <Setting Id="obj_Area12_PersistentLevel" Label="Area 12 Chapter 1" State="false">
+            <Setting Id="obj_Area12_PersistentLevel_3" Label="Explore Logistics and find a way down to Area 12" State="false" />
+            <!-- Identical to 3 -->
+            <!-- <Setting Id="obj_Area12_PersistentLevel_4" Label="ControlRoom" State="false" /> -->
+            <Setting Id="obj_Area12_PersistentLevel_5" Label="Search the Unloading Area for a way forward" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_0" Label="Power the double blast doors to proceed" State="false">
+                <Setting Id="obj_Area12_PersistentLevel_1" Label="Search the Plumbing Facility to the West &amp; reboot its generator." State="false" />
+                <Setting Id="obj_Area12_PersistentLevel_2" Label="Search the Maintenance Area to the East &amp; reboot its generator." State="false" />
+            </Setting>
+
+            <Setting Id="obj_Area12_PersistentLevel_6" Label="Go through the blast doors &amp; access the freight elevator" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_8" Label="Get into the parking garage" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_9" Label="Enter Area 12" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_10" Label="Get into the checkpoint" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_11" Label="Get the blast door open" State="false" />
+
+            <Setting Id="obj_Area12_PersistentLevel_13" Label="Restore the power" State="false">
+                <Setting Id="obj_Area12_PersistentLevel_14" Label="Attempt to start the backup generators" State="false" />
+                <Setting Id="obj_Area12_PersistentLevel_15" Label="Refuel the natural gas depo (C3H8)" State="false" />
+            </Setting>
+            <Setting Id="obj_Area12_PersistentLevel_16" Label="Retry the generators" State="false" />
+
+            <Setting Id="obj_Area12_PersistentLevel_17" Label="Lower the active water" State="false">
+                <Setting Id="obj_Area12_PersistentLevel_18" Label="Activate the terminal in the control room" State="false" />
+                <Setting Id="obj_Area12_PersistentLevel_19" Label="Wait for the flow to die down" State="false" />
+            </Setting>
+
+            <Setting Id="obj_Area12_PersistentLevel_20" Label="Drop down into the waterway" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_21" Label="Find a way out of the Water Treatment" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_12" Label="Proceed into Area 12" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_22" Label="Proceed to the Common Area" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_23" Label="Regroup in the Common Area" State="false" />
+
+            <!-- <Setting Id="obj_Area12_PersistentLevel_7" Label="Logistics_End" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_24" Label="Dave" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_25" Label="Dave" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_26" Label="Dave" State="false" />
+            <Setting Id="obj_Area12_PersistentLevel_27" Label="Dave" State="false" /> -->
+        </Setting>
+        <Setting Id="obj_M_Area12_Part2" Label="Area 12 Chapter 2" State="false">
+            <Setting Id="obj_M_Area12_Part2_4" Label="Reach the upper level of the Common Area" State="false">
+                <Setting Id="obj_M_Area12_Part2_5" Label="Restore Lift Power" State="false">
+                    <Setting Id="obj_M_Area12_Part2_7" Label="Acquire Level 2 Security Clearance" State="false">
+                        <Setting Id="obj_M_Area12_Part2_10" Label="Find a way into the backstage area" State="false" />
+                    </Setting>
+                    <Setting Id="obj_M_Area12_Part2_8" Label="Proceed to the Generator Room" State="false" />
+                </Setting>
+                <Setting Id="obj_M_Area12_Part2_6" Label="Contain the Anomaly Inhabiting the Education Centre" State="false" />
+                <Setting Id="obj_M_Area12_Part2_11" Label="Return to the Common Area" State="false" />
+            </Setting>
+            <!-- not sure where this goes -->
+            <!-- <Setting Id="obj_M_Area12_Part2_9" Label="ShutdownProjector" State="false" /> ? -->
+
+            <Setting Id="obj_M_Area12_Part2_12" Label="Raid Area 12" State="false">
+                <Setting Id="obj_M_Area12_Part2_13" Label="Get to the Data Center" State="false" />
+                <Setting Id="obj_M_Area12_Part2_28" Label="Obtain critical files" State="false" />
+                <Setting Id="obj_M_Area12_Part2_14" Label="Activate: Cooling Bay A" State="false" />
+                <Setting Id="obj_M_Area12_Part2_15" Label="Transfer files from A1" State="false" />
+                <Setting Id="obj_M_Area12_Part2_16" Label="Wait for the files to transfer (A1)" State="false" />
+                <Setting Id="obj_M_Area12_Part2_17" Label="Pick up the thumb drive (A1)" State="false" />
+                <Setting Id="obj_M_Area12_Part2_18" Label="Transfer files from A2" State="false" />
+                <Setting Id="obj_M_Area12_Part2_19" Label="Wait for the files to transfer (A2)" State="false" />
+                <Setting Id="obj_M_Area12_Part2_20" Label="Pick up the thumb drive (A2)" State="false" />
+                <Setting Id="obj_M_Area12_Part2_21" Label="Activate: Cooling Bay B" State="false" />
+                <Setting Id="obj_M_Area12_Part2_22" Label="Transfer files from B1" State="false" />
+                <Setting Id="obj_M_Area12_Part2_23" Label="Wait for the files to transfer (B1)" State="false" />
+                <Setting Id="obj_M_Area12_Part2_24" Label="Pick up the thumb drive (B1)" State="false" />
+                <Setting Id="obj_M_Area12_Part2_25" Label="Transfer files from B2" State="false" />
+                <Setting Id="obj_M_Area12_Part2_26" Label="Wait for the files to transfer (B2)" State="false" />
+                <Setting Id="obj_M_Area12_Part2_27" Label="Pick up the thumb drive (B2)" State="false" />
+            </Setting>
+
+            <Setting Id="obj_M_Area12_Part2_29" Label="Locate the Nuclear Reactor" State="false" />
+            <Setting Id="obj_M_Area12_Part2_30" Label="Startup the reactor cooling system" State="false">
+                <Setting Id="obj_M_Area12_Part2_31" Label="Activate: Cooling Plant A" State="false" />
+                <Setting Id="obj_M_Area12_Part2_32" Label="Activate: Cooling Plant B" State="false" />
+            </Setting>
+
+            <Setting Id="obj_M_Area12_Part2_33" Label="Start a meltdown of the Nuclear Reactor" State="false">
+                <Setting Id="obj_M_Area12_Part2_34" Label="Shoot the cooling pipes at the base of the Nuclear Reactor" State="false" />
+                <Setting Id="obj_M_Area12_Part2_35" Label="Activate the Nuclear Reactor" State="false" />
+            </Setting>
+
+            <Setting Id="obj_M_Area12_Part2_36" Label="Escape through the Transport Bay" State="false">
+                <Setting Id="obj_M_Area12_Part2_37" Label="Reach the Transport Bay through the tunnels" State="false" />
+                <Setting Id="obj_M_Area12_Part2_38" Label="Get to the control room and activate the cargo lift" State="false" />
+                <Setting Id="obj_M_Area12_Part2_39" Label="Get on the cargo lift!" State="false" />
+                <Setting Id="obj_M_Area12_Part2_40" Label="Cargo lift countdown, remain on the platform!" State="false" />
+            </Setting>
+
+            <!-- <Setting Id="obj_M_Area12_Part2_0" Label="Dave" State="false" />
+            <Setting Id="obj_M_Area12_Part2_1" Label="Dave" State="false" />
+            <Setting Id="obj_M_Area12_Part2_2" Label="Dave" State="false" />
+            <Setting Id="obj_M_Area12_Part2_3" Label="Dave" State="false" /> -->
+        </Setting>
+    </Setting>
+</Settings>

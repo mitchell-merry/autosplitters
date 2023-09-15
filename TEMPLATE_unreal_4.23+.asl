@@ -4,7 +4,7 @@ state("TEMPLATE")
 {
     long FNamePool: ;
 
-    // long worldFName: ;
+    // long worldFName: , 0x18;
 }
 
 startup
@@ -88,7 +88,7 @@ update
         
         // e.g. missionFName -> mission
         string newKey = key.Substring(0, key.Length - 5);
-        string newName = vars.ReadFName((int) value);
+        string newName = vars.ReadFName((long) value);
 
         object oldName;
         bool newKeyExists = currentLookup.TryGetValue(newKey, out oldName);

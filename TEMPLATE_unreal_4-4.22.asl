@@ -5,7 +5,7 @@ state("")
     // to find this https://www.youtube.com/watch?v=UzjhJTaYFn4 or some dumper
     long GNames: ;
 
-    long worldFName: , 0x18;
+    int worldFName: , 0x18;
 }
 
 startup
