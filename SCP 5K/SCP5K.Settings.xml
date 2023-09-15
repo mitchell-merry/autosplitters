@@ -96,4 +96,28 @@
             <Setting Id="obj_M_Area12_Part2_3" Label="Dave" State="false" /> -->
         </Setting>
     </Setting>
+    <Setting Id="obj_M_HuntSweden" Label="Outpost Axiom" State="false">
+        <Setting Id="obj_M_HuntSweden_0" Label="Raid" State="false" />
+        <Setting Id="obj_M_HuntSweden_1" Label="Recon" State="false" />
+        <Setting Id="obj_M_HuntSweden_2" Label="InvestigateCabin" State="false" />
+        <Setting Id="obj_M_HuntSweden_3" Label="CollectEncryptedIntel" State="false" />
+        <Setting Id="obj_M_HuntSweden_4" Label="StartDecrypt" State="false" />
+        <Setting Id="obj_M_HuntSweden_5" Label="DecryptDocs" State="false" />
+        <Setting Id="obj_M_HuntSweden_6" Label="BroadcastAllClear" State="false" />
+        <Setting Id="obj_M_HuntSweden_7" Label="DisableSatellite" State="false" />
+        <Setting Id="obj_M_HuntSweden_8" Label="Warehouse" State="false" />
+        <Setting Id="obj_M_HuntSweden_9" Label="SupportingStations" State="false" />
+        <Setting Id="obj_M_HuntSweden_10" Label="EnterAdmin" State="false" />
+        <Setting Id="obj_M_HuntSweden_11" Label="EnterSecurity" State="false" />
+        <Setting Id="obj_M_HuntSweden_12" Label="FindHack" State="false" />
+        <Setting Id="obj_M_HuntSweden_13" Label="Hack" State="false" />
+        <Setting Id="obj_M_HuntSweden_14" Label="ClimbAndDisableSatellite" State="false" />
+        <Setting Id="obj_M_HuntSweden_15" Label="DisableFence" State="false" />
+        <Setting Id="obj_M_HuntSweden_16" Label="ClimbSatellite" State="false" />
+        <Setting Id="obj_M_HuntSweden_17" Label="DisableSatelliteLever" State="false" />
+        <Setting Id="obj_M_HuntSweden_18" Label="Leave" State="false" />
+        <Setting Id="obj_M_HuntSweden_19" Label="Backup" State="false" />
+        <Setting Id="obj_M_HuntSweden_20" Label="Silo" State="false" />
+        <Setting Id="obj_M_HuntSweden_21" Label="PlayerWarehouse" State="false" />
+    </Setting>
 </Settings>
