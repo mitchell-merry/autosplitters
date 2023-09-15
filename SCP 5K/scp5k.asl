@@ -207,6 +207,7 @@ split
 
 isLoading
 {
-    return current.UWorld == 0 || current.world == "TransitionMap" || current.world == "EntryLevel"
+    return current.UWorld == 0 || current.world == "TransitionMap"
+        || current.world == "EntryLevel" || current.GSClass == "GameStateBase"
         || (current.GSClass == "GS_PandemicGameState_C" && current.GameStatus == 1);
 }
