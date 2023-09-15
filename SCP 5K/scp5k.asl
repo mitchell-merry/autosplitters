@@ -78,13 +78,13 @@ init
     {
         dynamic ret = new ExpandoObject();
 
-        ret.Name = vars.ReadFName(vars.Helper.Read<long>(objAddr + 0x40));
-        ret.Major = vars.Helper.Read<bool>(objAddr + 0x78);
-        ret.Active = vars.Helper.Read<bool>(objAddr + 0x38);
-        ret.Started = vars.Helper.Read<bool>(objAddr + 0x39);
+        // ret.Name = vars.ReadFName(vars.Helper.Read<long>(objAddr + 0x40));
+        // ret.Major = vars.Helper.Read<bool>(objAddr + 0x78);
+        // ret.Active = vars.Helper.Read<bool>(objAddr + 0x38);
+        // ret.Started = vars.Helper.Read<bool>(objAddr + 0x39);
         ret.Completed = vars.Helper.Read<bool>(objAddr + 0x3B);
-        ret.Succeeded = vars.Helper.Read<bool>(objAddr + 0x3C);
-        ret.DisplayOnUI = vars.Helper.Read<bool>(objAddr + 0x3D);
+        // ret.Succeeded = vars.Helper.Read<bool>(objAddr + 0x3C);
+        // ret.DisplayOnUI = vars.Helper.Read<bool>(objAddr + 0x3D);
 
         return ret;
     });
@@ -105,29 +105,29 @@ init
         return true;
     });
 
-    IDictionary<string, object> currentLookup = current;
-    foreach (var key in new List<string>(currentLookup.Keys))
-    {
-        object value = currentLookup[key];
+    // IDictionary<string, object> currentLookup = current;
+    // foreach (var key in new List<string>(currentLookup.Keys))
+    // {
+    //     object value = currentLookup[key];
 
-        if (key.EndsWith("FName"))
-            continue;
+    //     if (key.EndsWith("FName"))
+    //         continue;
         
-        string str = value.ToString();
-        if (value.GetType() == typeof(long))
-        {
-            str = "0x" + ((long) value).ToString("X");
-        }
+    //     string str = value.ToString();
+    //     if (value.GetType() == typeof(long))
+    //     {
+    //         str = "0x" + ((long) value).ToString("X");
+    //     }
 
-        vars.Log(key + " (" + value.GetType() + "): " + str);
-    }
+    //     vars.Log(key + " (" + value.GetType() + "): " + str);
+    // }
 
-    for (var i = 0; i < current.objCount; i++) {
-            var objAddr = vars.Helper.Read<IntPtr>((IntPtr) current.objData + 0x8 * i);
-            var obj = vars.ReadObjective(objAddr);
-            vars.Log("Objective: " + obj.Name + "(" + obj.Major + ", " + obj.Active + ", " + obj.Started + ", " + obj.Completed + ", " + obj.Succeeded + ", " + obj.DisplayOnUI + ")");
-            vars.Log("<Setting Id=\"obj_" + vars.ReadFName(current.worldFName) + "_" + i + "\" Label=\"" + obj.Name + "\" State=\"false\" />");
-        }
+    // for (var i = 0; i < current.objCount; i++) {
+    //     var objAddr = vars.Helper.Read<IntPtr>((IntPtr) current.objData + 0x8 * i);
+    //     var obj = vars.ReadObjective(objAddr);
+    //     vars.Log("Objective: " + obj.Name + "(" + obj.Major + ", " + obj.Active + ", " + obj.Started + ", " + obj.Completed + ", " + obj.Succeeded + ", " + obj.DisplayOnUI + ")");
+    //     vars.Log("<Setting Id=\"obj_" + vars.ReadFName(current.worldFName) + "_" + i + "\" Label=\"" + obj.Name + "\" State=\"false\" />");
+    // }
 }
 
 update
@@ -151,27 +151,27 @@ update
             continue;
         
         // Debugging and such
-        if (!newKeyExists)
-        {
-            vars.Log(newKey + ": " + newName);
-        }
-        else if (oldName != newName)
-        {
-            vars.Log(newKey + ": " + oldName + " -> " + newName);
-        }
+        // if (!newKeyExists)
+        // {
+        //     vars.Log(newKey + ": " + newName);
+        // }
+        // else if (oldName != newName)
+        // {
+        //     vars.Log(newKey + ": " + oldName + " -> " + newName);
+        // }
 
         currentLookup[newKey] = newName;
     }
 
-    if (old.objCount != current.objCount) {
-        vars.Log("objCount: " + old.objCount + " -> " + current.objCount);
-        for (var i = 0; i < current.objCount; i++) {
-            var objAddr = vars.Helper.Read<IntPtr>((IntPtr) current.objData + 0x8 * i);
-            var obj = vars.ReadObjective(objAddr);
-            vars.Log("Objective: " + obj.Name + "(" + obj.Major + ", " + obj.Active + ", " + obj.Started + ", " + obj.Completed + ", " + obj.Succeeded + ", " + obj.DisplayOnUI + ")");
-            vars.Log("<Setting Id=\"obj_" + current.world + "_" + i + "\" Label=\"" + obj.Name + "\" State=\"false\" />");
-        }
-    }
+    // if (old.objCount != current.objCount) {
+    //     vars.Log("objCount: " + old.objCount + " -> " + current.objCount);
+    //     for (var i = 0; i < current.objCount; i++) {
+    //         var objAddr = vars.Helper.Read<IntPtr>((IntPtr) current.objData + 0x8 * i);
+    //         var obj = vars.ReadObjective(objAddr);
+    //         vars.Log("Objective: " + obj.Name + "(" + obj.Major + ", " + obj.Active + ", " + obj.Started + ", " + obj.Completed + ", " + obj.Succeeded + ", " + obj.DisplayOnUI + ")");
+    //         vars.Log("<Setting Id=\"obj_" + current.world + "_" + i + "\" Label=\"" + obj.Name + "\" State=\"false\" />");
+    //     }
+    // }
 }
 
 start
