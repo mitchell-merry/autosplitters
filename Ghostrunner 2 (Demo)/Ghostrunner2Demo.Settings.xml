@@ -1,0 +1,8 @@
+<Settings>
+    <Setting Id="cp" Label="Split on reaching checkpoint" State="false">
+        <Setting Id="cp_VSL_01_World" Label="Intro" State="false">
+            <!-- TODO -->
+        </Setting>
+        <Setting Id="cp_VSL_02_World" Label="Motorbike" State="false"></Setting>
+    </Setting>
+</Settings>
