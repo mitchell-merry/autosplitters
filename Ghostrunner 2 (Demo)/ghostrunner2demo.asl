@@ -15,7 +15,7 @@ startup
 {
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
     vars.Helper.GameName = "Ghostrunner 2 (Demo)";
-    // vars.Helper.Settings.CreateFromXml("Components/TEMPLATE.Settings.xml");
+    vars.Helper.Settings.CreateFromXml("Components/Ghostrunner2Demo.Settings.xml");
     
     vars.S = (Func<object, string>)(v => v.GetType() == typeof(long) ? ("0x" + ((long)v).ToString("X")) : v.ToString());
 
@@ -124,10 +124,10 @@ update
 
         if (!key.EndsWith("FName"))
         {
-            if (vars.First)
-                vars.Log(key + ": " + vars.S(value));
-            else if (key != "CurrTime")
-                vars.Watch(old, current, key);
+            // if (vars.First)
+            //     vars.Log(key + ": " + vars.S(value));
+            // else if (key != "CurrTime")
+            //     vars.Watch(old, current, key);
 
             continue;
         }
@@ -150,6 +150,12 @@ update
 
     // bleh...
     if (old.PrevTime < current.PrevTime) current.CurrTime = 0;
+    // don't update time between worlds (goes to 0)
+    if (current.world == "None" || current.checkpoint == "None")
+    {
+        current.CurrTime = old.CurrTime;
+        current.PrevTime = old.PrevTime;
+    }
 
     vars.First = false;
 }
@@ -170,7 +176,7 @@ onStart
 
 split
 {
-    return old.checkpoint != current.checkpoint;
+    return old.checkpoint != current.checkpoint && vars.CheckSplit("cp_" + current.world + "_" + current.checkpoint);
 }
 
 gameTime
@@ -182,5 +188,5 @@ gameTime
 
 isLoading
 {
-    return true;
+    return !(current.world == "None" || current.checkpoint == "None");
 }

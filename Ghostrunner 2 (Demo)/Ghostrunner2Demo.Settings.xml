@@ -1,8 +1,12 @@
 <Settings>
     <Setting Id="cp" Label="Split on reaching checkpoint" State="false">
         <Setting Id="cp_VSL_01_World" Label="Intro" State="false">
-            <!-- TODO -->
+            <!-- Only adding particular checkpoints here -->
+            <Setting Id="cp_VSL_01_World_BP_CheckpointTrigger10" Label="After First Arena Fight" State="false" />
+            <Setting Id="cp_VSL_01_World_BP_CheckpointTrigger13" Label="Before Shinobi Tutorial" State="false" />
+            <Setting Id="cp_VSL_01_World_BP_CheckpointTrigger18" Label="After Second Arena Fight" State="false" />
+            <Setting Id="cp_VSL_01_World_BP_CheckpointTrigger26" Label="After Triple Barrel Fight" State="false" />
         </Setting>
-        <Setting Id="cp_VSL_02_World" Label="Motorbike" State="false"></Setting>
+        <Setting Id="cp_VSL_02_World" Label="Motorbike (TODO)" State="false"></Setting>
     </Setting>
 </Settings>
