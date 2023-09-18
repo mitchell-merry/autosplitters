@@ -93,9 +93,9 @@ init
         {
             var ssPtr = game.ReadValue<IntPtr>((IntPtr) (curr.giss + i * 0x18 + 0x8));
             var name = vars.ReadFNameOfObject(ssPtr);
+            vars.Log(name + " at " + ssPtr.ToString("X"));
 
             if (name == "CheckpointSubsystem") {
-                vars.Log("checkpoint subsystem at " + ssPtr.ToString("X"));
                 vars.Checkpoint = new MemoryWatcher<long>(new DeepPointer(ssPtr + 0x50, 0x18));
             }
 
@@ -212,5 +212,5 @@ gameTime
 
 isLoading
 {
-    return !(current.world == "None" || current.checkpoint == "None");
+    return true;
 }
