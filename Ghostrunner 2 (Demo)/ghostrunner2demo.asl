@@ -74,7 +74,7 @@ init
         // if the split doesn't exist, or it's off, or we've done it already
         if (!settings.ContainsKey(key)
           || !settings[key]
-          || !vars.CompletedSplits.Add(key)
+        //   || !vars.CompletedSplits.Add(key)
         ) {
             return false;
         }
