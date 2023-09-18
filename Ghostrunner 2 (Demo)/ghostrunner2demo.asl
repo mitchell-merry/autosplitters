@@ -214,3 +214,8 @@ isLoading
 {
     return true;
 }
+
+reset
+{
+    return old.world != current.world && current.world == "MainMenu";
+}
