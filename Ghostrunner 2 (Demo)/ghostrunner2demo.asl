@@ -95,6 +95,7 @@ init
             var name = vars.ReadFNameOfObject(ssPtr);
 
             if (name == "CheckpointSubsystem") {
+                vars.Log("checkpoint subsystem at " + ssPtr.ToString("X"));
                 vars.Checkpoint = new MemoryWatcher<long>(new DeepPointer(ssPtr + 0x50, 0x18));
             }
 
@@ -103,7 +104,9 @@ init
 
     vars.RefreshSubsystemCache(current);
     vars.First = true;
-    vars.TotalTime = 0f;
+    current.timerRunning = false;
+    current.totalTime = 0;
+    current.cpChangedButCurrTimeHasntYetUpdated = false;
 }
 
 update
@@ -127,6 +130,7 @@ update
             // if (vars.First)
             //     vars.Log(key + ": " + vars.S(value));
             // else if (key != "CurrTime")
+            // else
             //     vars.Watch(old, current, key);
 
             continue;
@@ -140,22 +144,38 @@ update
         bool newKeyExists = currentLookup.TryGetValue(newKey, out oldName);
         
         // Debugging and such
-        if (!newKeyExists)
-            vars.Log(newKey + ": " + newName);
-        else if (oldName != newName)
-            vars.Log(newKey + ": " + oldName + " -> " + newName);
+        // if (!newKeyExists)
+        //     vars.Log(newKey + ": " + newName);
+        // else if (oldName != newName)
+        //     vars.Log(newKey + ": " + oldName + " -> " + newName);
 
         currentLookup[newKey] = newName;
     }
 
-    // bleh...
-    if (old.PrevTime < current.PrevTime) current.CurrTime = 0;
-    // don't update time between worlds (goes to 0)
-    if (current.world == "None" || current.checkpoint == "None")
+
+    // time has stopped (old because it updates once at the same time and again later)
+    if (current.world == "VSL_02_World" && old.checkpoint == "BP_CheckpointTrigger26" && old.PrevTime < current.PrevTime)
     {
-        current.CurrTime = old.CurrTime;
-        current.PrevTime = old.PrevTime;
+        current.timerRunning = false;
     }
+
+    // figure out the correct time to display, only update if we're running
+    if (current.timerRunning)
+    {
+        if (old.PrevTime < current.PrevTime) current.cpChangedButCurrTimeHasntYetUpdated = true;
+        if (current.cpChangedButCurrTimeHasntYetUpdated && old.CurrTime > 0.1 && current.CurrTime < 0.1)
+            current.cpChangedButCurrTimeHasntYetUpdated = false; 
+
+        if (current.cpChangedButCurrTimeHasntYetUpdated) current.totalTime = current.PrevTime;
+        else current.totalTime = current.PrevTime + current.CurrTime;
+    }
+    
+    // don't update time between worlds (goes to 0)
+    // if (current.world == "None" || current.checkpoint == "None")
+    // {
+    //     current.CurrTime = old.CurrTime;
+    //     current.PrevTime = old.PrevTime;
+    // }
 
     vars.First = false;
 }
@@ -171,19 +191,23 @@ onStart
 {
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
-    vars.TotalTime = 0f;
+    current.totalTime = 0;
+    current.timerRunning = true;
 }
 
 split
 {
-    return old.checkpoint != current.checkpoint && vars.CheckSplit("cp_" + current.world + "_" + current.checkpoint);
+    if (old.checkpoint != current.checkpoint && vars.CheckSplit("cp_" + current.world + "_" + current.checkpoint))
+    {
+        return true;
+    }
+
+    return old.timerRunning && !current.timerRunning;
 }
 
 gameTime
 {
-    // TODO fix transition between worlds
-    var timeToAdd = current.CurrTime + current.PrevTime;
-    return TimeSpan.FromSeconds(vars.TotalTime + timeToAdd);
+    return TimeSpan.FromSeconds(current.totalTime);
 }
 
 isLoading
