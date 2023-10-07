@@ -29,6 +29,8 @@ Usually, if you want to use one of these autosplitters, you don't have to do any
 
 However, if the text doesn't appear, that means the autosplitter is not yet on LiveSplit and you'll
 have to manually install.
+
+### Manual Install
 1. Download the `.asl` file you want to use, and any accompanying files (A `.Settings.xml` file if it exists).
 2. Download [`asl-help`](https://github.com/just-ero/asl-help/raw/main/lib/asl-help).
 3. Place all of those files under `<LiveSplit install directory>/Components`.
