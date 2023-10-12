@@ -28,6 +28,14 @@ startup
 
 init
 {
+    // vars.FNamePool = vars.Helper.ScanRel(13, "89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15");
+    // vars.GWorld = vars.Helper.ScanRel(3, "48 8B 05 ???????? 48 3B C? 48 0F 44 C? 48 89 05 ???????? E8");
+    // vars.GEngine = vars.Helper.ScanRel(7, "A8 01 75 ?? 48 C7 05");
+
+    // vars.GameEngine = vars.Helper.ScanRel(0x3, "48 89 05 ?? ?? ?? ?? 48 85 C9 74 ?? E8 ?? ?? ?? ?? 48 8D 4D");
+    // vars.UWorld = vars.Helper.ScanRel(0x3, "48 8B 1D ?? ?? ?? ?? 48 85 DB 75 ?? E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 74 ?? E8 ?? ?? ?? ?? 48 8B 53 ?? 4C 8D 40 ?? 48 63 40 ?? 3B 42 ?? 7F ?? 48 8B C8 48 8B 42 ?? 4C 39 04 C8 74 ?? 49 8B DF");
+    
+
     // The following code derefences FName structs to their string counterparts by
     // indexing the FNamePool table
     // `fname` is the actual struct, not a pointer to the struct

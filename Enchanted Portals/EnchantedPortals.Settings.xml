@@ -1,0 +1,43 @@
+<Settings>
+    <Setting Id="level" Label="Split on level completion" State="true">
+        <Setting Id="level_W1" Label="World 1" State="true">
+            <Setting Id="level_FORESTB" Label="Forest (Tutorial)" State="false" />
+            <Setting Id="level_HotelBase" Label="HotelBase" State="false" />
+            <Setting Id="level_HotelPiso" Label="HotelFloor" State="false" />
+            <Setting Id="level_Graveyard" Label="Witch (Bossfight)" State="false" />
+        </Setting>
+        <Setting Id="level_W2" Label="World 2" State="true">
+            <Setting Id="level_UFOplatform" Label="UFOplatform" State="false" />
+            <Setting Id="level_Matrix" Label="Matrix" State="false" />
+            <Setting Id="level_CowBoss" Label="Cow (Bossfight)" State="false" />
+        </Setting>
+        <Setting Id="level_W3" Label="World 3" State="true">
+            <Setting Id="level_Jungle" Label="Jungle" State="false" />
+            <Setting Id="level_Temple" Label="Temple" State="false" />
+            <Setting Id="level_Playa" Label="Octopus (Bossfight)" State="false" />
+        </Setting>
+        <Setting Id="level_W4" Label="World 4" State="true">
+            <Setting Id="level_LaboratorioB" Label="Lab" State="false" />
+            <Setting Id="level_CuevaB" Label="Cave" State="false" />
+            <Setting Id="level_Princesa" Label="Princess (Bossfight)" State="false" />
+        </Setting>
+        <Setting Id="level_W5" Label="World 5" State="true">
+            <Setting Id="level_Desierto" Label="Desert" State="false" />
+            <Setting Id="level_GalloMafia" Label="Rooster Mafia" State="false" />
+            <Setting Id="level_FuenteGallo" Label="Rooster (Bossfight)" State="false" />
+        </Setting>
+        <Setting Id="level_W6" Label="World 6" State="true">
+            <Setting Id="level_Pianista" Label="Pianista" State="false" />
+            <Setting Id="level_Cancerperro" Label="Cancerperro" State="false" />
+            <Setting Id="level_Libro" Label="[WIP] Libro (Bossfight)" State="true" />
+        </Setting>
+    </Setting>
+    <Setting Id="start" Label="Start on entering world" State="true">
+        <Setting Id="start_INTROGAME" Label="World 1" State="true" />
+        <Setting Id="start_UFOplatform" Label="World 2" State="false" />
+        <Setting Id="start_Jungle" Label="World 3" State="false" />
+        <Setting Id="start_LaboratorioB" Label="World 4" State="false" />
+        <Setting Id="start_Desierto" Label="World 5" State="false" />
+        <Setting Id="start_Pianista" Label="World 6" State="false" />
+    </Setting>
+</Settings>
