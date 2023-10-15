@@ -1,0 +1,31 @@
+<Settings>
+    <Setting Id="item" Label="Split on collecting item" State="false">
+        <Setting Id="item_0" Label="Cassette" State="false" />
+        <Setting Id="item_1" Label="Knife" State="false" />
+        <Setting Id="item_2" Label="Flashlight No Batteries" State="false" />
+        <Setting Id="item_3" Label="Battery" State="false" />
+        <Setting Id="item_4" Label="Flashlight" State="false" />
+        <Setting Id="item_5" Label="PizzaBox" State="false" />
+        <Setting Id="item_6" Label="GasCanister" State="false" />
+        <!-- <Setting Id="item_7" Label="Lighter" State="false" /> -->
+        <Setting Id="item_8" Label="Newspaper" State="false" />
+        <Setting Id="item_9" Label="BathroomKey" State="false" />
+        <Setting Id="item_10" Label="CatFood" State="false" />
+        <Setting Id="item_11" Label="Remote" State="false" />
+        <Setting Id="item_12" Label="Cloth" State="false" />
+        <Setting Id="item_13" Label="Bleach" State="false" />
+        <Setting Id="item_14" Label="ClothWBleach" State="false" />
+        <Setting Id="item_15" Label="Backscratcher" State="false" />
+        <Setting Id="item_16" Label="Empty Gun" State="false" />
+        <Setting Id="item_17" Label="Ammo" State="false" />
+        <Setting Id="item_18" Label="GunWithAmmo" State="false" />
+        <Setting Id="item_19" Label="Casette" State="false" />
+        <Setting Id="item_20" Label="Pendant (Passive Item)" State="false" />
+        <Setting Id="item_21" Label="Laxative" State="false" />
+        <Setting Id="item_22" Label="GasKey" State="false" />
+        <Setting Id="item_23" Label="Floppy Disk" State="false" />
+        <Setting Id="item_24" Label="HidingPlaceKey" State="false" />
+        <Setting Id="item_25" Label="Scalpel" State="false" />
+        <Setting Id="item_26" Label="Hairpin" State="false" />
+    </Setting>
+</Settings>
