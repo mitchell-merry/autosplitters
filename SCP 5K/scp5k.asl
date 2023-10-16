@@ -1,27 +1,4 @@
-state("Pandemic")
-{
-    long FNamePool: 0x5CC9620;
-
-    // long testFName: 0x5EFDDE0, 0x30, 0x258, 0x3F0, 0x228, 0x10, 0x18;
-
-    long UWorld: 0x5EFDDE0;
-    long worldFName: 0x5EFDDE0, 0x18;
-
-    // game state
-    // world -> GameState -> Class -> FName
-    long GSClassFName: 0x5EFDDE0, 0x120, 0x10, 0x18;
-    // GS_PandemicGameState_C-only fields
-    // world -> GameState -> GameStatus
-    byte GameStatus: 0x5EFDDE0, 0x120, 0x304;
-    
-    // objectives
-    // world -> Level -> WorldSettings -> ObjectiveManager -> Objectives.Data
-    long objData: 0x5EFDDE0, 0x30, 0x258, 0x3F0, 0x220;
-    // long objData0: 0x5EFDDE0, 0x30, 0x258, 0x3F0, 0x220, 0x0;
-    // long objData0DisplayNameFName: 0x5EFDDE0, 0x30, 0x258, 0x3F0, 0x220, 0x0, 0x40;
-    // world -> Level -> WorldSettings -> ObjectiveManager -> Objectives.Count
-    int objCount: 0x5EFDDE0, 0x30, 0x258, 0x3F0, 0x228;
-}
+state("Pandemic") { }
 
 startup
 {
@@ -37,6 +14,27 @@ startup
 
 init
 {
+    IntPtr GWorld = vars.Helper.ScanRel(0x3, "48 8B 05 ?? ?? ?? ?? 48 3B C? 48 0F 44 C? 48 89 05 ?? ?? ?? ?? E8");
+    IntPtr FNamePool = vars.Helper.ScanRel(13, "89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15") + 0x10;
+    vars.Log("FNamePool: " + FNamePool.ToString("X"));
+    vars.Log("GWorld: " + GWorld.ToString("X"));
+
+    vars.Watchers = new MemoryWatcherList
+    {
+        new MemoryWatcher<long>(GWorld) { Name = "GWorld" },
+        new MemoryWatcher<long>(new DeepPointer(GWorld, 0x18)) { Name = "worldFName" },
+
+        // world -> GameState -> Class -> FName
+        new MemoryWatcher<long>(new DeepPointer(GWorld, 0x120, 0x10, 0x18)) { Name = "GSClassFName" },
+        // GS_PandemicGameState_C-only fields
+        // world -> GameState -> GameStatus
+        new MemoryWatcher<byte>(new DeepPointer(GWorld, 0x120, 0x304)) { Name = "GameStatus" },
+
+        // world -> Level -> WorldSettings -> ObjectiveManager -> Objectives.Data
+        new MemoryWatcher<long>(new DeepPointer(GWorld, 0x30, 0x258, 0x3F0, 0x220)) { Name = "objData" },
+        new MemoryWatcher<int>(new DeepPointer(GWorld, 0x30, 0x258, 0x3F0, 0x228)) { Name = "objCount" },
+    };
+    
     // The following code derefences FName structs to their string counterparts by
     // indexing the FNamePool table
     // `fname` is the actual struct, not a pointer to the struct
@@ -50,7 +48,7 @@ init
         int name_offset  = (int) fname & 0xFFFF;
         int chunk_offset = (int) (fname >> 0x10) & 0xFFFF;
 
-        var base_ptr = new DeepPointer((IntPtr) current.FNamePool + chunk_offset * 0x8, name_offset * 0x2);
+        var base_ptr = new DeepPointer((IntPtr) FNamePool + chunk_offset * 0x8, name_offset * 0x2);
         byte[] name_metadata = base_ptr.DerefBytes(game, 2);
 
         // First 10 bits are the size, but we read the bytes out of order
@@ -105,33 +103,24 @@ init
         return true;
     });
 
-    // IDictionary<string, object> currentLookup = current;
-    // foreach (var key in new List<string>(currentLookup.Keys))
-    // {
-    //     object value = currentLookup[key];
+    vars.UpdateCurrent = (Action<IDictionary<string, object>, MemoryWatcherList>)((curr, watchers) =>
+    {
+        // just get all the watchers and chuck them into current
+        foreach(var w in watchers)
+        {
+            curr[w.Name] = w.Current;
+        }
+    });
 
-    //     if (key.EndsWith("FName"))
-    //         continue;
-        
-    //     string str = value.ToString();
-    //     if (value.GetType() == typeof(long))
-    //     {
-    //         str = "0x" + ((long) value).ToString("X");
-    //     }
-
-    //     vars.Log(key + " (" + value.GetType() + "): " + str);
-    // }
-
-    // for (var i = 0; i < current.objCount; i++) {
-    //     var objAddr = vars.Helper.Read<IntPtr>((IntPtr) current.objData + 0x8 * i);
-    //     var obj = vars.ReadObjective(objAddr);
-    //     vars.Log("Objective: " + obj.Name + "(" + obj.Major + ", " + obj.Active + ", " + obj.Started + ", " + obj.Completed + ", " + obj.Succeeded + ", " + obj.DisplayOnUI + ")");
-    //     vars.Log("<Setting Id=\"obj_" + vars.ReadFName(current.worldFName) + "_" + i + "\" Label=\"" + obj.Name + "\" State=\"false\" />");
-    // }
+    vars.Watchers.UpdateAll(game);
+    vars.UpdateCurrent(current, vars.Watchers);
 }
 
 update
 {
+    vars.Watchers.UpdateAll(game);
+    vars.UpdateCurrent(current, vars.Watchers);
+
     // Deref useful FNames here
     IDictionary<string, object> currentLookup = current;
     foreach (var key in new List<string>(currentLookup.Keys))
@@ -151,27 +140,19 @@ update
             continue;
         
         // Debugging and such
-        // if (!newKeyExists)
-        // {
-        //     vars.Log(newKey + ": " + newName);
-        // }
-        // else if (oldName != newName)
-        // {
-        //     vars.Log(newKey + ": " + oldName + " -> " + newName);
-        // }
+        if (!newKeyExists)
+        {
+            vars.Log(newKey + ": " + newName);
+        }
+        else if (oldName != newName)
+        {
+            vars.Log(newKey + ": " + oldName + " -> " + newName);
+        }
 
         currentLookup[newKey] = newName;
     }
 
-    // if (old.objCount != current.objCount) {
-    //     vars.Log("objCount: " + old.objCount + " -> " + current.objCount);
-    //     for (var i = 0; i < current.objCount; i++) {
-    //         var objAddr = vars.Helper.Read<IntPtr>((IntPtr) current.objData + 0x8 * i);
-    //         var obj = vars.ReadObjective(objAddr);
-    //         vars.Log("Objective: " + obj.Name + "(" + obj.Major + ", " + obj.Active + ", " + obj.Started + ", " + obj.Completed + ", " + obj.Succeeded + ", " + obj.DisplayOnUI + ")");
-    //         vars.Log("<Setting Id=\"obj_" + current.world + "_" + i + "\" Label=\"" + obj.Name + "\" State=\"false\" />");
-    //     }
-    // }
+    if (old.GameStatus != current.GameStatus) vars.Log(current.GameStatus);
 }
 
 start
@@ -207,7 +188,7 @@ split
 
 isLoading
 {
-    return current.UWorld == 0 || current.world == "TransitionMap"
+    return current.GWorld == 0 || current.world == "TransitionMap"
         || current.world == "EntryLevel" || current.GSClass == "GameStateBase"
         || (current.GSClass == "GS_PandemicGameState_C" && current.GameStatus == 1);
 }
