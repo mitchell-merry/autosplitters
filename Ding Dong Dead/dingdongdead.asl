@@ -15,6 +15,8 @@ startup
             vars.Log(key + ": " + oldValue + " -> " + currentValue);
     });
 
+    vars.EndingScenes = new HashSet<string>() { "NewsRoom", "TextEndingAttackedPleasant", "TextEndingSavedRex" };
+
     vars.CompletedSplits = new HashSet<string>();
     
     vars.Helper.AlertLoadless();
@@ -24,36 +26,13 @@ init
 {
     vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
     {
-        // vars.Helper["items"] = mono.MakeList<IntPtr>("KickStarter", "inventoryManagerPrefab", "items");
         vars.Helper["items"] = mono.MakeList<IntPtr>("KickStarter", "runtimeInventoryComponent", "playerInvCollection", "invInstances");
-
-        var InvItem = mono["InvItem"];
-        vars.ReadInvItem = (Func<IntPtr, dynamic>)(item =>
-        {
-            dynamic ret = new ExpandoObject();
-            ret.id = vars.Helper.Read<int>(item + InvItem["id"]);
-            ret.label = vars.Helper.ReadString(item + InvItem["label"]);
-            ret.count = vars.Helper.Read<int>(item + InvItem["count"]);
-            return ret;
-        });
 
         var InvInstance = mono["InvInstance"];
         vars.GetInvInstanceId = (Func<IntPtr, int>)(item =>
         {
             return vars.Helper.Read<int>(item + InvInstance["itemID"]);
         });
-        // vars.ReadInvInstance = (Func<IntPtr, dynamic>)(item =>
-        // {
-        //     dynamic ret = new ExpandoObject();
-        //     ret.id = vars.Helper.Read<int>(item + InvInstance["itemID"]);
-        //     ret.label = vars.Helper.ReadString(item + InvInstance["overrideLabel"]);
-        //     ret.count = vars.Helper.Read<int>(item + InvInstance["count"]);
-        //     ret.invItem = vars.Helper.Read<IntPtr>(item + InvInstance["invItem"]);
-
-        //     if (ret.count <= 0 || ret.id < 0 || ret.invItem == null) return null;
-
-        //     return ret;
-        // });
 
         return true;
     });
@@ -89,16 +68,6 @@ onStart
     vars.CompletedSplits.Clear();
 
     vars.Log(current.activeScene);
-
-    vars.Log("Items: " + current.items.Count);
-    foreach (var itemPtr in current.items) {
-        var item = vars.ReadInvInstance(itemPtr);
-        if (item == null) continue;
-        
-        vars.Log("Item: " + item.label + " [" + item.id + "]. Count: " + item.count);
-
-        // vars.Log("<Setting Id=\"item_" + item.id + "\" Label=\"" + item.label + "\" State=\"false\" />");
-    }
 }
 
 start
@@ -116,6 +85,8 @@ split
             }
         }
     }
+
+    return old.loadingScene != current.loadingScene && vars.EndingScenes.Contains(current.loadingScene);
 }
 
 isLoading
