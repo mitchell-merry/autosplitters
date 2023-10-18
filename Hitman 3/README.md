@@ -46,3 +46,30 @@ You can then change the "Value" from 0 to 1, and do another scan. That should wh
 Now, with the gift of hindsight, we know this address is static. That means it won't change if you close the game and open it again. So do that - close hitman, reopen it, reattach, and then keep searching. You should have just static addresses left.
 
 Keep doing this until you get one or just a few addresses! Then just pick one. I'd keep all viable static addresses around just in case the one you pick breaks.
+
+## statusBarState
+
+Enum with the following (known) values:
+
+```cpp
+enum StatusBarState {
+    NONE = 0,
+    SAVING = 6,
+    LOADING = 7,
+    FETCHING = 8,
+    CONNECTED = 9,
+    CONNECTING = 13,
+    SYNCHRONIZING = 16,
+    AUTHENTICATING = 17,
+    FETCHING_PROFILE = 19,
+}
+```
+
+Note that:
+- it's value during the main loading screen is practically bogus (but we have isLoading for this regardless)
+- whenever the player pauses, it will load for a bit (since it does some loading on pause)
+- running around levels, it will save occassionally
+
+## hasControl
+
+This is a byte that is 1 when the player has control (is able to run around, while paused, etc), and 0 otherwise.
