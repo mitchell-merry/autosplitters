@@ -4,7 +4,7 @@ startup
 {
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
     vars.Helper.GameName = "Enchanted Portals";
-    // vars.Helper.StartFileLogger("Enchanted Portals.log");
+    vars.Helper.StartFileLogger("Enchanted Portals.log");
     vars.Helper.Settings.CreateFromXml("Components/EnchantedPortals.Settings.xml");
     
     vars.S = (Func<object, string>)(v => v.GetType() == typeof(long) ? ("0x" + ((long)v).ToString("X")) : v.ToString());
@@ -15,6 +15,19 @@ startup
         var currentValue = currentLookup[key];
         if (!oldValue.Equals(currentValue))
             vars.Log(key + ": " + vars.S(oldValue) + " -> " + vars.S(currentValue));
+    });
+
+    vars.WatchBit = (Action<IDictionary<string, object>, IDictionary<string, object>, string, string, int>)((oldLookup, currentLookup, key, bitName, bit) => 
+    {
+        byte oldValue = (byte) oldLookup[key];
+        byte currentValue = (byte) currentLookup[key];
+        int oldBit = (oldValue >> (7-bit)) & 1;
+        int currentBit = (currentValue >> (7-bit)) & 1;
+        
+        if (!oldBit.Equals(currentBit))
+            vars.Log(bitName + ": " + oldBit + " -> " + currentBit);
+        else if (oldValue != currentValue)
+            vars.Log(key + ": " + Convert.ToString(oldValue, 2).PadLeft(8, '0') + " -> " + Convert.ToString(currentValue, 2).PadLeft(8, '0'));
     });
     
     vars.CompletedSplits = new HashSet<string>();
@@ -28,13 +41,16 @@ init
 {
     IntPtr FNamePool = vars.Helper.ScanRel(0xD, "89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15") + 0x10;
     IntPtr GWorld = vars.Helper.ScanRel(0x3, "48 8B 05 ?? ?? ?? ?? 48 3B C? 48 0F 44 C? 48 89 05 ?? ?? ?? ?? E8");
+    IntPtr GEngine = vars.Helper.ScanRel(0x7, "A8 01 75 ?? 48 C7 05") + 0x4;
     vars.Log("FNamePool: " + FNamePool.ToString("X"));
     vars.Log("GWorld: " + GWorld.ToString("X"));
+    vars.Log("GEngine: " + GEngine.ToString("X"));
 
     vars.Watchers = new MemoryWatcherList
     {
          new MemoryWatcher<long>(new DeepPointer(GWorld, 0x18)) { Name = "worldFName" },
 
+         new MemoryWatcher<long>(new DeepPointer(GWorld, 0x118)) { Name = "gameMode" },
          new MemoryWatcher<bool>(new DeepPointer(GWorld, 0x118, 0x358)) { Name = "hasGameStarted" },
 
          new MemoryWatcher<long>(new DeepPointer(GWorld, 0x180)) { Name = "gameInstance" },
@@ -45,6 +61,14 @@ init
          new MemoryWatcher<int>(new DeepPointer(GWorld, 0x180, 0xF8)) { Name = "gissCount" },
          new MemoryWatcher<long>(new DeepPointer(GWorld, 0x30, 0xA8)) { Name = "actorData" },
          new MemoryWatcher<int>(new DeepPointer(GWorld, 0x30, 0xB0)) { Name = "actorCount" },
+
+        // GEngine testing.
+         new MemoryWatcher<long>(new DeepPointer(GEngine, 0x18)) { Name = "engineFName" },
+        //  new MemoryWatcher<long>(new DeepPointer(GEngine, 0xC58, 0x8, 0x18)) { Name = "engineTest1FName", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+         new MemoryWatcher<long>(new DeepPointer(GEngine, 0xC38, 0x0, 0xB0)) { Name = "engineTest2FName", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+         new MemoryWatcher<byte>(new DeepPointer(GWorld, 0x10D)) { Name = "worldFlags" },
+        //  new MemoryWatcher<long>(new DeepPointer((IntPtr) 0x24586178D18)) { Name = "engineTestFName", FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull },
+
     };
     vars.SSWatchers = new MemoryWatcherList();
     vars.LAWatchers = new MemoryWatcherList();
@@ -134,13 +158,13 @@ init
         print("Reloading actor cache...");
         vars.LAWatchers = new MemoryWatcherList();
 
-        // iterate over game instances and check for the checkpoint trigger
-        for (int i = 0; i < curr.actorCount; i++)
-        {
-            var aPtr = game.ReadValue<IntPtr>((IntPtr) (current.actorData + i * 0x8));
-            var name = vars.ReadFNameOfObject(aPtr);
-            vars.Log("[A] " + name + " at " + aPtr.ToString("X"));
-        }        
+        // // iterate over game instances and check for the checkpoint trigger
+        // for (int i = 0; i < curr.actorCount; i++)
+        // {
+        //     var aPtr = game.ReadValue<IntPtr>((IntPtr) (current.actorData + i * 0x8));
+        //     var name = vars.ReadFNameOfObject(aPtr);
+        //     vars.Log("[A] " + name + " at " + aPtr.ToString("X"));
+        // }        
     });
 
     vars.Watchers.UpdateAll(game);
@@ -202,6 +226,8 @@ update
         currentLookup[newKey] = newName;
     }
     vars.FirstGo = false;
+
+    vars.WatchBit(old, current, "worldFlags", "bIsTearingDown", 2);
 }
 
 start
@@ -220,7 +246,7 @@ split
     // level end
     if (old.world != current.world
      && current.world != "MainMenu"
-     && vars.CheckSplit["level_" + old.world]
+     && vars.CheckSplit("level_" + old.world)
     ) {
         // note that "Libra" goes directly to MainMenu and
         // not a world transition level
