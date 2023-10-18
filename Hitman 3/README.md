@@ -72,11 +72,14 @@ Fairly self explanatory - 1 in while in the main menu, 0 otherwise.
 
 Also self explanatory - 1 while in a cutscene, 0 otherwise. These include all the enter / exit cutscenes of both the safehouse and the missions.
 
+Apparently sometimes 2?
+
 ### hasControl
 
 This is a byte that is 1 when the player has control (is able to run around, while paused, etc), and 0 otherwise.
 
 ### usingCamera
+
 1 when right clicking with the camera held (using it)
 0 otherwise.
 
@@ -109,3 +112,20 @@ Note that:
 ## isPaused
 
 1 while paused, 0 otherwise!
+
+## currentMap
+
+A string that shows the current map. Sometimes is null, as in during brief periods in the loading screen and while in the main menu, but otherwise is a string like the following:
+- `assembly:/_pro/scenes/missions/snug/scene_vanilla.entity` (The safehouse)
+- `assembly:/_pro/scenes/missions/paris/scene_peacock_mild_craps.entity` (Paris)
+etc
+
+THIS IS NOT A STATIC ADDRESS. The way you find this is:
+Open DebugView and transition between maps. There will be a message like:
+
+`[22396] HandleTransition: assembly:/_pro/scenes/missions/paris/scene_peacock_mild_craps.entity`
+
+where the string is the map you're transitioning too. If you search for this string (make sure you expand the scan to all memory), you will find a few entries. If you search each of the addresses that appear (as in, add all the addresses that show up to the address list, then search for the address as 8 bytes), one of those will have many results.
+
+Among those results is a static address. That static address is what you want.
+Add that static address to your address list, then add an offset of 0x0 to it (select Pointer).
