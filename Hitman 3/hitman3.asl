@@ -2,6 +2,10 @@
 state("HITMAN3", "Epic August 2023")
 {
     bool isLoading: 0x398A229;
+	bool isInMainMenu: 0x3C61D54;
+	bool hasControl: 0x30E1E48;
+	bool inCutscene: 0x31D6015;
+	bool usingCamera: 0x30C2FB4;
 }
 
 state("HITMAN3", "Steam August 2023")
