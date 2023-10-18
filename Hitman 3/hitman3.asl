@@ -30,7 +30,8 @@ startup
         var mbox = MessageBox.Show(
             "HITMAN 3 Freelancer uses load-removed time.\nWould you like to switch to it?",
             "LiveSplit | HITMAN 3 Freelancer",
-            MessageBoxButtons.YesNo);
+            MessageBoxButtons.YesNo
+        );
 
         if (mbox == DialogResult.Yes)
             timer.CurrentTimingMethod = TimingMethod.GameTime;
@@ -46,9 +47,23 @@ init
     switch (mms) {
         case "4A67000": version = "Epic August 2023"; break;
         case "4A71000": version = "Steam August 2023"; break;
-        case "4ABE000": version = "Game Pass May 2023"; break;
+        case "4ABE000":
+            version = "Game Pass May 2023";
+            MessageBox.Show(
+                "HITMAN 3 Freelancer does not currently support full load-removing\ncapabilities for Game Pass. Only some loads will be removed.",
+                "LiveSplit | HITMAN 3 Freelancer",
+                MessageBoxButtons.OK
+            );
+            break;
 
-        default: version = "UNKNOWN - raise an issue on GitHub if you want support for this version"; break;
+        default:
+            version = "UNKNOWN - raise an issue on GitHub if you want support for this version";
+            MessageBox.Show(
+                "HITMAN 3 Freelancer does not currently support this version\nof the game. Please raise an issue on GitHub if you want support\nfor this version.",
+                "LiveSplit | HITMAN 3 Freelancer",
+                MessageBoxButtons.OK
+            );
+            break;
     }
 
     print("Chose version " + version);
@@ -61,6 +76,9 @@ init
 
 update
 {
+    // early return for unsupported xbox game pass
+    if (version == "Game Pass May 2023") return;
+
     // if we have just loaded in, we are in an intro cutscene
     // (or the main menu, which is paused regardless anyway)
     if (old.isLoading && !current.isLoading) {
@@ -75,6 +93,9 @@ update
 
 isLoading
 {
+    // early return for unsupported xbox game pass
+    if (version == "Game Pass May 2023") return current.isLoading;
+
     return current.isLoading    // if we are in a loading screen...
         || current.isInMainMenu // or we're in the main menu...
         // or we're in a cutscene or don't have control and we're not currently in the intro cutscene (to the safehouse or the level)
