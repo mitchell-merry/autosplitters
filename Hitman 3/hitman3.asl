@@ -66,28 +66,6 @@ update
     if (vars.inIntroCutscene && !old.hasControl && current.hasControl) {
         vars.inIntroCutscene = false;
     }
-
-    // debug stuff for debugging
-    // if (old.isLoading != current.isLoading) {
-    //     print("\nisLoading: " + old.isLoading + " -> " + current.isLoading);
-    //     print("  inCutscene " + old.inCutscene + ", " + current.inCutscene);
-    //     print("  hasControl " + old.hasControl + ", " + current.hasControl);
-    //     print("  inIntroCutscene " + vars.inIntroCutscene);
-    // }
-
-    // if (old.inCutscene != current.inCutscene) {
-    //     print("\ninCutscene " + old.inCutscene + " -> " + current.inCutscene);
-    //     print("  isLoading: " + old.isLoading + ", " + current.isLoading);
-    //     print("  hasControl " + old.hasControl + ", " + current.hasControl);
-    //     print("  inIntroCutscene " + vars.inIntroCutscene);
-    // }
-
-    // if (old.hasControl != current.hasControl) {
-    //     print("\nhasControl " + old.hasControl + " -> " + current.hasControl);
-    //     print("  isLoading: " + old.isLoading + ", " + current.isLoading);
-    //     print("  inCutscene " + old.inCutscene + ", " + current.inCutscene);
-    //     print("  inIntroCutscene " + vars.inIntroCutscene);
-    // }
 }
 
 isLoading
