@@ -76,6 +76,10 @@ Also self explanatory - 1 while in a cutscene, 0 otherwise. These include all th
 
 This is a byte that is 1 when the player has control (is able to run around, while paused, etc), and 0 otherwise.
 
+### usingCamera
+1 when right clicking with the camera held (using it)
+0 otherwise.
+
 ## Other address we don't necessarily care about right now
 ...but may be useful in the future.
 
