@@ -2,6 +2,10 @@
 
 This README details how you can update this ASL with different versions, or different updates.
 
+**INSTALLATION GUIDE:**
+- [Video Guide](https://www.youtube.com/watch?v=u8pa8kJcy30)
+- [Text Guide](https://hitruns-wiki.vercel.app/docs/livesplit_freelancer)
+
 ## Basic Tooling
 
 - LiveSplit, setup with a layout that has a ScriptableAutosplitter component with the ASL in this repo (`hitman3.asl`) loaded.
