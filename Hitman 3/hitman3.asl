@@ -10,6 +10,7 @@ state("HITMAN3", "Steam August 2023")
     bool isInMainMenu: 0x31A6AB4;
     bool hasControl: 0x3174E48;
     bool inCutscene: 0x33A53CC;
+    bool usingCamera: 0x2A53D3C;
 }
 
 state("HITMAN3", "Game Pass May 2023")
@@ -73,5 +74,10 @@ isLoading
     return current.isLoading    // if we are in a loading screen...
         || current.isInMainMenu // or we're in the main menu...
         // or we're in a cutscene or don't have control and we're not currently in the intro cutscene (to the safehouse or the level)
-        || ((current.inCutscene || !current.hasControl) && !vars.inIntroCutscene);
+        || (!vars.inIntroCutscene && (
+            current.inCutscene || (
+                // hasControl is false while using the camera, but time should still be running
+                !current.hasControl && !current.usingCamera
+            )
+        ));
 }
