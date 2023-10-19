@@ -161,10 +161,10 @@ things currently being loaded. It might be useful for your game, to detect if a 
 Here's a quick reference of some commonly used signatures. This is *not* a guide on how to use signatures, that is out of scope.
 All of these work at about 4.27ish most of the time. It's never guaranteed that one works, but it's always worth trying.
 
-GWorld: `0F 2E ?? 74 ?? 48 8B 1D ?? ?? ?? ?? 48 85 DB 74"` (offset 0x8)
-NamePoolData: `89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15` (offset 0xD)
-GEngine: `48 39 35 ?? ?? ?? ?? 0F 85 ?? ?? ?? ?? 48 8B 0D` (offset 0x3)
-SyncLoadCounter: `89 43 60 8B 05` (offset 0x5)
+- GWorld: `0F 2E ?? 74 ?? 48 8B 1D ?? ?? ?? ?? 48 85 DB 74"` (offset 0x8)
+- NamePoolData: `89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15` (offset 0xD)
+- GEngine: `48 39 35 ?? ?? ?? ?? 0F 85 ?? ?? ?? ?? 48 8B 0D` (offset 0x3)
+- SyncLoadCounter: `89 43 60 8B 05` (offset 0x5)
 
 ## Dumping Headers (SDK)
 
