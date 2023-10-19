@@ -1,6 +1,8 @@
 This document is intended to be a reference for some funCtions (fun functions) that
 I find particularly useful, but do not belong in the base templates.
 
+This is meant for me (mitchell) only!
+
 ## GetEntries (Traversing a C# Dictionary)
 Taken from an old version of the In Sound Mind autosplitter, written a while ago and
 completely untested since. Tried adding comments from my recollection.
