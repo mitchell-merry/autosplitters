@@ -69,6 +69,8 @@ Practically, for making simple Unreal Engine autosplitters, the following is cru
 
 ## Setup
 
+First, you'll need Cheat Engine. Then you'll need a dumper.
+
 There are a lot of different dumpers that will let you see the structure of the code for
 Unreal Engine games. The one I have found to be the most consistent is [UE4SS](https://github.com/UE4SS-RE/RE-UE4SS).
 Follow the installation instructions to install it on your game.
@@ -97,6 +99,11 @@ Check the [Custom Game Configs](https://github.com/UE4SS-RE/RE-UE4SS/tree/main/a
 to see if your game is supported there. If it isn't, then you can find their docs
 on how to support it [here](https://docs.ue4ss.com/dev/guides/fixing-compatibility-problems.html).
 It is quite complex, but I won't go into supporting it right now.
+
+### Other Unreal Engine tools you may find useful
+
+- [Universal Unreal Engine 4 Unlocker](https://framedsc.com/GeneralGuides/universal_ue4_consoleunlocker.htm), to unlock the UE console in-game
+- other stuff?
 
 ## Finding base addresses
 
@@ -142,15 +149,22 @@ guide is for the practical use - finding these addresses for the purpose of
 autosplitters.
 
 I currently don't have a great way of finding these, it's a little
-jank. I would recommend finding a signature, like this one, to
-find it (keeping in mind sigs aren't guaranteed):
+jank. I would using a signature (like the one in [the below section](#signatures)) to find it if it works.
 
-4.27: `89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15` (offset 0x13)
+### SyncLoadCounter
 
-I would recommend looking at other autosplitters that use signatures
-to find some good ones.
+I haven't got much personal experience with this, but for some modern UE4 games, this address contains an int with the number of
+things currently being loaded. It might be useful for your game, to detect if a load is happening.
 
-TODO - fill out more information here (sorry!)
+### Signatures
+
+Here's a quick reference of some commonly used signatures. This is *not* a guide on how to use signatures, that is out of scope.
+All of these work at about 4.27ish most of the time. It's never guaranteed that one works, but it's always worth trying.
+
+GWorld: `0F 2E ?? 74 ?? 48 8B 1D ?? ?? ?? ?? 48 85 DB 74"` (offset 0x8)
+NamePoolData: `89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15` (offset 0xD)
+GEngine: `48 39 35 ?? ?? ?? ?? 0F 85 ?? ?? ?? ?? 48 8B 0D` (offset 0x3)
+SyncLoadCounter: `89 43 60 8B 05` (offset 0x5)
 
 ## Dumping Headers (SDK)
 
@@ -483,7 +497,7 @@ class APlayerController : public AController
 
 On `PlayerController`, a few things I want to make note:
 - `MyHUD` contains information about widgets that are on the screen that make up the HUD. The game will probably extend this.
-- `PlayerCameraManager` - you may find things useful about this, but I personally haven't tried to look into it.
+- `PlayerCameraManager`'s Name might be able to tell you if you're currently in a cutscene, or even a checkpoint, area, etc. Depends on the game!
 
 You probably want the **position**, **rotation**, and **velocity** of the player though. That
 information is in the superclasses of `APlayerController`:
