@@ -320,7 +320,7 @@ class UConsoleCompatGameInstance : public UGameInstance
 {
     class UConsoleCompatLayer* ConsoleCompatLayer;             // 0x01A8 (size: 0x8)
     TSubclassOf<class UConsoleCompatLayer> ConsoleCompatClass; // 0x01B0 (size: 0x8)
-}    
+}
 ```
 
 This doesn't look particularly helpful, but if you go one level deeper to see if anything extends
