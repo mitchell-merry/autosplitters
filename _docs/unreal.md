@@ -86,6 +86,9 @@ GuiConsoleVisible = 1
 3. Boot up the game and you should be able to view all the UObjects in the game.
 It will only be injected if you launch the `{GameName}/Binaries/Win64/{GameName}-Win64-Shipping.exe` directly.
 
+Other alternative dumpers include:
+- https://github.com/guttir14/UnrealDumper-4.25
+
 ### Custom Config (Missing AOBs)
 
 If that doesn't work, then you might see some errors that look like "missing AOB" and such. If that's the
