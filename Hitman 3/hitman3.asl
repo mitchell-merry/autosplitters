@@ -1,11 +1,11 @@
 // how to find the values & what they mean are in the README.md file
-state("HITMAN3", "Epic August 2023")
+state("HITMAN3", "Epic October 2023")
 {
-    bool isLoading: 0x398A229;
-	bool isInMainMenu: 0x3C61D54;
-	bool hasControl: 0x30E1E48;
-	bool inCutscene: 0x31D6015;
-	bool usingCamera: 0x30C2FB4;
+    bool isLoading: 0x3194C6D;
+    bool isInMainMenu: 0x3194CB4;
+    bool hasControl: 0x30E3188;
+    bool inCutscene: 0x31D706C;
+    bool usingCamera: 0x30C4094;
 }
 
 state("HITMAN3", "Steam August 2023")
@@ -45,7 +45,7 @@ init
 
     // MMS as a workaround to the Game Pass not working (#4)
     switch (mms) {
-        case "4A67000": version = "Epic August 2023"; break;
+        case "4A68000": version = "Epic August 2023"; break;
         case "4A71000": version = "Steam August 2023"; break;
         case "4ABE000":
             version = "Game Pass May 2023";
