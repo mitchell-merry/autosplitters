@@ -45,7 +45,7 @@ init
 
     // MMS as a workaround to the Game Pass not working (#4)
     switch (mms) {
-        case "4A68000": version = "Epic August 2023"; break;
+        case "4A68000": version = "Epic October 2023"; break;
         case "4A71000": version = "Steam August 2023"; break;
         case "4ABE000":
             version = "Game Pass May 2023";
