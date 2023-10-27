@@ -1,11 +1,11 @@
 // how to find the values & what they mean are in the README.md file
 state("HITMAN3", "Epic October 2023")
 {
-    bool isLoading: 0x3194C6D;
-    bool isInMainMenu: 0x3194CB4;
-    bool hasControl: 0x30E3188;
-    bool inCutscene: 0x31D706C;
-    bool usingCamera: 0x30C4094;
+    bool isLoading: 0x3194C2D;
+	bool isInMainMenu: 0x3194C74;
+	bool hasControl: 0x30E3148;
+	bool inCutscene: 0x31D702C;
+	bool usingCamera: 0x30C4054;
 }
 
 state("HITMAN3", "Steam August 2023")
