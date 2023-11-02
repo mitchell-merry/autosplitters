@@ -8,13 +8,13 @@ state("HITMAN3", "Epic October 2023")
     bool usingCamera: 0x30E1ECC;
 }
 
-state("HITMAN3", "Steam August 2023")
+state("HITMAN3", "Steam October 2023")
 {
-    bool isLoading: 0x39B220C;
-    bool isInMainMenu: 0x31A6AB4;
-    bool hasControl: 0x3174E48;
-    bool inCutscene: 0x33A53CC;
-    bool usingCamera: 0x2A53D3C;
+    bool isLoading: 0x39B32BC;
+    bool isInMainMenu: 0x319E734;
+    bool hasControl: 0x31769C8;
+    bool inCutscene: 0x33A67D4;
+    bool usingCamera: 0x31063B4;
 }
 
 state("HITMAN3", "Game Pass May 2023")
@@ -46,7 +46,7 @@ init
     // MMS as a workaround to the Game Pass not working (#4)
     switch (mms) {
         case "4A68000": version = "Epic October 2023"; break;
-        case "4A71000": version = "Steam August 2023"; break;
+        case "4A72000": version = "Steam October 2023"; break;
         case "4ABE000":
             version = "Game Pass May 2023";
             MessageBox.Show(
