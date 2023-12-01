@@ -1,0 +1,53 @@
+<Settings>
+    <Setting Id="boss_death" Label="Split on defeating a boss" State="false">
+        <Setting Id="boss_1" Label="Giant Patron" State="false" />
+        <Setting Id="boss_2" Label="Winged Pale Laments" State="false" />
+        <Setting Id="boss_3" Label="Dr. Ridley Hermann" State="false" />
+        <Setting Id="boss_4" Label="Edwyn the Shadowscourge Horror" State="false" />
+        <Setting Id="boss_5" Label="Starborn Nighthunter #1" State="false" />
+        <Setting Id="boss_11" Label="The Burnt Apostate" State="false" />
+        <Setting Id="boss_6" Label="Yegor &amp; Leena" State="false" />
+        <Setting Id="boss_7" Label="Voracious Terror" State="false" />
+        <Setting Id="boss_21" Label="Starborn Nighthunter #2" State="false" />
+        <Setting Id="boss_9" Label="Lisa" State="false" />
+        <Setting Id="boss_10" Label="Manfredd the Accursed" State="false" />
+        <Setting Id="boss_12" Label="Cold One Beast" State="false" />
+        <Setting Id="boss_13" Label="Leena" State="false" />
+        <Setting Id="boss_14" Label="Lord Patryck Laddak" State="false" />
+        <Setting Id="boss_20" Label="Nyxaroth the Eldritch Wight" State="false" />
+        <Setting Id="boss_17" Label="The Old Wymond" State="false" />
+        <Setting Id="boss_15" Label="Annabella &amp; Caterina" State="false" />
+        <Setting Id="boss_19" Label="Starlight Best of Illygarth" State="false" />
+        <Setting Id="boss_18" Label="The Harbinger of Nightmare" State="false" />
+        <Setting Id="boss_16" Label="Medeya the Cosmic Voice" State="false" />
+        <Setting Id="boss_8" Label="AssassinMacewhip (No idea what this is)" State="false" />
+    </Setting>
+    <Setting Id="checkpoint" Label="Split on activating a checkpoint altar" State="false">
+        <Setting Id="Checkpoints/PRS4-Checkpoint-1" Label="Chapel Alcove [Temple of the Deposed Gods]" State="false" />
+        <Setting Id="Checkpoints/LFS4-Checkpoint-0" Label="Old Ruins [Broken Pass]" State="false" />
+        <Setting Id="Checkpoints/MGN2-Checkpoint-0" Label="Oxnevylle's Great Hall [Oxnevylle Manor]" State="false" /> 
+        <Setting Id="Checkpoints/CTYZ3_2-Checkpoint-0" Label="Mythringal West District [City of Mythringal]" State="false" />
+        <Setting Id="Checkpoints/CTYZ3_13-Checkpoint-0" Label="Mythringal East District [City of Mythringal]" State="false" />
+        <Setting Id="Checkpoints/HML1-Checkpoint-0" Label="Inquisition Foyer [Federal Inquisition]" State="false" />
+        <Setting Id="Checkpoints/HML9-Checkpoint-0" Label="Inquisition Inner Sanctum [Federal Inquisition]" State="false" />
+        <Setting Id="Checkpoints/CAV5-Checkpoint-0" Label="Crypt Entrance [Site Cave]" State="false" />
+        <Setting Id="Checkpoints/DCR30-Checkpoint-0" Label="Chasm of the Fallen [Drowned Crypt]" State="false" />
+        <Setting Id="Checkpoints/SWP1-Checkpoint-0" Label="Sodden Refuge [Marshland of Shadows]" State="false" />
+        <Setting Id="Checkpoints/SWP3-Checkpoint-1" Label="Coven's Mound [Marshland of Shadows]" State="false" />
+        <Setting Id="Checkpoints/ERL2-Checkpoint-0" Label="Gates of Erlim [City of Erlim]" State="false" />
+        <Setting Id="Checkpoints/ESK1-Checkpoint-1" Label="Hall of Mirrors [The Esk Mansion]" State="false" />
+        <Setting Id="Checkpoints/DPF2 ExternalCutsceneInDifferentSceneWithEventTrigger-Checkpoint-1" Label="Old Churchyard [Liturgical Pass]" State="false" />
+        <Setting Id="Checkpoints/DPF18-Checkpoint-0" Label="Outside the Great Church [Liturgical Pass]" State="false" />
+        <Setting Id="Checkpoints/SNP3-Checkpoint-0" Label="Ruined Outpost [Damned Ruins of Osseus Fortress]" State="false" />
+        <Setting Id="Checkpoints/SNP16-Checkpoint-0" Label="Telwynill Bridge [Damned Ruins of Osseus Fortress]" State="false" />
+        <Setting Id="Checkpoints/SNP19-Checkpoint-0" Label="Frozen Caverns [Damned Ruins of Osseus Fortress]" State="false" />
+        <Setting Id="Checkpoints/FZV7-Checkpoint-1" Label="Regent's Gate [Telwynill Village]" State="false" />
+        <Setting Id="Checkpoints/MNF9-Checkpoint-0" Label="Ordens Shrine [Ordens Regnant Palace]" State="false" />
+        <Setting Id="Checkpoints/MNF18-Checkpoint-0" Label="The Clocktower [Ordens Regnant Palace]" State="false" />
+        <Setting Id="Checkpoints/BRG3-Checkpoint-0" Label="Mythringal Upper District [High walls of Mythringal]" State="false" />
+        <Setting Id="Checkpoints/BRG9-Checkpoint-0" Label="Mythringal Hoily District [High walls of Mythringal]" State="false" />
+        <Setting Id="Checkpoints/BRG23-Checkpoint-0" Label="Caterina's Church [High walls of Mythringal]" State="false" />
+        <Setting Id="Checkpoints/GCT5-Checkpoint-0" Label="Altar of the Verb of Junas [The Junas Ministry]" State="false" />
+        <Setting Id="Checkpoints/MDY1-Checkpoint-0" Label="Wonder of Illygarth's Hall [Wonder of Illygarth]" State="false" />
+    </Setting>
+</Settings>
