@@ -1,0 +1,16 @@
+<Settings>
+    <Setting Id="chapter" Label="Split on completing chapter" State="false">
+        <Setting Id="chapter_1" Label="Swamp" State="false" />
+        <Setting Id="chapter_2" Label="Fortress" State="false" />
+        <Setting Id="chapter_3" Label="Storm Drain" State="false" />
+        <Setting Id="chapter_yard" Label="Yard" State="false" />
+        <Setting Id="chapter_start_6" Label="Temple" State="false" />
+        <Setting Id="chapter_6" Label="Internet" State="false" />
+        <Setting Id="chapter_7" Label="Docks" State="false" />
+        <Setting Id="chapter_8" Label="Hollow" State="false" />
+        <Setting Id="chapter_9" Label="Neverland" State="false" />
+        <Setting Id="chapter_10" Label="Delusion" State="false" />
+        <Setting Id="chapter_11" Label="Pit of Despair" State="false" />
+        <Setting Id="scene_Credits" Label="Acropolis" State="false" />
+    </Setting>
+</Settings>

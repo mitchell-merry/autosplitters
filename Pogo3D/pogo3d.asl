@@ -6,13 +6,9 @@ startup
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Pogo3D";
     vars.Helper.LoadSceneManager = true;
+    vars.Helper.Settings.CreateFromXml("Components/Pogo3D.Settings.xml");
 
     vars.CompletedSplits = new HashSet<string>();
-
-    settings.Add("level", true, "Split on beating level");
-    settings.Add("level_4", false, "The Swamp / Throne Room", "level");
-    settings.Add("level_6", false, "Sewers", "level");
-    settings.Add("scene_Credits", true, "Yard", "level");
 }
 
 init
@@ -20,9 +16,37 @@ init
     vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
     {
         var pgm = mono["PogoGameManager", 1];
-        var ld = mono["LevelDescriptor"];
-        vars.Helper["level"] = mono.Make<int>(pgm, "GameInstance", pgm["RespawnLevel"], ld["BuildIndex"]);
-        vars.Helper["startTime"] = mono.Make<float>(pgm, "GameInstance", pgm["GameStartTime"]);
+        var chd = mono["ChapterDescriptor"];
+        var pc = mono["PlayerController"];
+        var gpt = mono["GameProgressTracker"];
+
+        vars.Helper["chapter"] = mono.Make<int>(
+            pgm,
+            "GameInstance",
+            pgm["currentChapter"],
+            chd["Number"]
+        );
+
+        vars.Helper["paused"] = mono.Make<bool>(
+            pgm,
+            "GameInstance",
+            pgm["paused"]
+        );
+        
+        vars.Helper["playerState"] = mono.Make<int>(
+            pgm,
+            "GameInstance",
+            pgm["player"],
+            pc["currentState"]
+        );
+        
+        vars.Helper["startTime"] = mono.Make<int>(
+            pgm,
+            "GameInstance",
+            pgm["currentChapterProgressTracker"],
+            gpt["startTime"]
+        );
+
         return true;
     });
 
@@ -49,27 +73,50 @@ init
 update
 {
     current.scene = vars.ReadSceneName(vars.Helper.Scenes.Loaded[0].Address);
+    vars.Watch("chapter");
+    vars.Watch("paused");
+    vars.Watch("playerState");
+    vars.Watch("startTime");
+    if (old.scene != current.scene) vars.Log("scene: " + old.scene + " -> " + current.scene);
 }
 
 onStart
 {
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
+
+    vars.Log(current.scene);
+    vars.Log(current.chapter);
+    vars.Log(current.paused);
+    vars.Log(current.playerState);
+    vars.Log(current.startTime);
+}
+
+isLoading
+{
+    return current.paused || current.playerState == 1;
+
 }
 
 start
 {
     return old.startTime < current.startTime;
+    // return old.scene == "MainMenu" && (current.scene == "C1L1" || current.scene == "C2L1");
 }
 
 split
 {
-    if (old.level < current.level && vars.CheckSplit("level_" + current.level))
-    {
-        return true;
+    if (settings["chapter"]) {
+        if (old.chapter < current.chapter) {
+            return vars.CheckSplit("chapter_" + old.chapter) || vars.CheckSplit("chapter_start_" + current.chapter);
+        }
+
+        if (old.chapter == 4 && current.chapter == 1 && current.scene == "C5L1") {
+            return vars.CheckSplit("chapter_yard");
+        }
     }
 
-    return old.scene != current.scene && vars.CheckSplit("scene_" + current.scene);
+    return old.scene != current.scene && current.scene == "Credits";
 }
 
 reset
