@@ -273,3 +273,5 @@ So, to find good static properties, we have a few tricks.
 ![singleton derived types](./images/unity_singleton.png)
 
 *If there are no static variables in the game you're looking at, you're shit outta luck I'm afraid. This tutorial assumes you have some*
+
+wip
