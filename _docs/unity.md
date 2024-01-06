@@ -232,6 +232,8 @@ init
         // We start from a static variable, in this case it's PogoGameManager.GameInstance
         // Then we can go from there to any property on that
         // In this case we're getting PogoGameManager.GameInstance.currentChapter.Number and setting it to "chapter"
+        // This is building a pointer path dynamically - 
+        // PogoGameManager.GameInstance will resolve to an address by asl-help, and each of pgm["currentChapter"] resolves to an offset in the pointer path
         vars.Helper["chapter"] = mono.Make<int>(
             // the base class
             pgm,
@@ -248,6 +250,8 @@ onStart
 {
     // we can then access the variables we got from `old` and `current` as normal
     vars.Log(current.chapter);
+    // this will let you see the pointer path that it generates
+    vars.Log(vars.Helper["chapter"].ToString());
 }
 ```
 
