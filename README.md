@@ -2,7 +2,9 @@
 A collection of all of my autosplitters and load removers - tools for the speedrunning program LiveSplit.
 
 ## Other Autosplitters
-Scripts I've worked on outside of this repo:
+I worked on the [Prince of Persia: The Lost Crown autosplitter](https://github.com/LiterallyMetaphorical/LiveSplit.POPTLC) that was used in the [Speedrun.com $10,000 Speedrun Challenge](https://www.speedrun.com/challenges/5e3eoymq-pop_tlc-pit-of-eternal-sands-10-000-speedrun-challenge) for the game.
+
+Other scripts I've worked on outside of this repo:
 - **In Sound Mind:** https://github.com/ontrigger/ism-autosplitter
 - **My Friendly Neighbourhood:** https://github.com/TheDementedSalad/My-Friendly-Neighborhood-Splitter/tree/main
 - **The Blair Witch Volumes:** https://github.com/MildGothDaddy/Bw_asl
@@ -12,8 +14,10 @@ I have worked on other autosplitters, those that are either
 full LiveSplit components or use the Auto Splitting Runtime (ASR):
 - **Aliens versus Predator 2:** https://github.com/mitchell-merry/LiveSplit.AVP2
 
+and probably a bunch more.
+
 ## Guides
-I've an [Unreal Engine guide](./_docs/unreal.md) available under this repository.
+I've an [Unreal Engine guide](./_docs/unreal.md) and a [Unity guide](./_docs/unity.md) available under this repository.
 
 ## Templates
 This repository contains a number of template files that I use frequently in my autosplitters.
