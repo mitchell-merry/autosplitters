@@ -75,8 +75,8 @@ isLoading
 
 start
 {
-    if (settings["ch_start"]
-     && old.activeScene == "01_MainMenu" && old.activeScene != current.activeScene) {
+    if (settings["ch_start"] && old.activeScene != current.activeScene
+     && old.activeScene == "01_MainMenu" && current.activeScene != "000_IntroCinematic") {
         return true;
     }
 
