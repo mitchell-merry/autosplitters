@@ -1,3 +1,4 @@
+// autosplitter by diggity, mello, streetbackguy
 state("Bendy and the Dark Revival") { }
 
 startup
@@ -15,8 +16,9 @@ startup
         the idea is that the key here is the setting that's actually checked in-code
      */
     vars.SettingAliases = new Dictionary<string, List<string>>() {
-        { "obj_10602", new List<string>() { "ch_intro" } },
+        { "csc_10201", new List<string>() { "ch_intro" } },
         { "csc_11008", new List<string>() { "ch_1" } },
+        { "CHAPTER THREE:", new List<string>() { "ch_2" } },
         { "csc_11801", new List<string>() { "ch_3" } },
         { "csc_12301", new List<string>() { "ch_4" } },
         { "csp_13009", new List<string>() { "ch_5" } }
@@ -39,10 +41,11 @@ init
         vars.Helper["IsPauseReady"] = mono.Make<bool>(gm, "m_Instance", "IsPauseReady");
 
         vars.Helper["playerState"] = mono.Make<int>(gm, "m_Instance", "Player", "CurrentState");
+        vars.Helper["ChapterTitle"] = mono.MakeString(gm, "m_Instance", "m_UIChapterTitle", 0x58, 0xC0);
 
         vars.Helper["cutsceneID"] = mono.Make<int>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "m_CutsceneID");
         vars.Helper["cutscenePlaying"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsPlaying");
-        
+
         // doesn't get detected by cutscene director
         var sdo = mono["SectionDataObject"];
         var cdo = mono["CutsceneDataObject"];
@@ -129,6 +132,13 @@ split
     {
         vars.Log("Cutscene Complete | " + current.cutsceneID);
         vars.CompletedSplits["csc_" + current.cutsceneID] = true;
+        return true;
+    }
+
+    if (old.ChapterTitle != current.ChapterTitle && current.ChapterTitle == "CHAPTER THREE:")
+    {
+        vars.Log("Chapter 2 Complete | " + current.ChapterTitle);
+        vars.CompletedSplits["CHAPTER THREE:"] = true;
         return true;
     }
 

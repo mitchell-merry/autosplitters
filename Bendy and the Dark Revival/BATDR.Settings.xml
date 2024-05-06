@@ -2,9 +2,9 @@
     <!-- requested by community -->
     <Setting Id="remove_paused" Label="Pause timer while game is paused." State="true" />
     <Setting Id="ch" Label="Split on completing chapter:" State="false">
-        <Setting Id="ch_intro" Label="Intro" State="false" ToolTip="Same as Objective Complete: Find some food." />
+        <Setting Id="ch_intro" Label="Intro" State="false" />
         <Setting Id="ch_1" Label="Chapter 1" State="false" />
-        <Setting Id="ch_2" Label="Chapter 2" State="false" ToolTip="NOT WORKING" />
+        <Setting Id="ch_2" Label="Chapter 2" State="false" />
         <Setting Id="ch_3" Label="Chapter 3" State="false" />
         <Setting Id="ch_4" Label="Chapter 4" State="false" />
         <Setting Id="ch_5" Label="Chapter 5" State="false" />
@@ -16,7 +16,7 @@
         <Setting Id="obj_10302" Label="Exhibits" State="false" />
         <Setting Id="obj_10303" Label="Switch" State="false" />
         <Setting Id="obj_10501" Label="Escape the studio" State="false" />
-        <Setting Id="obj_10601" Label="RunAndHIde" State="false" />
+        <Setting Id="obj_10601" Label="RunAndHide" State="false" />
         <Setting Id="obj_10602" Label="Find some food (Intro End)" State="false" />
         <Setting Id="obj_10701" Label="Maintenance" State="false" />
         <Setting Id="obj_10801" Label="Lock" State="false" />
@@ -31,7 +31,7 @@
         <Setting Id="obj_11301" Label="Elevators" State="false" />
         <Setting Id="obj_11801" Label="GentBuilding" State="false" />
         <Setting Id="obj_11901" Label="IdCard" State="false" />
-        <Setting Id="obj_12201" Label="HeIdi" State="false" />
+        <Setting Id="obj_12201" Label="Heidi" State="false" />
         <Setting Id="obj_12401" Label="Gilson" State="false" />
         <Setting Id="obj_12402" Label="Bedroom" State="false" />
         <Setting Id="obj_12403" Label="BettyTask" State="false" />
