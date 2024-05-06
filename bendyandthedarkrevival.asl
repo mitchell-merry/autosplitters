@@ -1,5 +1,4 @@
-//Original Autosplitter by Mitchell-Merry
-//Originally updated by Diggity and Mello
+// autosplitter by diggity, mello, streetbackguy
 state("Bendy and the Dark Revival") { }
 
 startup
@@ -112,8 +111,6 @@ update
     current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
     current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
     current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
-
-    vars.Log(current.ChapterTitle);
 }
 
 start
