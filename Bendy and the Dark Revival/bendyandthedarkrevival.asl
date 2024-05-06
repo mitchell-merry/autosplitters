@@ -1,3 +1,4 @@
+// autosplitter by diggity, mello, streetbackguy
 state("Bendy and the Dark Revival") { }
 
 startup
@@ -33,7 +34,6 @@ init
     vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
     {
         var gm = mono["GameManager"];
-        var uict = mono["UIChapterTitle"];
         vars.Helper["gm"] = mono.Make<IntPtr>(gm, "m_Instance");
         vars.Helper["GameState"] = mono.Make<int>(gm, "m_Instance", "GameState");
         vars.Helper["PauseMenuActive"] = mono.Make<bool>(gm, "m_Instance", "UIManager", "m_UIGameMenu", "IsActive");
@@ -110,8 +110,6 @@ update
     current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
     current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
     current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
-
-    vars.Log(current.ChapterTitle);
 }
 
 start
