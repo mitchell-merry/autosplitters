@@ -1,3 +1,5 @@
+//Original Autosplitter by Mitchell-Merry
+//Originally updated by Diggity and Mello
 state("Bendy and the Dark Revival") { }
 
 startup
