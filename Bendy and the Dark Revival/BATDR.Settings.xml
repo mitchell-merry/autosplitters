@@ -16,7 +16,7 @@
         <Setting Id="obj_10302" Label="Exhibits" State="false" />
         <Setting Id="obj_10303" Label="Switch" State="false" />
         <Setting Id="obj_10501" Label="Escape the studio" State="false" />
-        <Setting Id="obj_10601" Label="RunAndHIde" State="false" />
+        <Setting Id="obj_10601" Label="RunAndHide" State="false" />
         <Setting Id="obj_10602" Label="Find some food (Intro End)" State="false" />
         <Setting Id="obj_10701" Label="Maintenance" State="false" />
         <Setting Id="obj_10801" Label="Lock" State="false" />
