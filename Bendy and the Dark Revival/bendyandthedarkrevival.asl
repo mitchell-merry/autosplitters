@@ -19,8 +19,12 @@ startup
         { "csc_10201", new List<string>() { "ch_intro" } },
         { "csc_11008", new List<string>() { "ch_1" } },
         { "CHAPTER THREE:", new List<string>() { "ch_2" } },
+        { "csp_11503", new List<string>() { "kw" } },
+        { "Amok Follower: Hail the New Amok!", new List<string>() { "la" } },
         { "csc_11801", new List<string>() { "ch_3" } },
         { "csc_12301", new List<string>() { "ch_4" } },
+        { "csp_12802", new List<string>() { "mww" } },
+        { "csp_12903", new List<string>() { "dw" } },
         { "csp_13009", new List<string>() { "ch_5" } }
     };
 
@@ -42,6 +46,7 @@ init
 
         vars.Helper["playerState"] = mono.Make<int>(gm, "m_Instance", "Player", "CurrentState");
         vars.Helper["ChapterTitle"] = mono.MakeString(gm, "m_Instance", "m_UIChapterTitle", 0x58, 0xC0);
+        vars.Helper["LordAmok"] = mono.MakeString(gm, "m_Instance", "m_UISubtitles", 0x50, 0xC0);
 
         vars.Helper["cutsceneID"] = mono.Make<int>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "m_CutsceneID");
         vars.Helper["cutscenePlaying"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsPlaying");
@@ -49,6 +54,7 @@ init
         // doesn't get detected by cutscene director
         var sdo = mono["SectionDataObject"];
         var cdo = mono["CutsceneDataObject"];
+        var ddo = mono["DoorDataObject"];
         vars.Helper["standUpCutsceneStatus"] = mono.Make<int>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_SectionDirectory", 0x20, 0x10, 0x28, sdo["m_CutsceneData"], 0x20, 0x10, 0x80, cdo["m_Status"]);
 
         #region Tasks / Objectives
@@ -139,6 +145,13 @@ split
     {
         vars.Log("Chapter 2 Complete | " + current.ChapterTitle);
         vars.CompletedSplits["CHAPTER THREE:"] = true;
+        return true;
+    }
+
+    if (current.cutsceneID == 11707 && current.LordAmok == "Amok Follower: Hail the New Amok!" && old.LordAmok != "Amok Follower: Hail the New Amok!")
+    {
+        vars.Log("Lord Amok Defeated | " + current.LordAmok);
+        vars.CompletedSplits["la"] = true;
         return true;
     }
 
