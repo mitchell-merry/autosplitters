@@ -19,12 +19,8 @@ startup
         { "csc_10201", new List<string>() { "ch_intro" } },
         { "csc_11008", new List<string>() { "ch_1" } },
         { "CHAPTER THREE:", new List<string>() { "ch_2" } },
-        { "csp_11503", new List<string>() { "kw" } },
-        { "Amok Follower: Hail the New Amok!", new List<string>() { "la" } },
         { "csc_11801", new List<string>() { "ch_3" } },
         { "csc_12301", new List<string>() { "ch_4" } },
-        { "csp_12802", new List<string>() { "mww" } },
-        { "csp_12903", new List<string>() { "dw" } },
         { "csp_13009", new List<string>() { "ch_5" } }
     };
 
@@ -54,7 +50,6 @@ init
         // doesn't get detected by cutscene director
         var sdo = mono["SectionDataObject"];
         var cdo = mono["CutsceneDataObject"];
-        var ddo = mono["DoorDataObject"];
         vars.Helper["standUpCutsceneStatus"] = mono.Make<int>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_SectionDirectory", 0x20, 0x10, 0x28, sdo["m_CutsceneData"], 0x20, 0x10, 0x80, cdo["m_Status"]);
 
         #region Tasks / Objectives
