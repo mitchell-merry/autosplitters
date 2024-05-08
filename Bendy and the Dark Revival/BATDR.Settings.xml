@@ -29,7 +29,7 @@
         <Setting Id="obj_11201" Label="GentPipeUpgrade" State="false" />
         <Setting Id="obj_11202" Label="GentPipeCharge" State="false" />
         <Setting Id="obj_11301" Label="Elevators" State="false" />
-        <Setting Id="kw" Label="KingWidow" State="false" ToolTip="Splits after the fight, when talking to Alice in the Pipe." />
+        <Setting Id="csp_11503" Label="KingWidow" State="false" ToolTip="Splits after the fight, when talking to Alice in the Pipe." />
         <Setting Id="la" Label="LordAmok" State="false" ToolTip="Splits after the fight, when Amok Follower speaks." />
         <Setting Id="obj_11801" Label="GentBuilding" State="false" />
         <Setting Id="obj_11901" Label="IdCard" State="false" />
@@ -40,8 +40,8 @@
         <Setting Id="obj_12501" Label="BanishAlice" State="false" />
         <Setting Id="obj_12601" Label="MusicBox" State="false" />
         <Setting Id="obj_12602" Label="Distraction" State="false" />
-        <Setting Id="mww" Label="MeetWithWilson" State="false" />
-        <Setting Id="dw" Label="DefeatWilson" State="false" />
+        <Setting Id="csp_12802" Label="MeetWithWilson" State="false" />
+        <Setting Id="csp_12903" Label="DefeatWilson" State="false" />
     </Setting>
     <Setting Id="memory" Label="Split on collecting memory:" State="false">
         <Setting Id="memory_105101" Label="Baseball" State="false" />
