@@ -143,7 +143,7 @@ split
         return true;
     }
 
-    if (current.cutsceneID == 11707 && current.LordAmok == "Amok Follower: Hail the New Amok!" && old.LordAmok != "Amok Follower: Hail the New Amok!")
+    if (vars.Setting("la") && current.cutsceneID == 11707 && current.LordAmok == "Amok Follower: Hail the New Amok!" && old.LordAmok != "Amok Follower: Hail the New Amok!")
     {
         vars.Log("Lord Amok Defeated | " + current.LordAmok);
         vars.CompletedSplits["la"] = true;
