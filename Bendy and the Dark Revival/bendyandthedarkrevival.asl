@@ -42,6 +42,7 @@ init
 
         vars.Helper["playerState"] = mono.Make<int>(gm, "m_Instance", "Player", "CurrentState");
         vars.Helper["ChapterTitle"] = mono.MakeString(gm, "m_Instance", "m_UIChapterTitle", 0x58, 0xC0);
+        vars.Helper["LordAmok"] = mono.MakeString(gm, "m_Instance", "m_UISubtitles", 0x50, 0xC0);
 
         vars.Helper["cutsceneID"] = mono.Make<int>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "m_CutsceneID");
         vars.Helper["cutscenePlaying"] = mono.Make<bool>(gm, "m_Instance", "m_UICutsceneBars", "m_CutsceneDirector", "IsPlaying");
@@ -139,6 +140,13 @@ split
     {
         vars.Log("Chapter 2 Complete | " + current.ChapterTitle);
         vars.CompletedSplits["CHAPTER THREE:"] = true;
+        return true;
+    }
+
+    if (vars.Setting("la") && current.cutsceneID == 11707 && current.LordAmok == "Amok Follower: Hail the New Amok!" && old.LordAmok != "Amok Follower: Hail the New Amok!")
+    {
+        vars.Log("Lord Amok Defeated | " + current.LordAmok);
+        vars.CompletedSplits["la"] = true;
         return true;
     }
 
