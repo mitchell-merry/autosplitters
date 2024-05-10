@@ -1,72 +1,26 @@
 // how to find the values & what they mean are in the README.md file
-state("HITMAN3", "Epic October 2023")
-{
-    bool isLoading: 0x319F8FA;
-    bool isInMainMenu: 0x3194BB4;
-    bool hasControl: 0x30E2D48;
-    bool inCutscene: 0x31D6F94;
-    bool usingCamera: 0x30E1ECC;
-}
-
-state("HITMAN3", "Steam October 2023")
-{
-    bool isLoading: 0x39B32BC;
-    bool isInMainMenu: 0x319E734;
-    bool hasControl: 0x31769C8;
-    bool inCutscene: 0x33A67D4;
-    bool usingCamera: 0x31063B4;
-}
-
-state("HITMAN3", "Game Pass May 2023")
-{
-    bool isLoading: 0x3AA4BFC;
-}
+state("HITMAN3") {}
 
 startup
 {
-    // we want to make sure the user is using the load remover
-    if (timer.CurrentTimingMethod == TimingMethod.RealTime)
-    {
-        var mbox = MessageBox.Show(
-            "HITMAN 3 Freelancer uses load-removed time.\nWould you like to switch to it?",
-            "LiveSplit | HITMAN 3 Freelancer",
-            MessageBoxButtons.YesNo
-        );
-
-        if (mbox == DialogResult.Yes)
-            timer.CurrentTimingMethod = TimingMethod.GameTime;
-    }
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
+    vars.Helper.GameName = "HITMAN 3 Freelancer";
+    vars.Helper.AlertGameTime();
 }
 
 init
 {
-    var mms = modules.First().ModuleMemorySize.ToString("X");
-    print("MMS is: " + mms);
-
-    // MMS as a workaround to the Game Pass not working (#4)
-    switch (mms) {
-        case "4A68000": version = "Epic October 2023"; break;
-        case "4A72000": version = "Steam October 2023"; break;
-        case "4ABE000":
-            version = "Game Pass May 2023";
-            MessageBox.Show(
-                "HITMAN 3 Freelancer does not currently support full load-removing\ncapabilities for Game Pass. Only some loads will be removed.",
-                "LiveSplit | HITMAN 3 Freelancer",
-                MessageBoxButtons.OK
-            );
-            break;
-
-        default:
-            version = "UNKNOWN - raise an issue on GitHub if you want support for this version";
-            MessageBox.Show(
-                "HITMAN 3 Freelancer does not currently support this version\nof the game. Please raise an issue on GitHub if you want support\nfor this version.",
-                "LiveSplit | HITMAN 3 Freelancer",
-                MessageBoxButtons.OK
-            );
-            break;
-    }
-
-    print("Chose version " + version);
+    // in short, each of these signatures match one section in the assembly that contain a reference to the
+    // memory address we want to find. we scan that signature, once we find it we add the 0x5 or whatever offset
+    // from the beginning of the signature to get the address
+    // some magic behind the scenes converts that from a relative address to an absolute one
+    // find this by looking at what instructions write to your addresses, then work backwards to find where the address
+    // comes from with cheat engine's stack trace
+    vars.isLoadingScan = vars.Helper.ScanRel(0x5, "75 13 48 8B 05 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? B2 01");
+    vars.isInMainMenuScan = vars.Helper.ScanRel(0xA, "48 89 35 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? 40 88 35");
+    vars.inCutsceneScan = vars.Helper.ScanRel(0xB, "88 44 24 ?? E8 ?? ?? ?? ?? FF 0D");
+    vars.hasControlScan = vars.Helper.ScanRel(0x9, "4C 8B C0 49 C1 E8 ?? C6 05 ?? ?? ?? ?? 01");
+    vars.usingCameraScan = vars.Helper.ScanRel(0x6, "48 8B CB 48 89 1D ?? ?? ?? ?? EB 16 48 39 1D");
 
     // assume we are not in the intro cutscene on init
     // this does technically mean if the timer is opened and started during the intro cutscene, it will falsely pause
@@ -76,8 +30,12 @@ init
 
 update
 {
-    // early return for unsupported xbox game pass
-    if (version == "Game Pass May 2023") return;
+    // read new values
+    current.isLoading = vars.Helper.Read<bool>(vars.isLoadingScan + 0x3C);
+    current.isInMainMenu = vars.Helper.Read<bool>(vars.isInMainMenuScan + 0x194);
+    current.inCutscene = vars.Helper.Read<bool>(vars.inCutsceneScan);
+    current.hasControl = vars.Helper.Read<bool>(vars.hasControlScan + 0x1);
+    current.usingCamera = vars.Helper.Read<bool>(vars.usingCameraScan + 0x4);
 
     // if we have just loaded in, we are in an intro cutscene
     // (or the main menu, which is paused regardless anyway)
@@ -93,9 +51,6 @@ update
 
 isLoading
 {
-    // early return for unsupported xbox game pass
-    if (version == "Game Pass May 2023") return current.isLoading;
-
     return current.isLoading    // if we are in a loading screen...
         || current.isInMainMenu // or we're in the main menu...
         // or we're in a cutscene or don't have control and we're not currently in the intro cutscene (to the safehouse or the level)
