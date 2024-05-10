@@ -4,22 +4,23 @@ state("HITMAN3") {}
 startup
 {
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
-    vars.Helper.GameName = "HITMAN 3";
+    vars.Helper.GameName = "HITMAN 3 Freelancer";
     vars.Helper.AlertGameTime();
 }
 
 init
 {
+    // in short, each of these signatures match one section in the assembly that contain a reference to the
+    // memory address we want to find. we scan that signature, once we find it we add the 0x5 or whatever offset
+    // from the beginning of the signature to get the address
+    // some magic behind the scenes converts that from a relative address to an absolute one
+    // find this by looking at what instructions write to your addresses, then work backwards to find where the address
+    // comes from with cheat engine's stack trace
     vars.isLoadingScan = vars.Helper.ScanRel(0x5, "75 13 48 8B 05 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? B2 01");
     vars.isInMainMenuScan = vars.Helper.ScanRel(0xA, "48 89 35 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? 40 88 35");
     vars.inCutsceneScan = vars.Helper.ScanRel(0xB, "88 44 24 ?? E8 ?? ?? ?? ?? FF 0D");
     vars.hasControlScan = vars.Helper.ScanRel(0x9, "4C 8B C0 49 C1 E8 ?? C6 05 ?? ?? ?? ?? 01");
     vars.usingCameraScan = vars.Helper.ScanRel(0x6, "48 8B CB 48 89 1D ?? ?? ?? ?? EB 16 48 39 1D");
-    vars.Log(vars.isLoadingScan.ToString("X"));
-    vars.Log(vars.isInMainMenuScan.ToString("X"));
-    vars.Log(vars.inCutsceneScan.ToString("X"));
-    vars.Log(vars.hasControlScan.ToString("X"));
-    vars.Log(vars.usingCameraScan.ToString("X"));
 
     // assume we are not in the intro cutscene on init
     // this does technically mean if the timer is opened and started during the intro cutscene, it will falsely pause
@@ -35,20 +36,6 @@ update
     current.inCutscene = vars.Helper.Read<bool>(vars.inCutsceneScan);
     current.hasControl = vars.Helper.Read<bool>(vars.hasControlScan + 0x1);
     current.usingCamera = vars.Helper.Read<bool>(vars.usingCameraScan + 0x4);
-
-    try {
-        if (old.isLoading != current.isLoading) vars.Log("isLoading: " + old.isLoading + " -> " + current.isLoading);
-        if (old.isInMainMenu != current.isInMainMenu) vars.Log("isInMainMenu: " + old.isInMainMenu + " -> " + current.isInMainMenu);
-        if (old.inCutscene != current.inCutscene) vars.Log("inCutscene: " + old.inCutscene + " -> " + current.inCutscene);
-        if (old.hasControl != current.hasControl) vars.Log("hasControl: " + old.hasControl + " -> " + current.hasControl);
-        if (old.usingCamera != current.usingCamera) vars.Log("usingCamera: " + old.usingCamera + " -> " + current.usingCamera);
-    } catch {
-        vars.Log("isLoading: " + current.isLoading);
-        vars.Log("isInMainMenu: " + current.isInMainMenu);
-        vars.Log("inCutscene: " + current.inCutscene);
-        vars.Log("hasControl: " + current.hasControl);
-        vars.Log("usingCamera: " + current.usingCamera);
-    }
 
     // if we have just loaded in, we are in an intro cutscene
     // (or the main menu, which is paused regardless anyway)

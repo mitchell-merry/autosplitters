@@ -13,18 +13,15 @@ This README details how you can update this ASL with different versions, or diff
 
 Also see the [LiveSplit docs on ASL](https://github.com/LiveSplit/LiveSplit.AutoSplitters).
 
-## Adding a new "state"
+# 10-05-2024 UPDATE:
 
-There are a few blocks at the beginning of the function that look like `state("HITMAN3", <version>) {}`. These correspond to different published versions of the game.
+We use signatures instead of raw addresses now. It hopefully works between versions. If it stops working, then let me know
+and I'll have a crack once I have time. Or if you're familiar with how signature scanning works, please have a go yourself.
+They should be cross-platform.
 
-We differentiate the versions by calculating the MD5 hash of the HITMAN3 executable file. Try running the loading the ASL once; if you're using a supported version, then you should see `Chose version: Steam` or similar in the logs. If it is not supported, you will see `UNKNOWN` in place of Steam. Above that log will be a `Hash is: ` line. Copy the hash from there and add it as a case to the switch block, setting the version to an appropriate identifier (if an update has come out, you will need to replace the appropriate version with the new hash. the old version is presumably no longer playable, so no need to keep it around).
+You'll still need to find the addresses if the signatures break, so the following section is still relevant.
 
-Once you've done this you can add a new state block to the script.
-
-Next, you need to find the values used in the script. The addresses used in other versions will probably not work in another version or update
-(That is why we differentiate them in the first place).
-
-### Finding the address
+### Finding the addresses
 
 #### Setup
 To find the addresses, you need Cheat Engine (CE). Start by opening Hitman and CE, and attach CE to Hitman.
