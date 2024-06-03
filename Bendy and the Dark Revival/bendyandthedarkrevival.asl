@@ -16,7 +16,7 @@ startup
         the idea is that the key here is the setting that's actually checked in-code
      */
     vars.SettingAliases = new Dictionary<string, List<string>>() {
-        { "csc_10201", new List<string>() { "ch_intro" } },
+        { "obj_10602", new List<string>() { "ch_intro" } },
         { "csc_11008", new List<string>() { "ch_1" } },
         { "CHAPTER THREE:", new List<string>() { "ch_2" } },
         { "csc_11801", new List<string>() { "ch_3" } },
@@ -55,7 +55,7 @@ init
         #region Tasks / Objectives
         // 0x20 refers to Data<Key, Value>#m_Values, i believe there is a conflict with the other Data class.
         vars.Helper["tasks"] = mono.MakeList<IntPtr>(gm, "m_Instance", "GameData", "CurrentSave", "m_DataDirectories", "m_TaskDirectory", 0x20);
-        
+
         var tdo = mono["TaskDataObject"];
         vars.ReadTDO = (Func<IntPtr, dynamic>)(tdoP =>
         {
@@ -109,8 +109,22 @@ onStart
 update
 {
     current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
-    current.IsPaused = current.PauseMenuActive && current.GameState == 4 && current.GMIsPaused && current.IsPauseReady;
-    current.IsLoading = current.IsLoadingSection || (settings["remove_paused"] && current.IsPaused);
+    current.IsLoading = current.IsLoadingSection;
+
+    if(current.playerState != old.playerState)
+    {
+        vars.Log("Playerstate: " + old.playerState + " -> " + current.playerState);
+    }
+
+    if(current.cutscenePlaying != old.cutscenePlaying)
+    {
+        vars.Log("Cutscene Playing: " + old.cutscenePlaying + " -> " + current.cutscenePlaying);
+    }
+
+    if(current.cutsceneID != old.cutsceneID)
+    {
+        vars.Log("Cutscene ID " + old.cutsceneID + " -> " + current.cutsceneID);
+    }
 }
 
 start
@@ -129,7 +143,7 @@ split
         return true;
     }
 
-    if (old.playerState == 1 && current.playerState == 3 && vars.Setting("csc_" + current.cutsceneID, true))
+    if (old.playerState != 3 && current.playerState == 3 && vars.Setting("csc_" + current.cutsceneID, true))
     {
         vars.Log("Cutscene Complete | " + current.cutsceneID);
         vars.CompletedSplits["csc_" + current.cutsceneID] = true;
@@ -143,7 +157,7 @@ split
         return true;
     }
 
-    if (vars.Setting("la") && current.cutsceneID == 11707 && current.LordAmok == "Amok Follower: Hail the New Amok!" && old.LordAmok != "Amok Follower: Hail the New Amok!")
+    if (current.cutsceneID == 11707 && current.LordAmok == "Amok Follower: Hail the New Amok!" && old.LordAmok != "Amok Follower: Hail the New Amok!" && vars.Setting("la", true))
     {
         vars.Log("Lord Amok Defeated | " + current.LordAmok);
         vars.CompletedSplits["la"] = true;
