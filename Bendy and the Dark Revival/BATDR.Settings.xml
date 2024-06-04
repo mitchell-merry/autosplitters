@@ -1,5 +1,4 @@
 <Settings>
-    <!-- requested by community -->
     <Setting Id="ch" Label="Split on completing chapter:" State="false">
         <Setting Id="ch_intro" Label="Intro" State="false" />
         <Setting Id="ch_1" Label="Chapter 1" State="false" />
