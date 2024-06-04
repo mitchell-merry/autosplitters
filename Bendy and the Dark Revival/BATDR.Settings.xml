@@ -1,6 +1,4 @@
 <Settings>
-    <!-- requested by community -->
-    <Setting Id="remove_paused" Label="Pause timer while game is paused." State="true" />
     <Setting Id="ch" Label="Split on completing chapter:" State="false">
         <Setting Id="ch_intro" Label="Intro" State="false" />
         <Setting Id="ch_1" Label="Chapter 1" State="false" />
@@ -17,7 +15,6 @@
         <Setting Id="obj_10303" Label="Pull Switch" State="false" />
         <Setting Id="obj_10501" Label="Escape the Studio" State="false" />
         <Setting Id="obj_10601" Label="Run And Hide" State="false" />
-        <Setting Id="obj_10602" Label="Find Some Food" State="false" />
         <Setting Id="obj_10701" Label="Maintenance" State="false" />
         <Setting Id="obj_10801" Label="Break Lock" State="false" />
         <Setting Id="obj_10802" Label="Get Gent Pipe" State="false" />
@@ -30,7 +27,7 @@
         <Setting Id="obj_11201" Label="Gent Pipe Upgrade" State="false" />
         <Setting Id="obj_11202" Label="Gent Pipe Charge" State="false" />
         <Setting Id="obj_11301" Label="Elevators" State="false" />
-        <Setting Id="csp_11503" Label="King Widow" State="false" ToolTip="Splits after the fight, when talking to Alice in the Pipe." />
+        <Setting Id="csc_11503" Label="King Widow" State="false" ToolTip="Splits after the fight, when talking to Alice in the Pipe." />
         <Setting Id="la" Label="Lord Amok" State="false" ToolTip="Splits after the fight, when Amok Follower speaks." />
         <Setting Id="obj_11801" Label="Gent Building" State="false" />
         <Setting Id="obj_11901" Label="ID Card" State="false" />
@@ -41,7 +38,7 @@
         <Setting Id="obj_12501" Label="Banish Alice" State="false" />
         <Setting Id="obj_12601" Label="Music Box" State="false" />
         <Setting Id="obj_12602" Label="Distraction" State="false" />
-        <Setting Id="csp_12802" Label="Meet With Wilson" State="false" />
+        <Setting Id="csc_12802" Label="Meet With Wilson" State="false" />
         <Setting Id="csp_12903" Label="Defeat Wilson" State="false" />
     </Setting>
     <Setting Id="memory" Label="Split on collecting memory:" State="false">
