@@ -110,21 +110,6 @@ update
 {
     current.IsLoadingSection = vars.Helper.Read<IntPtr>(current.gm + 0xD0) != IntPtr.Zero;
     current.IsLoading = current.IsLoadingSection;
-
-    if(current.playerState != old.playerState)
-    {
-        vars.Log("Playerstate: " + old.playerState + " -> " + current.playerState);
-    }
-
-    if(current.cutscenePlaying != old.cutscenePlaying)
-    {
-        vars.Log("Cutscene Playing: " + old.cutscenePlaying + " -> " + current.cutscenePlaying);
-    }
-
-    if(current.cutsceneID != old.cutsceneID)
-    {
-        vars.Log("Cutscene ID " + old.cutsceneID + " -> " + current.cutsceneID);
-    }
 }
 
 start
