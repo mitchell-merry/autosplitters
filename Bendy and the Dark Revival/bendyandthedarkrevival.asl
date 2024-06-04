@@ -36,9 +36,6 @@ init
         var gm = mono["GameManager"];
         vars.Helper["gm"] = mono.Make<IntPtr>(gm, "m_Instance");
         vars.Helper["GameState"] = mono.Make<int>(gm, "m_Instance", "GameState");
-        vars.Helper["PauseMenuActive"] = mono.Make<bool>(gm, "m_Instance", "UIManager", "m_UIGameMenu", "IsActive");
-        vars.Helper["GMIsPaused"] = mono.Make<bool>(gm, "m_Instance", "IsPaused");
-        vars.Helper["IsPauseReady"] = mono.Make<bool>(gm, "m_Instance", "IsPauseReady");
 
         vars.Helper["playerState"] = mono.Make<int>(gm, "m_Instance", "Player", "CurrentState");
         vars.Helper["ChapterTitle"] = mono.MakeString(gm, "m_Instance", "m_UIChapterTitle", 0x58, 0xC0);
