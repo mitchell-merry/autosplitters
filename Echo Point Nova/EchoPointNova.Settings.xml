@@ -1,0 +1,17 @@
+<Settings>
+
+    <Setting Id="split_zone" State="true" Label="Split on orb event">
+        <Setting Id="split_windtemple_enter" Label="Enter Wind Temple" State="false" />
+        <Setting Id="split_windtemple" Label="Beat Wind Temple" State="false" />
+        <Setting Id="split_ICICLES_enter" Label="Enter Ice Castle" State="false" />
+        <Setting Id="split_ICICLES" Label="Beat Ice Castle" State="false" />
+        <Setting Id="split_SENTRY_enter" Label="Begin Sentry Fight" State="false" />
+        <Setting Id="split_SENTRY" Label="Beat Sentry Fight" State="false" />
+        <Setting Id="split_desert_enter" Label="Enter Desert Ruins Fight" State="false" />
+        <Setting Id="split_desert" Label="Beat Desert Ruins Fight" State="true" />
+        <Setting Id="split_ColossusDemo_enter" Label="Enter Boss Fight (Colossus)" State="false" />
+        <Setting Id="split_ColossusDemo" Label="Beat Boss Fight (Colossus)" State="true" />
+    </Setting>
+    <Setting Id="start_zone_enter" Label="Start time on entering a fight" State="false"/>
+
+</Settings>

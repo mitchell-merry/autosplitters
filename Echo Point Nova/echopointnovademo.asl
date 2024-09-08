@@ -1,44 +1,21 @@
-state("Greylock-Win64-Shipping")
-{
-    // cheat table in repo describes these paths
-    long FNamePool: 0x54809D0;
-
-    long worldFName: 0x56A6B60, 0x18;
-
-    // World -> GameState -> CurrentActiveZone
-    long ActiveZone: 0x56A6B60, 0x120, 0x410;
-    long zoneFName: 0x56A6B60, 0x120, 0x410, 0x18;
-    // World -> GameState -> CurrentActiveZone -> SpawnCount
-    int SpawnCount: 0x56A6B60, 0x120, 0x410, 0x510;       // total number of guys that spawn
-    // World -> GameState -> CurrentActiveZone -> BattleCountForUI
-    int BattleCountForUI: 0x56A6B60, 0x120, 0x410, 0x518; // number left
-
-    // World -> AuthorityGameMode -> PlayerControllers -> [0] -> Character -> CapsuleComponent -> ComponentVelocity (Vector)
-    float VelocityX: 0x56A6B60, 0x118, 0x3C8, 0x0, 0x260, 0x290, 0x140;
-    float VelocityZ: 0x56A6B60, 0x118, 0x3C8, 0x0, 0x260, 0x290, 0x144;
-    float VelocityY: 0x56A6B60, 0x118, 0x3C8, 0x0, 0x260, 0x290, 0x148;
-}
+state("Greylock-Win64-Shipping") { }
 
 startup
 {
-    vars.Log = (Action<object>)(output => print("[Echo Point Nova] " + output));
-    settings.Add("split_zone", true, "Split on orb event");
-    settings.Add("split_Zone_enter", false, "Enter Wind Temple", "split_zone");
-    settings.Add("split_Zone", false, "Beat Wind Temple", "split_zone");
-    settings.Add("split_ICICLES_enter", false, "Enter Ice Castle", "split_zone");
-    settings.Add("split_ICICLES", false, "Beat Ice Castle", "split_zone");
-    settings.Add("split_SENTRY_enter", false, "Enter Fire Temple", "split_zone");
-    settings.Add("split_SENTRY", false, "Beat Fire Temple", "split_zone");
-    settings.Add("split_desert_enter", false, "Enter Final Fight", "split_zone");
-    settings.Add("split_desert", true, "Beat Final Fight", "split_zone");
-
-    settings.Add("start_zone_enter", false, "Start time on entering a fight");
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
+    vars.Helper.GameName = "Echo Point Nova";
+    vars.Helper.Settings.CreateFromXml("Components/EchoPointNova.Settings.xml");
 }
 
 init
 {
+    vars.GWorld = vars.Helper.ScanRel(0x3, "48 8B 05 ?? ?? ?? ?? 48 3B C? 48 0F 44 C? 48 89 05 ?? ?? ?? ?? E8");
+    IntPtr NamePoolData = vars.Helper.ScanRel(0xD, "89 5C 24 ?? 89 44 24 ?? 74 ?? 48 8D 15");
+    vars.Log("Found GWorld: 0x" + vars.GWorld.ToString("X"));
+    vars.Log("Found NamePoolData: 0x" + NamePoolData.ToString("X"));
+    
     // The following code derefences FName structs to their string counterparts by
-    // indexing the FNamePool table
+    // indexing this FNamePool table
 
     // `fname` is the actual struct, not a pointer to the struct
     vars.CachedFNames = new Dictionary<long, string>();
@@ -49,7 +26,7 @@ init
         int name_offset  = (int) fname & 0xFFFF;
         int chunk_offset = (int) (fname >> 0x10) & 0xFFFF;
 
-        var base_ptr = new DeepPointer((IntPtr) current.FNamePool + chunk_offset * 0x8, name_offset * 0x2);
+        var base_ptr = new DeepPointer((IntPtr) NamePoolData + 0x10 + chunk_offset * 0x8, name_offset * 0x2);
         byte[] name_metadata = base_ptr.DerefBytes(game, 2);
 
         // First 10 bits are the size, but we read the bytes out of order
@@ -88,12 +65,42 @@ init
 
 update
 {
+    // GWorld -> Name
+    current.worldFName = vars.Helper.Read<long>(vars.GWorld, 0x18);
+
+    // GWorld -> GameState -> CurrentActiveZone -> Name
+    current.zoneFName = vars.Helper.Read<long>(vars.GWorld, 0x120, 0x420, 0x18);
+    // GWorld -> GameState -> CurrentActiveZone -> SpawnCount
+    current.SpawnCount = vars.Helper.Read<int>(vars.GWorld, 0x120, 0x420, 0x660);       // total number of guys that spawn
+    // GWorld -> GameState -> CurrentActiveZone -> BattleCountForUI
+    current.BattleCountForUI = vars.Helper.Read<int>(vars.GWorld, 0x120, 0x420, 0x668); // number left
+
+    // GWorld -> AuthorityGameMode -> PlayerControllers -> [0] -> Character -> CapsuleComponent -> ComponentVelocity (Vector)
+    current.VelocityX = vars.Helper.Read<float>(vars.GWorld, 0x118, 0x488, 0x0, 0x260, 0x290, 0x140);
+    current.VelocityY = vars.Helper.Read<float>(vars.GWorld, 0x118, 0x488, 0x0, 0x260, 0x290, 0x144);
+    current.VelocityZ = vars.Helper.Read<float>(vars.GWorld, 0x118, 0x488, 0x0, 0x260, 0x290, 0x148);
+
     // Deref useful FNames here
+    IDictionary<string, object> olddict = old;
     IDictionary<string, object> currdict = current;
+    var dontlogthese = new List<string>() { "VelocityX", "VelocityY", "VelocityZ" };
     foreach (var fname in new List<string>(currdict.Keys))
     {
-        if (!fname.EndsWith("FName"))
+        if (!fname.EndsWith("FName")) {
+            if (!olddict.ContainsKey(fname)) {
+                vars.Log(fname + ": " + currdict[fname].ToString());
+                continue;
+            }
+
+            if (dontlogthese.Contains(fname)) {
+                continue;
+            }
+            
+            if(olddict[fname].ToString() != currdict[fname].ToString()) {
+                vars.Log(fname + ": " + olddict[fname].ToString() + " -> " + currdict[fname].ToString());
+            }
             continue;
+        }
         
         var key = fname.Substring(0, fname.Length-5);
         var val = vars.ReadFName((long)currdict[fname]);
