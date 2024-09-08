@@ -648,7 +648,7 @@ it out by looking at the dumps. (All of the values I've used are in this guide).
 state("Ghostrunner2-Win64-Shipping.exe")
 {
     // GWorld->OwningGameInstance->LocalPlayers.data[0]->PlayerController->Character->CapsuleComponent->RelativeLocation.Z
-    float z: 0x6A3BCB0, 0x180, 0x38, 0x0, 0x260, 0x290, 0x120;
+    float z: 0x6A3BCB0, 0x180, 0x38, 0x0, 0x30, 0x260, 0x290, 0x120;
 }
 ```
 
