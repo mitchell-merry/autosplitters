@@ -126,3 +126,162 @@ where the string is the map you're transitioning too. If you search for this str
 
 Among those results is a static address. That static address is what you want.
 Add that static address to your address list, then add an offset of 0x0 to it (select Pointer).
+
+# ignore everything below here
+
+im just storing these here, it's nonsensical
+
+```
+enum UIConnectionStatus {
+    UI_CONNECTION_STATUS_EOFFLINE = 0x1,
+    UI_CONNECTION_STATUS_EOFFLINE = 0x2,
+    return param_2;
+  default:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002b;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EBEGIN_CONNECTION_FLOW";
+    return param_2;
+  case 4:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000022;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EDISCONNECTED";
+    return param_2;
+  case 6:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000025;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EPREAUTHENTICATE";
+    return param_2;
+  case 7:
+  case 8:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000027;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFETCH_API_VERSION";
+    return param_2;
+  case 9:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002a;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EAPI_VERSION_RECEIVED";
+    return param_2;
+  case 10:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002c;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFETCHING_CONFIGURATION";
+    return param_2;
+  case 0xb:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002c;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_ECONFIGURATION_RECEIVED";
+    return param_2;
+  case 0xc:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000031;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EONLINE_CONSENT_CONFIRMATION";
+    return param_2;
+  case 0xf:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000024;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EAUTHENTICATING";
+    return param_2;
+  case 0x10:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002d;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EAUTHENTICATION_RECEIVED";
+    return param_2;
+  case 0x11:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000038;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_ENTITLEMENTS_SYNCHRONIZE_INPROGRESS";
+    return param_2;
+  case 0x12:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000032;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_ENTITLEMENTS_SYNCHRONIZE_DONE";
+    return param_2;
+  case 0x13:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000030;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EAUTHENTICATING_GAMESERVICE";
+    return param_2;
+  case 0x14:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000039;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EAUTHENTICATION_GAMESERVICE_RECEIVED";
+    return param_2;
+  case 0x15:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002c;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFSP_IOI_ACCOUNT_SIGNUP";
+    return param_2;
+  case 0x16:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000034;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFETCHING_OFFLINE_CACHE_DB_DIFF";
+    return param_2;
+  case 0x17:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000038;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFETCHING_OFFLINE_CACHE_DB_RECEIVED";
+    return param_2;
+  case 0x18:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000030;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFETCHING_DYNAMIC_RESOURCES";
+    return param_2;
+  case 0x19:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002f;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EDYNAMIC_RESOURCES_MOUNTED";
+    return param_2;
+  case 0x1b:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000030;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFETCHING_PLATFORM_USERINFO";
+    return param_2;
+  case 0x1c:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000030;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EPLATFORM_USERINFO_RECEIVED";
+    return param_2;
+  case 0x1f:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000026;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EFETCHING_PROFILE";
+    return param_2;
+  case 0x20:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000026;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EPROFILE_RECEIVED";
+    return param_2;
+  case 0x21:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002b;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_ESYNCHRONYZING_PROFILE";
+    return param_2;
+  case 0x22:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000002a;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EPROFILE_SYNCHRONIZED";
+    return param_2;
+  case 0x23:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000027;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_ERETRIEVING_EVENTS";
+    return param_2;
+  case 0x24:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000026;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EEVENTS_RETRIEVED";
+    return param_2;
+  case 0x25:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x80000036;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_EWAITING_FOR_SYNCHRONIZING_EVENTS";
+    return param_2;
+  case 0x26:
+    FUN_1400648a0(param_2);
+    *param_2 = 0x8000001f;
+    *(char **)(param_2 + 2) = "UI_CONNECTION_STATUS_ECONNECTED";
+    return param_2;
+  }
+}
+```
