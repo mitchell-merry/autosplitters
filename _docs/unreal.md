@@ -607,10 +607,10 @@ Well, you start out with your `GWorld` address (usually). As we know, this point
 an instance of `UWorld`. From there, you use the offsets for each field to work your way
 to what you need. I'll use the X position of the player as an example.
 
-The full path (from [LocalPlayers above](#localplayers)) looks like:
+The full path (through [LocalPlayers above](#localplayers)) looks like:
 
 ```
-GWorld->LocalPlayers.data[0]->PlayerController->Character->CapsuleComponent->RelativeLocation.Z
+GWorld->OwningGameInstance->LocalPlayers.data[0]->PlayerController->Character->CapsuleComponent->RelativeLocation.Z
 ```
 
 where `->` implies a pointer dereference, `.` implies a member of a struct, and `[x]`
@@ -621,14 +621,24 @@ Say your `GWorld` address is `"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0`. Since
 the GWorld address (ASL will default to the main module if one isn't provided).
 
 We get the offset for each step by looking at the field dumps. Each field will have
-something like:
+something like this (note that for this examplewe are looking at UWorld here, since we're
+starting from a GWorld!):
+```cpp
+class UGameInstance* OwningGameInstance; // 0x0180 (size: 0x8)
+```
+...the `0x180` is the offset. So the path to `OwningGameInstance` is `"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0, 0x180`.
+If you look at that, you should see it looks like a pointer.
+
+Then we follow an offset from `UGameInstance`, this time to `LocalPlayers`:
 ```cpp
 TArray<class ULocalPlayer*> LocalPlayers; // 0x0038 (size: 0x10)
 ```
-...the `0x38` is the offset. Since we want `data` on `LocalPlayers`, we offset this further
-by `0x0` (which does nothing, but if you wanted `size`, you would offset `0x8` to get `0x40`).
 
-Then we index this array at the 0th position, which is 0x0, to get the first ULocalPlayer.
+This gives us an offset of `0x38` to the `TArray` struct. Since we want `data`
+on `LocalPlayers`, we offset this further by `0x0` (which does nothing in effect, but if
+you wanted `size`, you would offset `0x8` to get `0x40`).
+
+Then we index this array at the 0th position, which is `0x0`, to get the first `ULocalPlayer*`.
 
 Then the `PlayerController` is at 0x30, etc etc. I'll leave it as an exercise to the reader
 to figure out why the pointer path looks the way it does - but you should be able to figure
@@ -637,8 +647,8 @@ it out by looking at the dumps. (All of the values I've used are in this guide).
 ```cs
 state("Ghostrunner2-Win64-Shipping.exe")
 {
-    // GWorld->LocalPlayers.data[0]->PlayerController->Character->CapsuleComponent->RelativeLocation.Z
-    float x: 0x6A3BCB0, 0x38, 0x0, 0x260, 0x290, 0x120;
+    // GWorld->OwningGameInstance->LocalPlayers.data[0]->PlayerController->Character->CapsuleComponent->RelativeLocation.Z
+    float z: 0x6A3BCB0, 0x180, 0x38, 0x0, 0x30, 0x260, 0x290, 0x120;
 }
 ```
 
