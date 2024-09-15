@@ -103,6 +103,9 @@ update
 {
     current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
     current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
+
+    // TODO: this sometimes iterates over current.menus multiple times
+    // improve performance by only doing this iteration once
     current.isCallQuestionActive = settings["split--call"]
         && current.activeScene == "Nest_Sasha"
         && vars.IsQuestionActive(current.menus, "Answer the call?");
