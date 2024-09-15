@@ -65,6 +65,21 @@ init
             return false;
         });
 
+        vars.IsLoadingScreenUp = (Func<List<IntPtr>, string, bool>)((menus, loadMenuName) =>
+        {
+            foreach (var menu in menus)
+            {
+                var enabled = vars.Helper.Read<bool>(menu + Menu["isEnabled"]);
+
+                if (!enabled) continue;
+
+                var s = vars.Helper.ReadString(menu + Menu["title"]);
+                return s == loadMenuName;
+            }
+
+            return false;
+        });
+
         return true;
     });
 
@@ -91,11 +106,17 @@ update
     current.isCallQuestionActive = settings["split--call"]
         && current.activeScene == "Nest_Sasha"
         && vars.IsQuestionActive(current.menus, "Answer the call?");
+    current.isLoadingScreenUp1 = vars.IsLoadingScreenUp(current.menus, "LoadSave");
+    current.isLoadingScreenUp2 = vars.IsLoadingScreenUp(current.menus, "Loading");
+
+    // vars.DebugMenus(current.menus, current.isLoading);
 
     vars.Watch(old, current, "activeScene");
     vars.Watch(old, current, "loadingScene");
     vars.Watch(old, current, "isLoading");
     vars.Watch(old, current, "isCallQuestionActive");
+    vars.Watch(old, current, "isLoadingScreenUp1");
+    vars.Watch(old, current, "isLoadingScreenUp2");
 }
 
 onStart
@@ -104,12 +125,14 @@ onStart
     vars.CompletedSplits.Clear();
 
     vars.Log(current.activeScene);
+    vars.Log(current.isLoadingScreenUp1);
+    vars.Log(current.isLoadingScreenUp2);
     vars.Log(current.isLoading);
 }
 
 isLoading
 {
-    return current.isLoading;
+    return current.isLoading || current.isLoadingScreenUp1 || current.isLoadingScreenUp2;
 }
 
 start
