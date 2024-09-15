@@ -200,16 +200,31 @@ for the dump, it must have been marked as [`UPROPERTY`](https://docs.unrealengin
 in the source code. If something isn't available, it very well may just be hidden from you.
 It may take some guess-timating to find what you need. 
 
-### Classes vs Structs in C++
+### Pointers, Classes, and Structs in C++
 
-Classes and structs, for our purpose, are both "things that can hold fields". But there is an
-important distinction in how they are laid out in memory. An instance to a class is really a
-*pointer* to a *different section of memory*. When you're looking at something that has an
-instance of a class inside of it, that instance is just 8 bytes pointing to another, arbtirarily
-sized thing.
+Classes and structs, for our purposes and in C++, are both "things that can hold fields". They look
+the same when laid out in memory. But to read the fields of these classes and structs, you need to
+understand what pointers are and how they work.
 
-However, and very importantly, `structs` are *not* in separate sections of memory. Instead, they
-are completely contained by the owning class, and there is no pointer in between. That is, if you
+A "pointer" is a thing that *points* to a different area of memory. That is, it's an address that
+you can follow to access some other values in memory. The size of this address depends on whether
+the game is 32 bit or 64 bit (4 and 8 bytes respectively, though usually 8 bytes). The thing it points
+to can be arbitrarily sized.
+
+Whether or not the field you're looking at is a pointer is denoted by the `*` symbol in its
+definition. For example, in the following, `MyClass#someOtherClass` is a pointer, whereas
+`MyClass#someStruct` is not.
+```cpp
+class MyClass {
+    int fieldA = 1;
+    int fieldB = 2;
+    class MyOtherClass* someOtherClass;
+    struct MyStruct someStruct;
+}
+```
+
+If the class/struct is not denoted by a `*` (so is not a pointer), the value is completely contained
+by the owning structure, and there is no pointer in between. That is, if you
 have the following structure:
 
 ```cpp
@@ -237,12 +252,17 @@ address     | D0 D1 D2 D3 D4 D5 D6 D7 | D8 D9 DA DB DC DD DE DF |
 ```
 
 That is:
-- `fieldA` and `fieldB` are at 0x0 and 0x4
-- The instance to `MyOtherClass` is at 0x8 and is a **pointer to another section of memory**. The pointer's value is `0000021A851C2C80`.
+- `fieldA` and `fieldB` are at 0x0 and 0x4. This is because `int`s are always 32 bits long (4 bytes).
+- `someOtherClass`, an instance of `MyOtherClass` is at 0x8 and is a **pointer to another section of memory**. The pointer's value is `0000021A851C2C80`. If you were to follow that address, you would see the fields of `MyOtherClass` similar to how we're looking at the fields of `MyClass` here.
 - The struct `someStruct` is **completely contained within MyClass**, and is **not a pointer**. `a` is at 0x10 to `MyClass`, `b` is at 0x14, and `c` is at 0x18.
 
 Take a moment to look at the class definitions that were provided and see if you can figure
 out why they are laid out that way in memory. This is a great skill to learn!
+
+It's also worth noting that the way fields are laid out in memory is not only dependent on the size of the fields.
+It will also depend on how they get *aligned*. You won't need to worry too much about this since the unreal dumps
+will contain the exact offsets (you won't need to calculate this yourself) but you can read on other resources
+for what alignment is (and everything else I've summarised about C++ memory layout here).
 
 ### Searching for things effectively
 
