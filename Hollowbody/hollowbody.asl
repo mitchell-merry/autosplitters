@@ -27,33 +27,12 @@ init
         var KickStarter = mono["KickStarter"];
         var SceneChanger = mono["SceneChanger"];
         var PlayerMenus = mono["PlayerMenus"];
-        var Menu = mono["Menu"];
-        var MenuElement = mono["MenuElement"];
-        var MenuLabel = mono["MenuLabel"];
         
         vars.Helper["isLoading"] = KickStarter.Make<bool>("sceneChangerComponent",  SceneChanger["isLoading"]);
         vars.Helper["menus"] = KickStarter.MakeList<IntPtr>("playerMenusComponent", PlayerMenus["menus"]);
 
-        // var Speech = mono["Speech"];
-        // var SpeechLog = mono["SpeechLog"];
-        // vars.Helper["speechList"] = mono.MakeList<IntPtr>("KickStarter", "dialogComponent", "speechList");
-
-        // vars.ReadSpeech = (Func<IntPtr, string>)(speech =>
-        // {
-        //     return vars.Helper.ReadString(speech + Speech["originalText"]);//, SpeechLog["textWithRichTextTags"]);
-        // });
-
-        // vars.ReadSpeechList = (Func<List<IntPtr>, List<string>>)(speechList =>
-        // {
-        //     var ret = new List<string>();
-
-        //     foreach(var speechPtr in speechList) {
-        //         ret.Add(vars.ReadSpeech(speechPtr));
-        //     }
-
-        //     return ret;
-        // });
-
+        var Menu = mono["Menu"];
+        var MenuLabel = mono["MenuLabel"];
         vars.IsQuestionActive = (Func<List<IntPtr>, string, bool>)((menus, question) =>
         {
             foreach (var menu in menus)
@@ -73,7 +52,7 @@ init
                 var elements = vars.Helper.ReadList<IntPtr>(menu + Menu["elements"]);
                 foreach (var element in elements)
                 {
-                    var elementS = vars.Helper.ReadString(element + MenuElement["title"]);
+                    var elementS = vars.Helper.ReadString(element + MenuLabel["title"]);
                     
                     if (elementS == "YesNoText")
                     {
@@ -109,54 +88,14 @@ update
 {
     current.activeScene = vars.Helper.Scenes.Active.Name ?? current.activeScene;
     current.loadingScene = vars.Helper.Scenes.Loaded[0].Name ?? current.loadingScene;
-    // current.isCallQuestionActive = vars.IsQuestionActive(current.menus, "Take the <b>Detonator</b>?");
     current.isCallQuestionActive = settings["split--call"]
         && current.activeScene == "Nest_Sasha"
         && vars.IsQuestionActive(current.menus, "Answer the call?");
-
-    // HeadwareSplash, ViolenceWarning, TitleMenu
-    // Death
-
-    // IntroNarration
-    // Cliffs_Fog
-    // Cave
-    // CityApartment
-    // City_FlyOver
-    // TownCrash
-    // Block_Int_Part1
-    // SushiFlashback
-    // Block_Int_Part2
-    // Park
-    // House_Watcher
-    // House_Victim
-    // Church
-    // BarFlashback
-    // Sewers
-    // Highstreet_Part1
-    // Highstreet_Part2
-    // ApologyFlashback
-    // Underground
-    // Nest
-    // Nest_Sasha
-    // Tunnels_Ending
 
     vars.Watch(old, current, "activeScene");
     vars.Watch(old, current, "loadingScene");
     vars.Watch(old, current, "isLoading");
     vars.Watch(old, current, "isCallQuestionActive");
-
-    // if (old.speechList.Count != current.speechList.Count) {
-    //     vars.Log(current.speechList.Count);
-    //     var speechList = vars.ReadSpeechList(current.speechList);
-    //     foreach(var speech in speechList) {
-    //         vars.Log(speech);
-    //     }
-    // }
-
-    // if (old.m.Count != current.menus.Count)
-    // {
-    //     vars.Log("menu count: " + current.menus.Count);
-    // }
 }
 
 onStart
@@ -166,30 +105,6 @@ onStart
 
     vars.Log(current.activeScene);
     vars.Log(current.isLoading);
-    // vars.Log(current.loadingProgress);
-    // vars.Log(current.loadingDelay);
-
-    // var speechList = vars.ReadSpeechList(current.speechList);
-    // foreach(var speech in speechList) {
-    //     vars.Log(speech);
-    // }
-}
-
-onSplit
-{
-    
-    // vars.Log(current.isCallQuestionActive);
-    // vars.Log(current.speechList.Count);
-    // var speechList = vars.ReadSpeechList(current.speechList);
-    // foreach(var speech in speechList) {
-    //     vars.Log(speech);
-    // }
-
-    // vars.Log(current.menus.Count);
-    // foreach(var mi in current.menus) {
-    //     vars.DebugMenu(mi);
-    //     // vars.Log(vars.ReadMenu);
-    // }
 }
 
 isLoading
