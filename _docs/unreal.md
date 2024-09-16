@@ -559,20 +559,20 @@ class USceneComponent : public UActorComponent
 }
 ```
 
-`FVector` and `FRotator` are structs ([recall how structs are different to classes](#classes-vs-structs-in-c)).
+`FVector` and `FRotator` are structs ([recall how structs and classes are laid out in memory](#classes-vs-structs-in-c)).
  Their structure is approximately the following:
 
 ```cpp
 struct FVector {
     float X;
-    float Z;
     float Y;
+    float Z;
 }
 
 struct FRotator {
     float X;
-    float Z;
     float Y;
+    float Z;
 }
 ```
 
@@ -625,7 +625,7 @@ path to that thing?
 
 Well, you start out with your `GWorld` address (usually). As we know, this points to
 an instance of `UWorld`. From there, you use the offsets for each field to work your way
-to what you need. I'll use the X position of the player as an example.
+to what you need. I'll use the Z position of the player as an example.
 
 The full path (through [LocalPlayers above](#localplayers)) looks like:
 
@@ -641,13 +641,26 @@ Say your `GWorld` address is `"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0`. Since
 the GWorld address (ASL will default to the main module if one isn't provided).
 
 We get the offset for each step by looking at the field dumps. Each field will have
-something like this (note that for this examplewe are looking at UWorld here, since we're
+something like this (note that for this example are looking at UWorld here, since we're
 starting from a GWorld!):
 ```cpp
 class UGameInstance* OwningGameInstance; // 0x0180 (size: 0x8)
 ```
-...the `0x180` is the offset. So the path to `OwningGameInstance` is `"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0, 0x180`.
+The here `0x180` is the offset. So the path to `OwningGameInstance` is `"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0, 0x180`.
 If you look at that, you should see it looks like a pointer.
+
+To dive into that a bit more: you start out at `"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0`.
+That gives you some address like `0x21A93D78440`. At that address is a pointer to a UWorld,
+which means the value at `0x21A93D78440` is another address - like `0x2AA94C19D50`. If you
+follow that address, you're looking at the fields of a UWorld. So we know that, according
+to our dumps, if we were to go an additional `0x180` from that address, we'd find a pointer
+to a `UGameInstance`. So to find the `UGameInstance`, we're first dereferencing our initial
+address `0x21A93D78440` (`"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0`) to get `0x2AA94C19D50`,
+then adding `0x180` to that to get the pointer to a `UGameInstance`.
+
+The comma in `"Ghostrunner2-Win64-Shipping.exe"+6A3BCB0, 0x180` indicates we're changing
+offsets, which you can think of as a dereferencing action. This is the crucial bit to understand
+how pointer paths work and to effectively traverse them.
 
 Then we follow an offset from `UGameInstance`, this time to `LocalPlayers`:
 ```cpp
@@ -660,15 +673,16 @@ you wanted `size`, you would offset `0x8` to get `0x40`).
 
 Then we index this array at the 0th position, which is `0x0`, to get the first `ULocalPlayer*`.
 
-Then the `PlayerController` is at 0x30, etc etc. I'll leave it as an exercise to the reader
+Then the `PlayerController` is at `0x30`, etc etc. I'll leave it as an exercise to the reader
 to figure out why the pointer path looks the way it does - but you should be able to figure
-it out by looking at the dumps. (All of the values I've used are in this guide).
+it out by looking at the dumps and by following it in memory. (All of the values I've used
+are in this guide).
 
 ```cs
 state("Ghostrunner2-Win64-Shipping.exe")
 {
     // GWorld->OwningGameInstance->LocalPlayers.data[0]->PlayerController->Character->CapsuleComponent->RelativeLocation.Z
-    float z: 0x6A3BCB0, 0x180, 0x38, 0x0, 0x30, 0x260, 0x290, 0x120;
+    float z: 0x6A3BCB0, 0x180, 0x38, 0x0, 0x30, 0x260, 0x290, 0x124;
 }
 ```
 
