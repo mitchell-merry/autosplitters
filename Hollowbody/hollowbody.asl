@@ -140,7 +140,7 @@ isLoading
 
 start
 {
-    return old.activeScene == "TitleMenu" && current.activeScene == "IntroNarration";
+    return old.activeScene == "TitleMenu" && (current.activeScene == "IntroNarration" || current.activeScene == "TownCrash");
 }
 
 split
