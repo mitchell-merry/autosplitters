@@ -1,5 +1,5 @@
 <Settings>
-    <Setting Id="split--scene" Label="Split on:" State="false">
+    <Setting Id="split--scene" Label="Split on:" State="true">
         <Setting Id="scene--Cave--CityApartment" Label="Prologue" State="false" />
         <Setting Id="scene--TownCrash--Block_Int_Part1" Label="Crash" State="false" />
         <Setting Id="scene--Block_Int_Part1--SushiFlashback" Label="The Tower Block Part 1" State="false" />
@@ -7,7 +7,8 @@
         <Setting Id="scene--Park--House_Watcher" Label="Park" State="false" />
         <Setting Id="scene--Church--BarFlashback" Label="Graveyard" State="false" />
         <Setting Id="scene--Sewers--Highstreet_Part1" Label="Sewers" State="false" />
-        <Setting Id="scene--Highstreet_Part2--ApologyFlashback" Label="The Streets" State="false" />
+        <Setting Id="scene--Highstreet_Part1--Highstreet_Part2" Label="The Streets Part 1" State="false" />
+        <Setting Id="scene--Highstreet_Part2--ApologyFlashback" Label="The Streets Part 2" State="false" />
         <Setting Id="scene--Underground--Nest" Label="Train Station" State="false" />
         <Setting Id="split--call" Label="Nest" State="true" />
     </Setting>
