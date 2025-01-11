@@ -112,10 +112,13 @@ update
     current.isLoadingScreenUp1 = vars.IsLoadingScreenUp(current.menus, "LoadSave");
     current.isLoadingScreenUp2 = vars.IsLoadingScreenUp(current.menus, "Loading");
 
+    current.activeSceneNotLoading = current.activeScene == "Loading" ? current.activeSceneNotLoading : current.activeScene;
+
     // vars.DebugMenus(current.menus, current.isLoading);
 
     vars.Watch(old, current, "activeScene");
     vars.Watch(old, current, "loadingScene");
+    vars.Watch(old, current, "activeSceneNotLoading");
     vars.Watch(old, current, "isLoading");
     vars.Watch(old, current, "isCallQuestionActive");
     vars.Watch(old, current, "isLoadingScreenUp1");
@@ -135,19 +138,19 @@ onStart
 
 isLoading
 {
-    return current.isLoading || current.isLoadingScreenUp1 || current.isLoadingScreenUp2;
+    return current.activeScene == "Loading" || current.isLoading || current.isLoadingScreenUp1 || current.isLoadingScreenUp2;
 }
 
 start
 {
-    return old.activeScene == "TitleMenu" && (current.activeScene == "IntroNarration" || current.activeScene == "TownCrash");
+    return old.activeSceneNotLoading == "TitleMenu" && (current.activeScene == "IntroNarration" || current.activeScene == "TownCrash");
 }
 
 split
 {
-    if (settings["split--scene"] && old.loadingScene != current.loadingScene)
+    if (settings["split--scene"] && old.activeSceneNotLoading != current.activeSceneNotLoading)
     {
-        var setting = "scene--" + old.loadingScene + "--" + current.loadingScene;
+        var setting = "scene--" + old.activeSceneNotLoading + "--" + current.activeSceneNotLoading;
         if (vars.CheckSplit(setting))
         {
             return true;
