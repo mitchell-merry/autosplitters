@@ -1,4 +1,7 @@
-state("DOOMTheDarkAges") {}
+state("DOOMTheDarkAges") {
+    // TODO: replace with sigscanned and robust stuff, this is very temporary
+    string300 mission : 0x9D91FC0;
+}
 
 startup
 {
@@ -70,9 +73,24 @@ onStart
 {
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
+
+    timer.IsGameTimePaused = true;
 }
 
 isLoading
 {
     return current.gameState == 1;
+}
+
+start
+{
+    if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
+    {
+        return true;
+    }
+}
+
+split
+{
+    return old.mission != current.mission && current.mission != "game/shell/shell";
 }
