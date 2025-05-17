@@ -160,7 +160,7 @@ init
     vars.Helper["gameState"] = vars.Helper.Make<int>(vars.idGameSystemLocal + 0x40);
     vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18);
 
-    // Quests
+    #region Quests
     vars.Helper["quests"] = vars.Helper.Make<IntPtr>(
         vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
         0x0 // idList<idQuest*> quests.idQuest* list
@@ -169,6 +169,29 @@ init
         vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
         0x8 // idList<idQuest*> quests.int num
     );
+
+    var QUEST_SIZE = 0xB8;
+
+    // enum idQuestStatus {
+    //     QUEST_STATUS_LOCKED_AND_HIDDEN = 0
+    //     QUEST_STATUS_LOCKED = 1
+    //     QUEST_STATUS_UNLOCKED = 2
+    //     QUEST_STATUS_IN_PROGRESS = 3
+    //     QUEST_STATUS_COMPLETE = 4
+    //     QUEST_STATUS_FAILED = 5
+    // }
+    // questPtr should be an idQuest (not a pointer, the address for the beginning of the struct)
+    vars.ReadQuestStatus = (Func<IntPtr, int>)(quest => {
+        return vars.Helper.Read<int>(
+            quest + 0x8 // idQuestStatus questStatus
+        );
+    });
+
+    // questIdx is an index in the quest array
+    vars.GetQuestStatus = (Func<int, int>)(questIdx => {
+        return vars.ReadQuestStatus(current.quests + questIdx * QUEST_SIZE);
+    });
+    #endregion
 }
 
 update
@@ -176,13 +199,14 @@ update
     vars.Helper.Update();
     vars.Helper.MapPointers();
 
-    // Prints the camera target to the Livesplit layout if the setting is enabled
+    // current.shieldSawQuestStatus = vars.GetQuestStatus(115);
+    // vars.Log(    current.shieldSawQuestStatus);
+
     if(settings["Loading"]) 
     {
         vars.SetTextComponent("GameState:",current.gameState.ToString());
     }
 
-    // Prints the camera target to the Livesplit layout if the setting is enabled
     if(settings["Mission"]) 
     {
         vars.SetTextComponent(" ",current.mission.ToString());
@@ -197,8 +221,13 @@ onStart
     vars.Log("mission: " + current.mission);
 
     // quests
+    var start = DateTime.Now;
     var quest = current.quests;
     for (var i = 0; i < current.questsSize; i++) {
+
+        var questStatus = vars.ReadQuestStatus(quest);
+        if (questStatus == 4) {
+
         var questName =  vars.Helper.ReadString(
             512, ReadStringType.UTF8,
             quest + 0x0, // idDeclQuestDef questDef
@@ -206,22 +235,14 @@ onStart
             0x0
         );
 
-        // QUEST_STATUS_LOCKED_AND_HIDDEN = 0
-        // QUEST_STATUS_LOCKED = 1
-        // QUEST_STATUS_UNLOCKED = 2
-        // QUEST_STATUS_IN_PROGRESS = 3
-        // QUEST_STATUS_COMPLETE = 4
-        // QUEST_STATUS_FAILED = 5
-
-        var questStatus = vars.Helper.Read<int>(
-            quest + 0x8 // idQuestStatus questStatus
-        );
-
-        vars.Log(quest.ToString("X") + " - " + questStatus + " - " + questName);
+        vars.Log(i + ": " + questStatus + " - " + questName);
+        }
 
         // the size of a quest
         quest += 0xB8;
     }
+    var elapsed = DateTime.Now - start;
+    vars.Log(elapsed);
 
     // DUMP STUFF:
     // string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
