@@ -155,37 +155,19 @@ init
     vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
     vars.Log("Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
 
-    vars.Watchers = new MemoryWatcherList() {
-        // enum GameState {
-        //   GAME_STATE_MAIN_MENU = 0,
-        //   GAME_STATE_LOADING = 1,
-        //   GAME_STATE_INGAME = 2,
-        // }
-        new MemoryWatcher<int>(
-            new DeepPointer(
-                vars.idGameSystemLocal + 0x40
-            )
-        ) { Name = "gameState" },
-        new StringWatcher(
-            new DeepPointer(
-                vars.idGameSystemLocal + 0xA8 + 0x18,
-                0x0
-            ),
-            0x100
-        ) { Name = "mission" }
-    };
+    // enum GameState {
+    //   GAME_STATE_MAIN_MENU = 0,
+    //   GAME_STATE_LOADING = 1,
+    //   GAME_STATE_INGAME = 2,
+    // }
+    vars.Helper["gameState"] = vars.Helper.Make<int>(vars.idGameSystemLocal + 0x40);
+    vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18);
 }
 
 update
 {
-    IDictionary<string, object> currdict = current;
-    
-    // read the values, place them all in current
-    vars.Watchers.UpdateAll(game);
-    foreach (var watcher in vars.Watchers)
-    {
-        currdict[watcher.Name] = watcher.Current;
-    }
+    vars.Helper.Update();
+    vars.Helper.MapPointers();
 
     //Prints the camera target to the Livesplit layout if the setting is enabled
         if(settings["Loading"]) 
