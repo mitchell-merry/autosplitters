@@ -159,6 +159,16 @@ init
     // }
     vars.Helper["gameState"] = vars.Helper.Make<int>(vars.idGameSystemLocal + 0x40);
     vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18);
+
+    // Quests
+    vars.Helper["quests"] = vars.Helper.Make<IntPtr>(
+        vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
+        0x0 // idList<idQuest*> quests.idQuest* list
+    );
+    vars.Helper["questsSize"] = vars.Helper.Make<int>(
+        vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
+        0x8 // idList<idQuest*> quests.int num
+    );
 }
 
 update
@@ -186,6 +196,34 @@ onStart
 
     vars.Log("mission: " + current.mission);
 
+    // quests
+    var quest = current.quests;
+    for (var i = 0; i < current.questsSize; i++) {
+        var questName =  vars.Helper.ReadString(
+            512, ReadStringType.UTF8,
+            quest + 0x0, // idDeclQuestDef questDef
+            0x88, // idStr questId
+            0x0
+        );
+
+        // QUEST_STATUS_LOCKED_AND_HIDDEN = 0
+        // QUEST_STATUS_LOCKED = 1
+        // QUEST_STATUS_UNLOCKED = 2
+        // QUEST_STATUS_IN_PROGRESS = 3
+        // QUEST_STATUS_COMPLETE = 4
+        // QUEST_STATUS_FAILED = 5
+
+        var questStatus = vars.Helper.Read<int>(
+            quest + 0x8 // idQuestStatus questStatus
+        );
+
+        vars.Log(quest.ToString("X") + " - " + questStatus + " - " + questName);
+
+        // the size of a quest
+        quest += 0xB8;
+    }
+
+    // DUMP STUFF:
     // string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
     // Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
     // var classListMaybeStart = (IntPtr) 0x148A88FE8;148A7F598
