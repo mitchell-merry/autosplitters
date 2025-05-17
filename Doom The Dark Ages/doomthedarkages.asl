@@ -18,29 +18,26 @@ startup
     
     vars.Helper.AlertLoadless();
 
-    //creates text components for variable information
+    // creates text components for variable information
 	vars.SetTextComponent = (Action<string, string>)((id, text) =>
 	{
 	        var textSettings = timer.Layout.Components.Where(x => x.GetType().Name == "TextComponent").Select(x => x.GetType().GetProperty("Settings").GetValue(x, null));
 	        var textSetting = textSettings.FirstOrDefault(x => (x.GetType().GetProperty("Text1").GetValue(x, null) as string) == id);
 	        if (textSetting == null)
 	        {
-	        var textComponentAssembly = Assembly.LoadFrom("Components\\LiveSplit.Text.dll");
-	        var textComponent = Activator.CreateInstance(textComponentAssembly.GetType("LiveSplit.UI.Components.TextComponent"), timer);
-	        timer.Layout.LayoutComponents.Add(new LiveSplit.UI.Components.LayoutComponent("LiveSplit.Text.dll", textComponent as LiveSplit.UI.Components.IComponent));
-	
-	        textSetting = textComponent.GetType().GetProperty("Settings", BindingFlags.Instance | BindingFlags.Public).GetValue(textComponent, null);
-	        textSetting.GetType().GetProperty("Text1").SetValue(textSetting, id);
+                var textComponentAssembly = Assembly.LoadFrom("Components\\LiveSplit.Text.dll");
+                var textComponent = Activator.CreateInstance(textComponentAssembly.GetType("LiveSplit.UI.Components.TextComponent"), timer);
+                timer.Layout.LayoutComponents.Add(new LiveSplit.UI.Components.LayoutComponent("LiveSplit.Text.dll", textComponent as LiveSplit.UI.Components.IComponent));
+        
+                textSetting = textComponent.GetType().GetProperty("Settings", BindingFlags.Instance | BindingFlags.Public).GetValue(textComponent, null);
+                textSetting.GetType().GetProperty("Text1").SetValue(textSetting, id);
 	        }
 	
-	        if (textSetting != null)
 	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
     });
 
-    //Parent setting
-	settings.Add("Variable Information", true, "Variable Information");
-	//Child settings that will sit beneath Parent setting
-    settings.Add("Loading", false, "Current Loading", "Variable Information");
+    settings.Add("Variable Information", true, "Variable Information");
+	settings.Add("Loading", false, "Current Loading", "Variable Information");
     settings.Add("Mission", false, "Current Mission", "Variable Information");
 }
 
@@ -155,46 +152,62 @@ init
     vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
     vars.Log("Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
 
-    vars.Watchers = new MemoryWatcherList() {
-        // enum GameState {
-        //   GAME_STATE_MAIN_MENU = 0,
-        //   GAME_STATE_LOADING = 1,
-        //   GAME_STATE_INGAME = 2,
-        // }
-        new MemoryWatcher<int>(
-            new DeepPointer(
-                vars.idGameSystemLocal + 0x40
-            )
-        ) { Name = "gameState" },
-        new StringWatcher(
-            new DeepPointer(
-                vars.idGameSystemLocal + 0xA8 + 0x18,
-                0x0
-            ),
-            0x100
-        ) { Name = "mission" }
-    };
+    // enum GameState {
+    //   GAME_STATE_MAIN_MENU = 0,
+    //   GAME_STATE_LOADING = 1,
+    //   GAME_STATE_INGAME = 2,
+    // }
+    vars.Helper["gameState"] = vars.Helper.Make<int>(vars.idGameSystemLocal + 0x40);
+    vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18);
+
+    #region Quests
+    vars.Helper["quests"] = vars.Helper.Make<IntPtr>(
+        vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
+        0x0 // idList<idQuest*> quests.idQuest* list
+    );
+    vars.Helper["questsSize"] = vars.Helper.Make<int>(
+        vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
+        0x8 // idList<idQuest*> quests.int num
+    );
+
+    var QUEST_SIZE = 0xB8;
+
+    // enum idQuestStatus {
+    //     QUEST_STATUS_LOCKED_AND_HIDDEN = 0
+    //     QUEST_STATUS_LOCKED = 1
+    //     QUEST_STATUS_UNLOCKED = 2
+    //     QUEST_STATUS_IN_PROGRESS = 3
+    //     QUEST_STATUS_COMPLETE = 4
+    //     QUEST_STATUS_FAILED = 5
+    // }
+    // questPtr should be an idQuest (not a pointer, the address for the beginning of the struct)
+    vars.ReadQuestStatus = (Func<IntPtr, int>)(quest => {
+        return vars.Helper.Read<int>(
+            quest + 0x8 // idQuestStatus questStatus
+        );
+    });
+
+    // questIdx is an index in the quest array
+    vars.GetQuestStatus = (Func<int, int>)(questIdx => {
+        return vars.ReadQuestStatus(current.quests + questIdx * QUEST_SIZE);
+    });
+    #endregion
 }
 
 update
 {
-    IDictionary<string, object> currdict = current;
-    
-    // read the values, place them all in current
-    vars.Watchers.UpdateAll(game);
-    foreach (var watcher in vars.Watchers)
-    {
-        currdict[watcher.Name] = watcher.Current;
-    }
+    vars.Helper.Update();
+    vars.Helper.MapPointers();
 
-    //Prints the camera target to the Livesplit layout if the setting is enabled
-        if(settings["Loading"]) 
+    // current.shieldSawQuestStatus = vars.GetQuestStatus(115);
+    // vars.Log(    current.shieldSawQuestStatus);
+
+    if(settings["Loading"]) 
     {
         vars.SetTextComponent("GameState:",current.gameState.ToString());
     }
 
-            //Prints the camera target to the Livesplit layout if the setting is enabled
-        if(settings["Mission"]) 
+    if(settings["Mission"]) 
     {
         vars.SetTextComponent(" ",current.mission.ToString());
     }
@@ -207,6 +220,31 @@ onStart
 
     vars.Log("mission: " + current.mission);
 
+    // quests
+    var start = DateTime.Now;
+    var quest = current.quests;
+    for (var i = 0; i < current.questsSize; i++) {
+
+        var questStatus = vars.ReadQuestStatus(quest);
+        if (questStatus == 4) {
+
+        var questName =  vars.Helper.ReadString(
+            512, ReadStringType.UTF8,
+            quest + 0x0, // idDeclQuestDef questDef
+            0x88, // idStr questId
+            0x0
+        );
+
+        vars.Log(i + ": " + questStatus + " - " + questName);
+        }
+
+        // the size of a quest
+        quest += 0xB8;
+    }
+    var elapsed = DateTime.Now - start;
+    vars.Log(elapsed);
+
+    // DUMP STUFF:
     // string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
     // Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
     // var classListMaybeStart = (IntPtr) 0x148A88FE8;148A7F598
