@@ -36,10 +36,8 @@ startup
 	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
     });
 
-    //Parent setting
-	settings.Add("Variable Information", true, "Variable Information");
-	//Child settings that will sit beneath Parent setting
-    settings.Add("Loading", false, "Current Loading", "Variable Information");
+    settings.Add("Variable Information", true, "Variable Information");
+	settings.Add("Loading", false, "Current Loading", "Variable Information");
     settings.Add("Mission", false, "Current Mission", "Variable Information");
 }
 
