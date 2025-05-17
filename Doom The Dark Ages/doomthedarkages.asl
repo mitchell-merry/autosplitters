@@ -4,7 +4,7 @@ startup
 {
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
     vars.Helper.GameName = "DOOM: The Dark Ages";
-    vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
+    // vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
     
     vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) => 
     {
