@@ -18,7 +18,7 @@ startup
     
     vars.Helper.AlertLoadless();
 
-    //creates text components for variable information
+    // creates text components for variable information
 	vars.SetTextComponent = (Action<string, string>)((id, text) =>
 	{
 	        var textSettings = timer.Layout.Components.Where(x => x.GetType().Name == "TextComponent").Select(x => x.GetType().GetProperty("Settings").GetValue(x, null));
@@ -169,14 +169,14 @@ update
     vars.Helper.Update();
     vars.Helper.MapPointers();
 
-    //Prints the camera target to the Livesplit layout if the setting is enabled
-        if(settings["Loading"]) 
+    // Prints the camera target to the Livesplit layout if the setting is enabled
+    if(settings["Loading"]) 
     {
         vars.SetTextComponent("GameState:",current.gameState.ToString());
     }
 
-            //Prints the camera target to the Livesplit layout if the setting is enabled
-        if(settings["Mission"]) 
+    // Prints the camera target to the Livesplit layout if the setting is enabled
+    if(settings["Mission"]) 
     {
         vars.SetTextComponent(" ",current.mission.ToString());
     }
