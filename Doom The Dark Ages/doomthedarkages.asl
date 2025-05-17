@@ -1,7 +1,4 @@
-state("DOOMTheDarkAges") {
-    // TODO: replace with sigscanned and robust stuff, this is very temporary
-    string300 mission : 0x9D91FC0;
-}
+state("DOOMTheDarkAges") {}
 
 startup
 {
@@ -53,7 +50,14 @@ init
             new DeepPointer(
                 vars.idGameSystemLocal + 0x40
             )
-        ) { Name = "gameState" }
+        ) { Name = "gameState" },
+        new StringWatcher(
+            new DeepPointer(
+                vars.idGameSystemLocal + 0xA8 + 0x18,
+                0x0
+            ),
+            0x100
+        ) { Name = "mission" }
     };
 }
 
@@ -75,6 +79,8 @@ onStart
     vars.CompletedSplits.Clear();
 
     timer.IsGameTimePaused = true;
+
+    vars.Log("mission: " + current.mission);
 }
 
 isLoading
