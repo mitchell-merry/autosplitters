@@ -16,7 +16,32 @@ startup
     
     vars.CompletedSplits = new HashSet<string>();
     
-    // vars.Helper.AlertLoadless();
+    vars.Helper.AlertLoadless();
+
+    //creates text components for variable information
+	vars.SetTextComponent = (Action<string, string>)((id, text) =>
+	{
+	        var textSettings = timer.Layout.Components.Where(x => x.GetType().Name == "TextComponent").Select(x => x.GetType().GetProperty("Settings").GetValue(x, null));
+	        var textSetting = textSettings.FirstOrDefault(x => (x.GetType().GetProperty("Text1").GetValue(x, null) as string) == id);
+	        if (textSetting == null)
+	        {
+	        var textComponentAssembly = Assembly.LoadFrom("Components\\LiveSplit.Text.dll");
+	        var textComponent = Activator.CreateInstance(textComponentAssembly.GetType("LiveSplit.UI.Components.TextComponent"), timer);
+	        timer.Layout.LayoutComponents.Add(new LiveSplit.UI.Components.LayoutComponent("LiveSplit.Text.dll", textComponent as LiveSplit.UI.Components.IComponent));
+	
+	        textSetting = textComponent.GetType().GetProperty("Settings", BindingFlags.Instance | BindingFlags.Public).GetValue(textComponent, null);
+	        textSetting.GetType().GetProperty("Text1").SetValue(textSetting, id);
+	        }
+	
+	        if (textSetting != null)
+	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
+    });
+
+    //Parent setting
+	settings.Add("Variable Information", true, "Variable Information");
+	//Child settings that will sit beneath Parent setting
+    settings.Add("Loading", false, "Current Loading", "Variable Information");
+    settings.Add("Mission", false, "Current Mission", "Variable Information");
 }
 
 init
@@ -71,14 +96,24 @@ update
     {
         currdict[watcher.Name] = watcher.Current;
     }
+
+    //Prints the camera target to the Livesplit layout if the setting is enabled
+        if(settings["Loading"]) 
+    {
+        vars.SetTextComponent("GameState:",current.gameState.ToString());
+    }
+
+            //Prints the camera target to the Livesplit layout if the setting is enabled
+        if(settings["Mission"]) 
+    {
+        vars.SetTextComponent(" ",current.mission.ToString());
+    }
 }
 
 onStart
 {
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
-
-    timer.IsGameTimePaused = true;
 
     vars.Log("mission: " + current.mission);
 }
@@ -92,6 +127,7 @@ start
 {
     if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
     {
+        timer.IsGameTimePaused = true;
         return true;
     }
 }
