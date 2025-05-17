@@ -65,9 +65,6 @@ init
     var FIELD_OFFSET_DESCRIPTION = 0x30;
     
     string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-    // string invalidChars = @"";
-    // string escapeChar = "%";
-
 
     vars.ReadClassThing = (Func<IntPtr, int, int>)((classPtr, classIdx) => {
         var className = vars.Helper.ReadString(512, ReadStringType.UTF8, classPtr + CLASS_OFFSET_NAME, 0x0);
@@ -105,11 +102,6 @@ init
         
         
         var currentFieldPtr = vars.Helper.Read<IntPtr>(classPtr + CLASS_OFFSET_FIELDS);
-        // if (className != "idGameSystemLocal") {
-        //     return 0;
-        // }
-        
-        // vars.Log(className + " fields (at 0x" + classPtr.ToString("X") + "):");
 
         while (true) {
             var name = vars.Helper.ReadString(512, ReadStringType.UTF8, currentFieldPtr + FIELD_OFFSET_NAME, 0x0);
@@ -120,7 +112,6 @@ init
             var offset = vars.Helper.Read<int>(currentFieldPtr + FIELD_OFFSET_OFFSET);
             var size = vars.Helper.Read<int>(currentFieldPtr + FIELD_OFFSET_SIZE);
             var desc = vars.Helper.ReadString(512, ReadStringType.UTF8, currentFieldPtr + FIELD_OFFSET_DESCRIPTION, 0x0);
-            // vars.Log("* [0x" + offset.ToString("X") + "] " + type + " " + name + "; // " + desc);
 
             var fieldInfo = ("    " + type + " " + name + ";").PadRight(120);
             var offsetStr = "0x" + offset.ToString("X").PadLeft(5, '0');
@@ -174,9 +165,6 @@ update
 
 onStart
 {
-    string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-    Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
-
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
 
@@ -184,6 +172,8 @@ onStart
 
     vars.Log("mission: " + current.mission);
 
+    // string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+    // Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
     // var classListMaybeStart = (IntPtr) 0x148A88FE8;148A7F598
     // var classArray = (IntPtr) 0x147F49118;
     // var classArraySize = (IntPtr) 0x147F49120;
