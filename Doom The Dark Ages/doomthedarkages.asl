@@ -4,7 +4,7 @@ startup
 {
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
     vars.Helper.GameName = "DOOM: The Dark Ages";
-    // vars.Helper.Settings.CreateFromXml("Components/TEMPLATE.Settings.xml");
+    vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
     
     vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) => 
     {
@@ -59,8 +59,8 @@ init
         return true;
     });
 
+    #region class inference
     char[] separators = new char[]{'"','\\','/','?',':','<', '>', '*', '|'};
-
     var EncodeToFileName = (Func<string, string>)(className => {
         string[] temp = className.Split(separators, StringSplitOptions.RemoveEmptyEntries);
         var name = String.Join("%", temp);
@@ -148,6 +148,7 @@ init
 
         return 0;
     });
+    #endregion
 
     vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
     vars.Log("Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
@@ -180,18 +181,23 @@ init
     //     QUEST_STATUS_COMPLETE = 4
     //     QUEST_STATUS_FAILED = 5
     // }
-    // questPtr should be an idQuest (not a pointer, the address for the beginning of the struct)
-    vars.ReadQuestStatus = (Func<IntPtr, int>)(quest => {
+    vars.ReadQuestStatus = (Func<int, int>)(questIdx => {
         return vars.Helper.Read<int>(
-            quest + 0x8 // idQuestStatus questStatus
+            current.quests + questIdx * QUEST_SIZE + 0x8 // [questIdx].idQuestStatus questStatus
+        );
+    });
+    vars.ReadQuestName = (Func<int, string>)(questIdx => {
+        return vars.Helper.ReadString(
+            512, ReadStringType.UTF8,
+            current.quests + questIdx * QUEST_SIZE + 0x0, // [questIdx].idDeclQuestDef questDef
+            0x88, // idStr questId
+            0x0
         );
     });
 
-    // questIdx is an index in the quest array
-    vars.GetQuestStatus = (Func<int, int>)(questIdx => {
-        return vars.ReadQuestStatus(current.quests + questIdx * QUEST_SIZE);
-    });
     #endregion
+
+    vars.CompletedQuests = new HashSet<int>();
 }
 
 update
@@ -199,8 +205,27 @@ update
     vars.Helper.Update();
     vars.Helper.MapPointers();
 
-    // current.shieldSawQuestStatus = vars.GetQuestStatus(115);
+    // current.shieldSawQuestStatus = vars.ReadQuestStatus(115);
     // vars.Log(    current.shieldSawQuestStatus);
+
+    
+    var quest = current.quests;
+    for (var i = 0; i < current.questsSize; i++)
+    {
+        if (vars.CompletedQuests.Contains(i)) {
+            continue;
+        }
+
+        var questStatus = vars.ReadQuestStatus(i);
+        if (questStatus != 4) {
+            continue;
+        }
+
+        vars.CompletedQuests.Add(i);
+        var name = vars.ReadQuestName(i);
+        vars.Log("Quest completed " + i + " (" + name + ")");
+    }
+
 
     if(settings["Loading"]) 
     {
@@ -221,28 +246,20 @@ onStart
     vars.Log("mission: " + current.mission);
 
     // quests
-    var start = DateTime.Now;
-    var quest = current.quests;
-    for (var i = 0; i < current.questsSize; i++) {
+    // var start = DateTime.Now;
+    // var quest = current.quests;
+    // for (var i = 0; i < current.questsSize; i++) {
 
-        var questStatus = vars.ReadQuestStatus(quest);
-        if (questStatus == 4) {
+    //     var questStatus = vars.ReadQuestStatus(i);
+    //     // if (questStatus == 4) {
+    //         var questName = vars.ReadQuestName(i);
 
-        var questName =  vars.Helper.ReadString(
-            512, ReadStringType.UTF8,
-            quest + 0x0, // idDeclQuestDef questDef
-            0x88, // idStr questId
-            0x0
-        );
+    //         vars.Log("<Setting Id=\"quest_" + i + "\" Label=\"" + i + " " + questName + "\" State=\"false\" />");
+    //     // }
 
-        vars.Log(i + ": " + questStatus + " - " + questName);
-        }
-
-        // the size of a quest
-        quest += 0xB8;
-    }
-    var elapsed = DateTime.Now - start;
-    vars.Log(elapsed);
+    // }
+    // var elapsed = DateTime.Now - start;
+    // vars.Log(elapsed);
 
     // DUMP STUFF:
     // string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -273,11 +290,11 @@ isLoading
 
 start
 {
-    if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
-    {
-        timer.IsGameTimePaused = true;
-        return true;
-    }
+    // if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
+    // {
+    //     timer.IsGameTimePaused = true;
+    //     return true;
+    // }
 }
 
 split
