@@ -6,14 +6,19 @@ startup
     vars.Helper.GameName = "DOOM: The Dark Ages";
     // vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
     
+    #region debugging
     vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) => 
     {
+        // here we see a wild typescript dev attempting C#... oh, the humanity...
         var currentValue = currentLookup.ContainsKey(key) ? currentLookup[key] : null;
         var oldValue = oldLookup.ContainsKey(key) ? oldLookup[key] : null;
+        
+        // print if there's a change
         if (oldValue != null && currentValue != null && !oldValue.Equals(currentValue)) {
             vars.Log(key + ": " + oldValue + " -> " + currentValue);
         }
 
+        // first iteration, print starting values
         if (oldValue == null && currentValue != null) {
             vars.Log(key + ": " + currentValue);
         }
@@ -37,15 +42,17 @@ startup
 	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
     });
 
-    settings.Add("Variable Information", true, "Variable Information");
+    settings.Add("(debugging) Variable Information", true, "Variable Information");
 	settings.Add("Loading", false, "Current Loading", "Variable Information");
     settings.Add("Mission", false, "Current Mission", "Variable Information");
-    
+    #endregion
+
     vars.Helper.AlertLoadless();
 }
 
 init
 {
+    #region settings helpers
     // For the purpose of supporting multiple split criteria to a single setting
     // Changing the ID of a split unchecks it for users, so tying these together closely
     //   is pretty inconvenient.
@@ -76,6 +83,7 @@ init
         vars.Log("Completed: " + key);
         return true;
     });
+    #endregion
 
     #region class inference
     char[] separators = new char[]{'"','\\','/','?',':','<', '>', '*', '|'};
@@ -168,6 +176,7 @@ init
     });
     #endregion
 
+    // the root of all evil
     vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
     vars.Log("Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
 
@@ -212,6 +221,7 @@ init
     vars.GetActiveScreens = (Func<HashSet<string>>)(() => {
         var ret = new HashSet<string>();
 
+        // I have a hunch that it's always at i=2, but do our due diligence...
         for (var i = 0; i < current.hudMenusSize; i++) {
             var currentScreen = vars.Helper.ReadString(
                 512, ReadStringType.UTF8,
@@ -370,7 +380,7 @@ start
 {
     if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
     {
-        timer.IsGameTimePaused = true;
+        timer.IsGameTimePaused = true; // also placed it here since strangeness was observed with it just in the onStart hook
         return true;
     }
 }
@@ -379,6 +389,7 @@ split
 {
     // if we've just entered an end of level screen... that means we just completed a level
     if (vars.Setting("levels") && !old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
+        vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
         return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
     }
 

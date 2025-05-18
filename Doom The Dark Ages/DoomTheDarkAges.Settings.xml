@@ -1,6 +1,6 @@
 <Settings>
     <Setting Id="levels" Label="Split on completing a level" State="true">
-        <Setting Id="level_villageofkhalim" Label="Village of Khalim" State="false" />
+        <Setting Id="level__village_of_khalim" Label="Village of Khalim" State="false" />
     </Setting>
     <Setting Id="quests" Label="Split on completing a quest" State="false">
         <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
