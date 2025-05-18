@@ -42,6 +42,7 @@ startup
 	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
     });
 
+    settings.Add("endoflevelload", true, "Pause the timer in the end of level screens");
     settings.Add("debugging", true, "(debugging) Variable Information");
 	settings.Add("Loading", false, "Current Loading", "debugging");
     settings.Add("map", false, "Current map", "debugging");
@@ -386,7 +387,7 @@ onStart
 
 isLoading
 {
-    return current.gameState == 1 || current.isInEndOfLevelScreen;
+    return current.gameState == 1 || (settings["endoflevelload"] && current.isInEndOfLevelScreen);
 }
 
 start
