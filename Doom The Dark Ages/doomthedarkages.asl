@@ -5,14 +5,14 @@ startup
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
     vars.Helper.GameName = "DOOM: The Dark Ages";
     // vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
-    
+
     #region debugging
-    vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) => 
+    vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) =>
     {
         // here we see a wild typescript dev attempting C#... oh, the humanity...
         var currentValue = currentLookup.ContainsKey(key) ? currentLookup[key] : null;
         var oldValue = oldLookup.ContainsKey(key) ? oldLookup[key] : null;
-        
+
         // print if there's a change
         if (oldValue != null && currentValue != null && !oldValue.Equals(currentValue)) {
             vars.Log(key + ": " + oldValue + " -> " + currentValue);
@@ -34,17 +34,17 @@ startup
                 var textComponentAssembly = Assembly.LoadFrom("Components\\LiveSplit.Text.dll");
                 var textComponent = Activator.CreateInstance(textComponentAssembly.GetType("LiveSplit.UI.Components.TextComponent"), timer);
                 timer.Layout.LayoutComponents.Add(new LiveSplit.UI.Components.LayoutComponent("LiveSplit.Text.dll", textComponent as LiveSplit.UI.Components.IComponent));
-        
+
                 textSetting = textComponent.GetType().GetProperty("Settings", BindingFlags.Instance | BindingFlags.Public).GetValue(textComponent, null);
                 textSetting.GetType().GetProperty("Text1").SetValue(textSetting, id);
 	        }
-	
+
 	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
     });
 
-    settings.Add("(debugging) Variable Information", true, "Variable Information");
-	settings.Add("Loading", false, "Current Loading", "Variable Information");
-    settings.Add("Mission", false, "Current Mission", "Variable Information");
+    settings.Add("debugging", true, "(debugging) Variable Information");
+	settings.Add("Loading", false, "Current Loading", "debugging");
+    settings.Add("Mission", false, "Current Mission", "debugging");
     #endregion
 
     vars.Helper.AlertLoadless();
@@ -85,7 +85,7 @@ init
     });
     #endregion
 
-    #region class inference
+    #region class inference and dumping
     char[] separators = new char[]{'"','\\','/','?',':','<', '>', '*', '|'};
     var EncodeToFileName = (Func<string, string>)(className => {
         string[] temp = className.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -99,6 +99,7 @@ init
         return name;
     });
 
+    var CLASS_SIZE = 0x58;
     var CLASS_OFFSET_NAME = 0x0;
     var CLASS_OFFSET_SUPER = 0x8;
     var CLASS_OFFSET_SIZE = 0x18;
@@ -111,10 +112,10 @@ init
     var FIELD_OFFSET_OFFSET = 0x18;
     var FIELD_OFFSET_SIZE = 0x1C;
     var FIELD_OFFSET_DESCRIPTION = 0x30;
-    
+
     string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-    vars.ReadClassThing = (Func<IntPtr, int, int>)((classPtr, classIdx) => {
+    var DumpClass = (Func<IntPtr, int, int>)((classPtr, classIdx) => {
         var className = vars.Helper.ReadString(512, ReadStringType.UTF8, classPtr + CLASS_OFFSET_NAME, 0x0);
         var classSuperName = vars.Helper.ReadString(512, ReadStringType.UTF8, classPtr + CLASS_OFFSET_SUPER, 0x0);
         var classSize = vars.Helper.Read<int>(classPtr + CLASS_OFFSET_SIZE);
@@ -147,14 +148,14 @@ init
             "// size: 0x" + classSize.ToString("X"),
             classDef + " {",
         });
-        
-        
+
+
         var currentFieldPtr = vars.Helper.Read<IntPtr>(classPtr + CLASS_OFFSET_FIELDS);
 
         while (true) {
             var name = vars.Helper.ReadString(512, ReadStringType.UTF8, currentFieldPtr + FIELD_OFFSET_NAME, 0x0);
             if (name == "" || name == null) {
-                break; 
+                break;
             }
             var type = vars.Helper.ReadString(512, ReadStringType.UTF8, currentFieldPtr + FIELD_OFFSET_TYPE, 0x0);
             var offset = vars.Helper.Read<int>(currentFieldPtr + FIELD_OFFSET_OFFSET);
@@ -174,6 +175,32 @@ init
 
         return 0;
     });
+
+    vars.DumpAllClasses = (Action)(() =>
+    {
+        Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
+
+        // quick note to find this: search for a class name in static unwritable,
+        //  find usages of that address, should be one in an array, scroll to the beginning of the array
+        //  search for that
+        //  something like that
+        // TODO: i should probably make a sig for this
+        var classArray = (IntPtr) 0x147F49118;
+        var classArraySize = (IntPtr) 0x147F49120;
+
+        var classArrayS = vars.Helper.Read<int>(classArraySize);
+        var currentClass = vars.Helper.Read<IntPtr>(classArray);
+        for (var i = 0; i < classArrayS; i++) {
+            try {
+                vars.ReadClassThing(currentClass, i);
+            } catch (Exception e) {
+                vars.Log(e);
+            }
+
+            currentClass += CLASS_SIZE;
+        }
+    });
+
     #endregion
 
     // the root of all evil
@@ -270,13 +297,15 @@ init
     //     QUEST_STATUS_COMPLETE = 4
     //     QUEST_STATUS_FAILED = 5
     // }
-    vars.ReadQuestStatus = (Func<int, int>)(questIdx => {
+    vars.ReadQuestStatus = (Func<int, int>)(questIdx =>
+    {
         return vars.Helper.Read<int>(
             current.quests + questIdx * QUEST_SIZE // [questIdx]
              + 0x8 // idQuestStatus questStatus
         );
     });
-    vars.ReadQuestName = (Func<int, string>)(questIdx => {
+    vars.ReadQuestName = (Func<int, string>)(questIdx =>
+    {
         return vars.Helper.ReadString(
             512, ReadStringType.UTF8,
             current.quests + questIdx * QUEST_SIZE // [questIdx]
@@ -286,6 +315,21 @@ init
         );
     });
 
+    vars.LogAllQuests = (Action)(() =>
+    {
+        // var start = DateTime.Now;
+        for (var i = 0; i < current.questsSize; i++) {
+
+            var questStatus = vars.ReadQuestStatus(i);
+            // if (questStatus == 4) {
+                var questName = vars.ReadQuestName(i);
+
+                vars.Log("quest " + questName + " is in status " + questStatus);
+            // }
+
+        }
+        // vars.Log(elapsed);
+    });
     #endregion
 
     vars.CompletedSplits = new HashSet<string>();
@@ -298,22 +342,24 @@ update
     vars.Helper.MapPointers();
 
     current.isInEndOfLevelScreen = vars.IsInEndOfLevelScreen();
-    current.lastActiveCheckpoint = current.checkpoint == null || current.checkpoint == "" ? current.lastActiveCheckpoint : current.checkpoint;
+    // typescript dev attempts C#, fails miserably (part 2)
+    current.lastActiveCheckpoint = current.checkpoint == null || current.checkpoint == ""
+        ? ((IDictionary<string, object>) current).ContainsKey("lastActiveCheckpoint")
+            ? current.lastActiveCheckpoint
+            : "no checkpoint"
+        : current.checkpoint;
 
     vars.Watch(old, current, "mission");
     vars.Watch(old, current, "checkpoint");
     vars.Watch(old, current, "lastActiveCheckpoint");
     vars.Watch(old, current, "isInEndOfLevelScreen");
 
-    // current.shieldSawQuestStatus = vars.ReadQuestStatus(115);
-    // vars.Log(    current.shieldSawQuestStatus);
-
-    if(settings["Loading"]) 
+    if(settings["Loading"])
     {
         vars.SetTextComponent("GameState:",current.gameState.ToString());
     }
 
-    if(settings["Mission"]) 
+    if(settings["Mission"])
     {
         vars.SetTextComponent(" ",current.mission.ToString());
     }
@@ -327,48 +373,8 @@ onStart
     vars.CompletedSplits.Clear();
     vars.CompletedQuests = new HashSet<int>();
 
-    vars.Log("mission: " + current.mission);
-
-    // quests
-    // var start = DateTime.Now;
-    // var quest = current.quests;
-    // for (var i = 0; i < current.questsSize; i++) {
-
-    //     var questStatus = vars.ReadQuestStatus(i);
-    //     // if (questStatus == 4) {
-    //         var questName = vars.ReadQuestName(i);
-
-    //         vars.Log("<Setting Id=\"quest_" + i + "\" Label=\"" + i + " " + questName + "\" State=\"false\" />");
-    //     // }
-
-    // } 
-    // vars.Log(elapsed);
-
-    // DUMP STUFF:
-    // string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-    // Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
-    
-    // quick note to find this: search for a class name in static unwritable,
-    //  find usages of that address, should be one in an array, scroll to the beginning of the array
-    //  search for that
-    //  something like that
-    // TODO: i should probably make a sig for this
-    // var classArray = (IntPtr) 0x147F49118;
-    // var classArraySize = (IntPtr) 0x147F49120;
-
-    // var CLASS_SIZE = 0x58;
-
-    // var classArrayS = vars.Helper.Read<int>(classArraySize);
-    // var currentClass = vars.Helper.Read<IntPtr>(classArray);
-    // for (var i = 0; i < classArrayS; i++) {
-    //     try {
-    //         vars.ReadClassThing(currentClass, i);
-    //     } catch (Exception e) {
-    //         vars.Log(e);
-    //     }
-        
-    //     currentClass += CLASS_SIZE;
-    // }
+    // vars.LogAllQuests();
+    // vars.DumpAllClasses();
 }
 
 isLoading
