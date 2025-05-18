@@ -159,7 +159,7 @@ init
     //   GAME_STATE_INGAME = 2,
     // }
     vars.Helper["gameState"] = vars.Helper.Make<int>(vars.idGameSystemLocal + 0x40);
-    vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18);
+    vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18, 0x0);
 
     #region Quests
     vars.Helper["quests"] = vars.Helper.Make<IntPtr>(
@@ -208,25 +208,6 @@ update
     // current.shieldSawQuestStatus = vars.ReadQuestStatus(115);
     // vars.Log(    current.shieldSawQuestStatus);
 
-    
-    var quest = current.quests;
-    for (var i = 0; i < current.questsSize; i++)
-    {
-        if (vars.CompletedQuests.Contains(i)) {
-            continue;
-        }
-
-        var questStatus = vars.ReadQuestStatus(i);
-        if (questStatus != 4) {
-            continue;
-        }
-
-        vars.CompletedQuests.Add(i);
-        var name = vars.ReadQuestName(i);
-        vars.Log("Quest completed " + i + " (" + name + ")");
-    }
-
-
     if(settings["Loading"]) 
     {
         vars.SetTextComponent("GameState:",current.gameState.ToString());
@@ -242,6 +223,7 @@ onStart
 {
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
+    vars.CompletedQuests = new HashSet<int>();
 
     vars.Log("mission: " + current.mission);
 
@@ -290,14 +272,34 @@ isLoading
 
 start
 {
-    // if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
-    // {
-    //     timer.IsGameTimePaused = true;
-    //     return true;
-    // }
+    if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
+    {
+        timer.IsGameTimePaused = true;
+        return true;
+    }
 }
 
 split
 {
+    
+    var quest = current.quests;
+    for (var i = 0; i < current.questsSize; i++)
+    {
+        if (vars.CompletedQuests.Contains(i)) {
+            continue;
+        }
+
+        var questStatus = vars.ReadQuestStatus(i);
+        if (questStatus != 4) {
+            continue;
+        }
+
+        vars.CompletedQuests.Add(i);
+        var name = vars.ReadQuestName(i);
+        vars.Log("Quest completed " + i + " (" + name + ")");
+
+        return vars.CheckSplit("quest_" + i);
+    }
+
     return old.mission != current.mission && current.mission != "game/shell/shell";
 }
