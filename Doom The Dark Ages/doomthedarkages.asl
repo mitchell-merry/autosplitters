@@ -44,7 +44,7 @@ startup
 
     settings.Add("debugging", true, "(debugging) Variable Information");
 	settings.Add("Loading", false, "Current Loading", "debugging");
-    settings.Add("Mission", false, "Current Mission", "debugging");
+    settings.Add("map", false, "Current map", "debugging");
     #endregion
 
     vars.Helper.AlertLoadless();
@@ -215,16 +215,14 @@ init
     vars.Helper["gameState"] = vars.Helper.Make<int>(
         vars.idGameSystemLocal + 0x40 // idGameSystemLocal::state_t state
     );
-    // TODO: if we end up needing mission, we should get it off mapInstance, same as checkpoint
-    vars.Helper["mission"] = vars.Helper.MakeString(
-        vars.idGameSystemLocal + 0xA0 // idGameSystemLocal::mapChangeRequest_t mapChangeRequest
-         + 0x8 // idGameSpawnInfo gameSpawnInfo
-         + 0x18, // idStrStatic < 1024 > mapName,
+    vars.Helper["map"] = vars.Helper.MakeString(
+        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+        0x20, // idStrStatic < 1024 > mapName (does not show up in dumps)
         0x0
     );
     vars.Helper["checkpoint"] = vars.Helper.MakeString(
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x1060, // idStrStatic < 1024 > checkpointName,
+        0x1060, // idStrStatic < 1024 > checkpointName (does not show up in dumps)
         0x0
     );
 
@@ -321,11 +319,11 @@ init
         for (var i = 0; i < current.questsSize; i++) {
 
             var questStatus = vars.ReadQuestStatus(i);
-            // if (questStatus == 4) {
+            if (questStatus == 4) {
                 var questName = vars.ReadQuestName(i);
 
                 vars.Log("quest " + questName + " is in status " + questStatus);
-            // }
+            }
 
         }
         // vars.Log(elapsed);
@@ -348,8 +346,16 @@ update
             ? current.lastActiveCheckpoint
             : "no checkpoint"
         : current.checkpoint;
+    // map value that changes at a more favourable point
+    current.activeMap = current.gameState == 1
+        ? ((IDictionary<string, object>) current).ContainsKey("activeMap")
+            ? current.activeMap
+            : "no map"
+        : current.map;
 
-    vars.Watch(old, current, "mission");
+    vars.Watch(old, current, "gameState");
+    vars.Watch(old, current, "map");
+    vars.Watch(old, current, "activeMap");
     vars.Watch(old, current, "checkpoint");
     vars.Watch(old, current, "lastActiveCheckpoint");
     vars.Watch(old, current, "isInEndOfLevelScreen");
@@ -359,9 +365,9 @@ update
         vars.SetTextComponent("GameState:",current.gameState.ToString());
     }
 
-    if(settings["Mission"])
+    if(settings["map"])
     {
-        vars.SetTextComponent(" ",current.mission.ToString());
+        vars.SetTextComponent(" ",current.map.ToString());
     }
 }
 
@@ -373,7 +379,7 @@ onStart
     vars.CompletedSplits.Clear();
     vars.CompletedQuests = new HashSet<int>();
 
-    // vars.LogAllQuests();
+    vars.LogAllQuests();
     // vars.DumpAllClasses();
 }
 
@@ -384,9 +390,9 @@ isLoading
 
 start
 {
-    if (old.mission == "game/shell/shell" && current.mission != "game/shell/shell")
+    // menu -> village of khalim, starts *after* the load now
+    if (old.activeMap == "game/shell/shell" && current.activeMap == "game/sp/m1_intro/m1_intro")
     {
-        timer.IsGameTimePaused = true; // also placed it here since strangeness was observed with it just in the onStart hook
         return true;
     }
 }
@@ -419,5 +425,5 @@ split
         }
     }
 
-    return old.mission != current.mission && current.mission != "game/shell/shell";
+    return old.map != current.map && current.map != "game/shell/shell";
 }
