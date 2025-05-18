@@ -59,7 +59,8 @@ init
     // criteria -> split setting
     vars.SplitMap = new Dictionary<string, string>
     {
-        { "eol__cp_09_turret", "level__village_of_khalim" },
+        { "eol__cp_09_turret", "chapter__village" },
+        // TODO: get someone to do a run to get the rest
     };
 
     vars.Setting = (Func<string, bool>)(key =>
@@ -399,7 +400,7 @@ start
 
 split
 {
-    // if we've just entered an end of level screen... that means we just completed a level
+    // if we've just entered an end of level screen... that means we just completed a chapter
     if (vars.Setting("levels") && !old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
         vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
         return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
