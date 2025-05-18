@@ -153,12 +153,14 @@ init
     vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
     vars.Log("Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
 
-    // enum GameState {
+    // enum idGameSystemLocal::state_t {
     //   GAME_STATE_MAIN_MENU = 0,
     //   GAME_STATE_LOADING = 1,
     //   GAME_STATE_INGAME = 2,
     // }
-    vars.Helper["gameState"] = vars.Helper.Make<int>(vars.idGameSystemLocal + 0x40);
+    vars.Helper["gameState"] = vars.Helper.Make<int>(
+        vars.idGameSystemLocal + 0x40 // idGameSystemLocal::state_t state
+    );
     vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18, 0x0);
 
     #region Quests
