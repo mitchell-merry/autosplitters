@@ -401,12 +401,15 @@ start
 split
 {
     // if we've just entered an end of level screen... that means we just completed a chapter
-    if (vars.Setting("levels") && !old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
+    if ( //vars.Setting("levels") &&
+      !old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
         vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
-        return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
+        if (vars.CheckSplit("eol__" + current.lastActiveCheckpoint)) {
+            return true;
+        }
     }
 
-    if (vars.Setting("quests")) {
+    // if (vars.Setting("quests")) {
         for (var i = 0; i < current.questsSize; i++)
         {
             if (vars.CompletedQuests.Contains(i)) {
@@ -422,9 +425,11 @@ split
             var name = vars.ReadQuestName(i);
             vars.Log("Quest completed " + i + " (" + name + ")");
 
-            return vars.CheckSplit("quest_" + i);
+            if (vars.CheckSplit("quest_" + i)) {
+                return true;
+            }
         }
-    }
+    // }
 
     return old.map != current.map && current.map != "game/shell/shell";
 }
