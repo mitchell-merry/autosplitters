@@ -8,15 +8,16 @@ startup
     
     vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) => 
     {
-        var oldValue = oldLookup[key];
-        var currentValue = currentLookup[key];
-        if (!oldValue.Equals(currentValue))
+        var currentValue = currentLookup.ContainsKey(key) ? currentLookup[key] : null;
+        var oldValue = oldLookup.ContainsKey(key) ? oldLookup[key] : null;
+        if (oldValue != null && currentValue != null && !oldValue.Equals(currentValue)) {
             vars.Log(key + ": " + oldValue + " -> " + currentValue);
+        }
+
+        if (oldValue == null && currentValue != null) {
+            vars.Log(key + ": " + currentValue);
+        }
     });
-    
-    vars.CompletedSplits = new HashSet<string>();
-    
-    vars.Helper.AlertLoadless();
 
     // creates text components for variable information
 	vars.SetTextComponent = (Action<string, string>)((id, text) =>
@@ -39,17 +40,34 @@ startup
     settings.Add("Variable Information", true, "Variable Information");
 	settings.Add("Loading", false, "Current Loading", "Variable Information");
     settings.Add("Mission", false, "Current Mission", "Variable Information");
+    
+    vars.Helper.AlertLoadless();
 }
 
 init
 {
+    // For the purpose of supporting multiple split criteria to a single setting
+    // Changing the ID of a split unchecks it for users, so tying these together closely
+    //   is pretty inconvenient.
+    // criteria -> split setting
+    vars.SplitMap = new Dictionary<string, string>
+    {
+        { "eol__cp_09_turret", "level__village_of_khalim" },
+    };
+
+    vars.Setting = (Func<string, bool>)(key =>
+    {
+        return settings.ContainsKey(key) && settings[key];
+    });
+
     // this function is a helper for checking splits that may or may not exist in settings,
     // and if we want to do them only once
-    vars.CheckSplit = (Func<string, bool>)(key =>
+    vars.CheckSplit = (Func<string, bool>)(criteria =>
     {
+        var key = vars.SplitMap.ContainsKey(criteria) ? vars.SplitMap[criteria] : criteria;
+
         // if the split doesn't exist, or it's off, or we've done it already
-        if (!settings.ContainsKey(key)
-          || !settings[key]
+        if (!vars.Setting(key)
           || !vars.CompletedSplits.Add(key)
         ) {
             return false;
@@ -161,20 +179,79 @@ init
     vars.Helper["gameState"] = vars.Helper.Make<int>(
         vars.idGameSystemLocal + 0x40 // idGameSystemLocal::state_t state
     );
-    vars.Helper["mission"] = vars.Helper.MakeString(vars.idGameSystemLocal + 0xA8 + 0x18, 0x0);
+    // TODO: if we end up needing mission, we should get it off mapInstance, same as checkpoint
+    vars.Helper["mission"] = vars.Helper.MakeString(
+        vars.idGameSystemLocal + 0xA0 // idGameSystemLocal::mapChangeRequest_t mapChangeRequest
+         + 0x8 // idGameSpawnInfo gameSpawnInfo
+         + 0x18, // idStrStatic < 1024 > mapName,
+        0x0
+    );
+    vars.Helper["checkpoint"] = vars.Helper.MakeString(
+        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+        0x1060, // idStrStatic < 1024 > checkpointName,
+        0x0
+    );
+
+    #region Menus
+    // the idPlayer was pointer scanned for, and walked back - we don't have type information for idMapInstance, nor whatever the class is at 0x1988
+    vars.Helper["hudMenus"] = vars.Helper.Make<IntPtr>(
+        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+        0x1988, // ??
+        0xC0, // an idPlayer
+        0x2EA18 // idHUD playerHud
+        + 0x368 // idList < idMenu* > menus
+    );
+    vars.Helper["hudMenusSize"] = vars.Helper.Make<int>(
+        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+        0x1988, // ??
+        0xC0, // an idPlayer
+        0x2EA18 // idHUD playerHud
+        + 0x370 // idList < idMenu* > menus
+    );
+
+    vars.GetActiveScreens = (Func<HashSet<string>>)(() => {
+        var ret = new HashSet<string>();
+
+        for (var i = 0; i < current.hudMenusSize; i++) {
+            var currentScreen = vars.Helper.ReadString(
+                512, ReadStringType.UTF8,
+                current.hudMenus + i * 0x8,
+                0x68 // idMenu::menuScreenId_t currentScreen
+                + 0x8, // idAtomicString titanId
+                0x0
+            );
+            ret.Add(currentScreen);
+        }
+
+        return ret;
+    });
+
+    vars.IsInEndOfLevelScreen = (Func<bool>)(() => {
+        var screens = vars.GetActiveScreens();
+        return screens.Contains("mission_complete") || screens.Contains("end_of_level");
+    });
+    #endregion
 
     #region Quests
     vars.Helper["quests"] = vars.Helper.Make<IntPtr>(
         vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
-        0x0 // idList<idQuest*> quests.idQuest* list
+        0x0 // idList<idQuest*> quests
+        + 0x0 // idQuest* list
     );
     vars.Helper["questsSize"] = vars.Helper.Make<int>(
         vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
-        0x8 // idList<idQuest*> quests.int num
+        0x0 // idList<idQuest*> quests
+        + 0x8 // int num
     );
 
     var QUEST_SIZE = 0xB8;
 
+    // Big assumption here, in that the quests will always be in the same order and in the same positions
+    //   This is at least true when comparing Meta and my quest lists, but it could break in the future
+    //   I do this to save scanning the whole list, there are ~650 elements.
+    // TODO: An improvement could be to assume it doesn't change once loaded, so scan it once on init and
+    //   cache that list.
+    //
     // enum idQuestStatus {
     //     QUEST_STATUS_LOCKED_AND_HIDDEN = 0
     //     QUEST_STATUS_LOCKED = 1
@@ -185,13 +262,15 @@ init
     // }
     vars.ReadQuestStatus = (Func<int, int>)(questIdx => {
         return vars.Helper.Read<int>(
-            current.quests + questIdx * QUEST_SIZE + 0x8 // [questIdx].idQuestStatus questStatus
+            current.quests + questIdx * QUEST_SIZE // [questIdx]
+             + 0x8 // idQuestStatus questStatus
         );
     });
     vars.ReadQuestName = (Func<int, string>)(questIdx => {
         return vars.Helper.ReadString(
             512, ReadStringType.UTF8,
-            current.quests + questIdx * QUEST_SIZE + 0x0, // [questIdx].idDeclQuestDef questDef
+            current.quests + questIdx * QUEST_SIZE // [questIdx]
+             + 0x0, // idDeclQuestDef questDef
             0x88, // idStr questId
             0x0
         );
@@ -199,6 +278,7 @@ init
 
     #endregion
 
+    vars.CompletedSplits = new HashSet<string>();
     vars.CompletedQuests = new HashSet<int>();
 }
 
@@ -206,6 +286,14 @@ update
 {
     vars.Helper.Update();
     vars.Helper.MapPointers();
+
+    current.isInEndOfLevelScreen = vars.IsInEndOfLevelScreen();
+    current.lastActiveCheckpoint = current.checkpoint == null || current.checkpoint == "" ? current.lastActiveCheckpoint : current.checkpoint;
+
+    vars.Watch(old, current, "mission");
+    vars.Watch(old, current, "checkpoint");
+    vars.Watch(old, current, "lastActiveCheckpoint");
+    vars.Watch(old, current, "isInEndOfLevelScreen");
 
     // current.shieldSawQuestStatus = vars.ReadQuestStatus(115);
     // vars.Log(    current.shieldSawQuestStatus);
@@ -223,6 +311,8 @@ update
 
 onStart
 {
+    timer.IsGameTimePaused = true;
+
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
     vars.CompletedQuests = new HashSet<int>();
@@ -241,14 +331,18 @@ onStart
     //         vars.Log("<Setting Id=\"quest_" + i + "\" Label=\"" + i + " " + questName + "\" State=\"false\" />");
     //     // }
 
-    // }
-    // var elapsed = DateTime.Now - start;
+    // } 
     // vars.Log(elapsed);
 
     // DUMP STUFF:
     // string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
     // Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
-    // var classListMaybeStart = (IntPtr) 0x148A88FE8;148A7F598
+    
+    // quick note to find this: search for a class name in static unwritable,
+    //  find usages of that address, should be one in an array, scroll to the beginning of the array
+    //  search for that
+    //  something like that
+    // TODO: i should probably make a sig for this
     // var classArray = (IntPtr) 0x147F49118;
     // var classArraySize = (IntPtr) 0x147F49120;
 
@@ -269,7 +363,7 @@ onStart
 
 isLoading
 {
-    return current.gameState == 1;
+    return current.gameState == 1 || current.isInEndOfLevelScreen;
 }
 
 start
@@ -283,24 +377,29 @@ start
 
 split
 {
-    
-    var quest = current.quests;
-    for (var i = 0; i < current.questsSize; i++)
-    {
-        if (vars.CompletedQuests.Contains(i)) {
-            continue;
+    // if we've just entered an end of level screen... that means we just completed a level
+    if (vars.Setting("levels") && !old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
+        return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
+    }
+
+    if (vars.Setting("quests")) {
+        for (var i = 0; i < current.questsSize; i++)
+        {
+            if (vars.CompletedQuests.Contains(i)) {
+                continue;
+            }
+
+            var questStatus = vars.ReadQuestStatus(i);
+            if (questStatus != 4) {
+                continue;
+            }
+
+            vars.CompletedQuests.Add(i);
+            var name = vars.ReadQuestName(i);
+            vars.Log("Quest completed " + i + " (" + name + ")");
+
+            return vars.CheckSplit("quest_" + i);
         }
-
-        var questStatus = vars.ReadQuestStatus(i);
-        if (questStatus != 4) {
-            continue;
-        }
-
-        vars.CompletedQuests.Add(i);
-        var name = vars.ReadQuestName(i);
-        vars.Log("Quest completed " + i + " (" + name + ")");
-
-        return vars.CheckSplit("quest_" + i);
     }
 
     return old.mission != current.mission && current.mission != "game/shell/shell";

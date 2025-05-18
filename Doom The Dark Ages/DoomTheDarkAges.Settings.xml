@@ -1,5 +1,9 @@
 <Settings>
-    <Setting Id="quests" Label="Split on completing a quest" State="false"><Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
+    <Setting Id="levels" Label="Split on completing a level" State="true">
+        <Setting Id="level_villageofkhalim" Label="Village of Khalim" State="false" />
+    </Setting>
+    <Setting Id="quests" Label="Split on completing a quest" State="false">
+        <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
         <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
         <Setting Id="quest_1" Label="1 tutorial_passive_tip_base" State="false" />
         <Setting Id="quest_2" Label="2 unlockable_base" State="false" />
