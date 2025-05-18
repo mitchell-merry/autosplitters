@@ -407,6 +407,9 @@ split
         if (vars.CheckSplit("eol__" + current.lastActiveCheckpoint)) {
             return true;
         }
+
+        // split anyways
+        return true;
     }
 
     // if (vars.Setting("quests")) {
