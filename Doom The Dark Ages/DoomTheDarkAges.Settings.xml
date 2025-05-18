@@ -23,11 +23,10 @@
         <Setting Id="chapter__final_battle" Label="21: Final Battle" State="false" />
         <Setting Id="chapter__reckoning"    Label="22: Reckoning" State="false" />
     </Setting>
-    <Setting Id="quests" Label="Split on completing a quest" State="false">
+    <Setting Id="quests" Label="[wip] Split on completing a quest" State="false">
         <!-- TODO: cull these to just the useful ones -->
         <!-- TODO: convert to split criteria -->
-        <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
-        <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
+        <!-- <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
         <Setting Id="quest_1" Label="1 tutorial_passive_tip_base" State="false" />
         <Setting Id="quest_2" Label="2 unlockable_base" State="false" />
         <Setting Id="quest_3" Label="3 m3b_dragon_tutorial_lockon_broken" State="false" />
@@ -666,6 +665,6 @@
         <Setting Id="quest_636" Label="636 quest_tutorial_popup_slayer_axe_throw" State="false" />
         <Setting Id="quest_637" Label="637 quest_tutorial_popup_slayer_equipment_switching" State="false" />
         <Setting Id="quest_638" Label="638 quest_tutorial_popup_slayer_gates_encounters" State="false" />
-        <Setting Id="quest_639" Label="639 quest_tutorial_popup_slayer_wall_climb_nodes" State="false" />
+        <Setting Id="quest_639" Label="639 quest_tutorial_popup_slayer_wall_climb_nodes" State="false" /> -->
     </Setting>
 </Settings>
