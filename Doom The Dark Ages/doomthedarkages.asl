@@ -364,11 +364,11 @@ init
         for (var i = 0; i < current.questsSize; i++) {
 
             var questStatus = vars.ReadQuestStatus(i);
-            if (questStatus == 4) {
+            // if (questStatus == 4) {
                 var questName = vars.ReadQuestName(i);
 
-                vars.Log("quest " + questName + " is in status " + questStatus);
-            }
+                vars.Log("quest " + i + " " + questName + " is in status " + questStatus + " (0x" + (current.quests + i * QUEST_SIZE).ToString("X") + ")");
+            // }
 
         }
         // vars.Log(elapsed);
@@ -421,7 +421,7 @@ onStart
     vars.CompletedSplits.Clear();
     vars.CompletedQuests.Clear();
 
-    // vars.LogAllQuests();
+    vars.LogAllQuests();
     // vars.DumpAllClasses();
 }
 
