@@ -1,0 +1,96 @@
+
+
+// 2
+// game/sp/m2_hebeth/m2_hebeth -> game/sp/m2b_hebeth_atlan/m2b_hebeth_atlan
+// cp_08a_gore_deck_leader ->
+// (eol)
+
+// 3
+// game/sp/m2b_hebeth_atlan/m2b_hebeth_atlan -> game/sp/m3_holy_city/m3_holy_city
+// cp_06_armored_fight -> cp_01_start
+// (eol)
+
+// 4
+// game/sp/m3_holy_city/m3_holy_city -> game/sp/m3_holy_city_dragon/m3_holy_city_dragon
+// cp_10b_vagary -> cp_01_start
+// (eol)
+
+// 5
+// game/sp/m3_holy_city_dragon/m3_holy_city_dragon -> game/sp/m4_siege/m4_siege
+// cp_09_surprise -> checkpoints_player_start_cp_01
+// (eol)
+
+// 6
+// < no map change >
+// cp_02k_pre_armory_2 -> cp_08a_entrance_destroyed
+// (eol)
+
+// 7
+// game/sp/m4_siege/m4_siege -> game/sp/m5_forge/m5_forge
+// cp_11b_hangar_crane ->
+// (eol)
+
+// 8
+// < no map change >
+// cp_04b_agaddon -> cp_05_ancestral
+// (eol)
+
+// 9
+// game/sp/m5_forge/m5_forge -> game/sp/m6_hell/m6_hell
+// cp_07_final_arena ->
+// (eol)
+
+// 10
+// < no map change >
+// cp_03a_get_to_atlan -> cp_04_atlan
+
+// 11
+// game/sp/m6_hell/m6_hell -> game/sp/m7_armada/m7_armada
+// cp_06_temple_interior ->
+
+// 12
+// game/sp/m7_armada/m7_armada -> game/sp/m7_armada/m7_armada_dragon
+// cp_07_finale_complete ->
+// (eol)
+
+// 13
+// game/sp/m7_armada/m7_armada -> game/sp/m8_terror/m8_terror
+// cp_05a_summit_slayer_complete ->
+// (eol)
+
+// 14
+// game/sp/m8_terror/m8_terror -> game/sp/m9_cosmic_a/cosmic_a
+// cp_06f_kaiju_cage_end -> checkpoint_player_start_cp_01_arrival
+// (eol)
+
+// 15
+// < no map change >
+// cp_04a_alley_post_combat -> cp_05_swamp
+
+// 16
+// game/sp/m9_cosmic_a/cosmic_a -> game/sp/m10_cosmic_b/m10_cosmic_b
+// cp_06_final_arena -> 
+
+// 17
+// < no map change >
+// cp_11_temple_midpoint -> cp12_belly_start
+
+// 18
+// game/sp/m10_cosmic_b/m10_cosmic_b -> game/sp/m11_styx/m11_styx
+// cp_20_thira -> 
+
+// 19
+// game/sp/m11_styx/m11_styx -> game/sp/m12_argent_ret/m12_argent_ret
+// cp_19_barge_c ->
+
+// 20
+// game/sp/m12_argent_ret/m12_argent_ret -> game/sp/m13_final_battle/m13_final_battle
+// cp_03b_boss_phase_2 ->
+
+// 21
+// game/sp/m13_final_battle/m13_final_battle -> game/sp/m14_hell_boss/m14_hell_boss 
+// cp_07c_prince_phase_3 ->
+
+// 22
+// game/sp/m14_hell_boss/m14_hell_boss -> game/credits/credits
+// cp_08a_final_boss_phase_2 -> cp_01

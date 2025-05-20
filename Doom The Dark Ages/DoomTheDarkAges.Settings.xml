@@ -1,29 +1,30 @@
 <Settings>
     <Setting Id="chapters" Label="Split on completing a chapter" State="true">
-        <Setting Id="chapter__village"      Label="1: Village of Khalim" State="false" />
-        <Setting Id="chapter__hebeth"       Label="2: Hebeth" State="false" />
-        <Setting Id="chapter__core"         Label="3: Barrier Core" State="false" />
-        <Setting Id="chapter__barracks"     Label="4: Sentinel Barracks" State="false" />
-        <Setting Id="chapter__aratum"       Label="5: The Holy City of Aratum" State="false" />
-        <Setting Id="chapter__siege_1"      Label="6: Siege - Part 2" State="false" />
-        <Setting Id="chapter__siege_2"      Label="7: Siege - Part 2" State="false" />
-        <Setting Id="chapter__forest"       Label="8: Abyssal Forest" State="false" />
-        <Setting Id="chapter__forge"        Label="9: Ancestral Forge" State="false" />
-        <Setting Id="chapter__plains"       Label="10: The Forsaken Plains" State="false" />
-        <Setting Id="chapter__hellbreaker"  Label="11: Hellbreaker" State="false" />
-        <Setting Id="chapter__statikon"     Label="12: Sentinel Command Station" State="false" />
-        <Setting Id="chapter__from_beyond"  Label="13: From Beyond" State="false" />
-        <Setting Id="chapter__spire"        Label="14: Spire of Nerathul" State="false" />
-        <Setting Id="chapter__city"         Label="15: City of Ry'uul" State="false" />
-        <Setting Id="chapter__marshes"      Label="16: The Kar'Thul Marshes" State="false" />
-        <Setting Id="chapter__temple"       Label="17: Temple of Lomarith" State="false" />
-        <Setting Id="chapter__belly"        Label="18: Belly of the Beast" State="false" />
-        <Setting Id="chapter__harbor"       Label="19: Harbor of Souls" State="false" />
-        <Setting Id="chapter__resurrection" Label="20: Resurrection" State="false" />
-        <Setting Id="chapter__final_battle" Label="21: Final Battle" State="false" />
-        <Setting Id="chapter__reckoning"    Label="22: Reckoning" State="false" />
+        <Setting Id="chapter__village"      Label="1: Village of Khalim" State="true" />
+        <Setting Id="chapter__hebeth"       Label="2: Hebeth" State="true" />
+        <Setting Id="chapter__core"         Label="3: Barrier Core" State="true" />
+        <Setting Id="chapter__barracks"     Label="4: Sentinel Barracks" State="true" />
+        <Setting Id="chapter__aratum"       Label="5: The Holy City of Aratum" State="true" />
+        <Setting Id="chapter__siege_1"      Label="6: Siege - Part 1" State="true" />
+        <Setting Id="chapter__siege_2"      Label="7: Siege - Part 2" State="true" />
+        <Setting Id="chapter__forest"       Label="8: Abyssal Forest" State="true" />
+        <Setting Id="chapter__forge"        Label="9: Ancestral Forge" State="true" />
+        <Setting Id="chapter__plains"       Label="10: The Forsaken Plains" State="true" />
+        <Setting Id="chapter__hellbreaker"  Label="11: Hellbreaker" State="true" />
+        <Setting Id="chapter__station"      Label="12: Sentinel Command Station" State="true" />
+        <Setting Id="chapter__from_beyond"  Label="13: From Beyond" State="true" />
+        <Setting Id="chapter__spire"        Label="14: Spire of Nerathul" State="true" />
+        <Setting Id="chapter__city"         Label="15: City of Ry'uul" State="true" />
+        <Setting Id="chapter__marshes"      Label="16: The Kar'Thul Marshes" State="true" />
+        <Setting Id="chapter__temple"       Label="17: Temple of Lomarith" State="true" />
+        <Setting Id="chapter__belly"        Label="18: Belly of the Beast" State="true" />
+        <Setting Id="chapter__harbor"       Label="19: Harbor of Souls" State="true" />
+        <Setting Id="chapter__resurrection" Label="20: Resurrection" State="true" />
+        <Setting Id="chapter__final_battle" Label="21: Final Battle" State="true" />
+        <Setting Id="chapter__reckoning"    Label="22: Reckoning" State="true" />
     </Setting>
     <Setting Id="quests" Label="[wip] Split on completing a quest" State="false">
+        <Setting Id="note" Label="HEY: There are too many quests to list here. Please ping @diggitydingdong if you'd like a specific quest to be added here." State="false" />
         <!-- TODO: cull these to just the useful ones -->
         <!-- TODO: convert to split criteria -->
         <!-- <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />

@@ -4,7 +4,7 @@ startup
 {
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
     vars.Helper.GameName = "DOOM: The Dark Ages";
-    // vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
+    vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
 
     #region debugging
     vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) =>
@@ -42,11 +42,13 @@ startup
 	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
     });
 
-    settings.Add("endoflevelload", true, "Pause the timer in the end of level screens");
-    settings.Add("debugging", true, "(debugging) Variable Information");
+    settings.Add("debugging", false, "(debugging) Variable Information");
 	settings.Add("Loading", false, "Current Loading", "debugging");
     settings.Add("map", false, "Current map", "debugging");
     #endregion
+
+    vars.CompletedSplits = new HashSet<string>();
+    vars.CompletedQuests = new HashSet<int>();
 
     vars.Helper.AlertLoadless();
 }
@@ -54,14 +56,55 @@ startup
 init
 {
     #region settings helpers
+    // We use the last checkpoint before the end of level screen to determine what chapter we were in
+    // Unfortunately, the next map gets loaded just before the EOL screen goes up, so actually the
+    //  first checkpoint of the next level gets set here.
+    // We don't really care about these, so we'll just ignore them when they come up, so our original
+    //  method still works.
+    // A bit hacky, but this is autosplitter dev for you.
+    vars.StartCheckpoints = new HashSet<string> {
+        "",
+        "cp_01_start",
+        "checkpoints_player_start_cp_01",
+        "checkpoint_player_start_cp_01",
+        "checkpoint_player_start_cp_01_arrival",
+        "cp_01",
+        "cp12_belly_start",
+        "cp_05_swamp",
+        "cp_04_atlan",
+        "cp_08a_entrance_destroyed",
+        "cp_05_ancestral"
+    };
+
     // For the purpose of supporting multiple split criteria to a single setting
     // Changing the ID of a split unchecks it for users, so tying these together closely
     //   is pretty inconvenient.
     // criteria -> split setting
     vars.SplitMap = new Dictionary<string, string>
     {
-        { "eol__cp_09_turret", "chapter__village" },
-        // TODO: get someone to do a run to get the rest
+        // https://www.youtube.com/watch?v=TmhvIv4zU0I is a debug run that i got all this from
+        { "eol__cp_09_turret",                  "chapter__village" },
+        { "eol__cp_08a_gore_deck_leader",       "chapter__hebeth" },
+        { "eol__cp_06_armored_fight",           "chapter__core" },
+        { "eol__cp_10b_vagary",                 "chapter__barracks" },
+        { "eol__cp_09_surprise",                "chapter__aratum" },
+        { "eol__cp_02k_pre_armory_2",           "chapter__siege_1" },
+        { "eol__cp_11b_hangar_crane",           "chapter__siege_2" },
+        { "eol__cp_04b_agaddon",                "chapter__forest" },
+        { "eol__cp_07_final_arena",             "chapter__forge" },
+        { "eol__cp_03a_get_to_atlan",           "chapter__plains" },
+        { "eol__cp_06_temple_interior",         "chapter__hellbreaker" },
+        { "eol__cp_07_finale_complete",         "chapter__station" },
+        { "eol__cp_05a_summit_slayer_complete", "chapter__from_beyond" },
+        { "eol__cp_06f_kaiju_cage_end",         "chapter__spire" },
+        { "eol__cp_04a_alley_post_combat",      "chapter__city" },
+        { "eol__cp_06_final_arena",             "chapter__marshes" },
+        { "eol__cp_11_temple_midpoint",         "chapter__temple" },
+        { "eol__cp_20_thira",                   "chapter__belly" },
+        { "eol__cp_19_barge_c",                 "chapter__harbor" },
+        { "eol__cp_03b_boss_phase_2",           "chapter__resurrection" },
+        { "eol__cp_07c_prince_phase_3",         "chapter__final_battle" },
+        { "eol__cp_08a_final_boss_phase_2",     "chapter__reckoning" }
     };
 
     vars.Setting = (Func<string, bool>)(key =>
@@ -331,9 +374,6 @@ init
         // vars.Log(elapsed);
     });
     #endregion
-
-    vars.CompletedSplits = new HashSet<string>();
-    vars.CompletedQuests = new HashSet<int>();
 }
 
 update
@@ -343,7 +383,7 @@ update
 
     current.isInEndOfLevelScreen = vars.IsInEndOfLevelScreen();
     // typescript dev attempts C#, fails miserably (part 2)
-    current.lastActiveCheckpoint = current.checkpoint == null || current.checkpoint == ""
+    current.lastActiveCheckpoint = current.checkpoint == null || vars.StartCheckpoints.Contains(current.checkpoint)
         ? ((IDictionary<string, object>) current).ContainsKey("lastActiveCheckpoint")
             ? current.lastActiveCheckpoint
             : "no checkpoint"
@@ -379,43 +419,33 @@ onStart
 
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
-    vars.CompletedQuests = new HashSet<int>();
+    vars.CompletedQuests.Clear();
 
-    vars.LogAllQuests();
+    // vars.LogAllQuests();
     // vars.DumpAllClasses();
 }
 
 isLoading
 {
-    return current.gameState == 1 || (settings["endoflevelload"] && current.isInEndOfLevelScreen);
+    return current.gameState == 1 || current.isInEndOfLevelScreen;
 }
 
 start
 {
     // menu -> village of khalim, starts *after* the load now
-    if (old.activeMap == "game/shell/shell" && current.activeMap == "game/sp/m1_intro/m1_intro")
-    {
-        return true;
-    }
+    return old.activeMap == "game/shell/shell" && current.activeMap == "game/sp/m1_intro/m1_intro";
 }
 
 split
 {
-    // if we've just entered an end of level screen... that means we just completed a chapter
-    if ( //vars.Setting("levels") &&
-      !old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
-        vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
-        if (vars.CheckSplit("eol__" + current.lastActiveCheckpoint)) {
-            return true;
-        }
 
-        // split anyways
-        return true;
-    }
-
-    // if (vars.Setting("quests")) {
+    if (vars.Setting("quests")) {
         for (var i = 0; i < current.questsSize; i++)
         {
+            if (!vars.Setting("quest_" + i)) {
+                continue;
+            }
+
             if (vars.CompletedQuests.Contains(i)) {
                 continue;
             }
@@ -429,11 +459,15 @@ split
             var name = vars.ReadQuestName(i);
             vars.Log("Quest completed " + i + " (" + name + ")");
 
-            if (vars.CheckSplit("quest_" + i)) {
-                return true;
-            }
+            return true;
         }
-    // }
+    }
 
-    return old.map != current.map && current.map != "game/shell/shell";
+    // if we've just entered an end of level screen... that means we just completed a chapter
+    if (!old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
+        vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
+        return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
+    }
+
+    return false;
 }
