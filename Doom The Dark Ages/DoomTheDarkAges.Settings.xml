@@ -668,4 +668,3 @@
         <Setting Id="quest_638" Label="638 quest_tutorial_popup_slayer_gates_encounters" State="false" />
         <Setting Id="quest_639" Label="639 quest_tutorial_popup_slayer_wall_climb_nodes" State="false" /> -->
     </Setting>
-</Settings>
