@@ -448,7 +448,7 @@ onStart
     vars.CompletedSplits.Clear();
     vars.CompletedQuests.Clear();
 
-    vars.LogAllQuests();
+    // vars.LogAllQuests();
     // vars.DumpAllClasses();
 }
 
