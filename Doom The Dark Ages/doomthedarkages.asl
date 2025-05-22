@@ -10,8 +10,8 @@ startup
     vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) =>
     {
         // here we see a wild typescript dev attempting C#... oh, the humanity...
-        var currentValue = currentLookup.ContainsKey(key) ? currentLookup[key] : null;
-        var oldValue = oldLookup.ContainsKey(key) ? oldLookup[key] : null;
+        var currentValue = currentLookup.ContainsKey(key) ? (currentLookup[key] ?? "(null)") : null;
+        var oldValue = oldLookup.ContainsKey(key) ? (oldLookup[key] ?? "(null)") : null;
 
         // print if there's a change
         if (oldValue != null && currentValue != null && !oldValue.Equals(currentValue)) {
@@ -82,29 +82,29 @@ init
     // criteria -> split setting
     vars.SplitMap = new Dictionary<string, string>
     {
-        // https://www.youtube.com/watch?v=TmhvIv4zU0I is a debug run that i got all this from
-        { "eol__cp_09_turret",                  "chapter__village" },
-        { "eol__cp_08a_gore_deck_leader",       "chapter__hebeth" },
-        { "eol__cp_06_armored_fight",           "chapter__core" },
-        { "eol__cp_10b_vagary",                 "chapter__barracks" },
-        { "eol__cp_09_surprise",                "chapter__aratum" },
-        { "eol__cp_02k_pre_armory_2",           "chapter__siege_1" },
-        { "eol__cp_11b_hangar_crane",           "chapter__siege_2" },
-        { "eol__cp_04b_agaddon",                "chapter__forest" },
-        { "eol__cp_07_final_arena",             "chapter__forge" },
-        { "eol__cp_03a_get_to_atlan",           "chapter__plains" },
-        { "eol__cp_06_temple_interior",         "chapter__hellbreaker" },
-        { "eol__cp_07_finale_complete",         "chapter__station" },
-        { "eol__cp_05a_summit_slayer_complete", "chapter__from_beyond" },
-        { "eol__cp_06f_kaiju_cage_end",         "chapter__spire" },
-        { "eol__cp_04a_alley_post_combat",      "chapter__city" },
-        { "eol__cp_06_final_arena",             "chapter__marshes" },
-        { "eol__cp_11_temple_midpoint",         "chapter__temple" },
-        { "eol__cp_20_thira",                   "chapter__belly" },
-        { "eol__cp_19_barge_c",                 "chapter__harbor" },
-        { "eol__cp_03b_boss_phase_2",           "chapter__resurrection" },
-        { "eol__cp_07c_prince_phase_3",         "chapter__final_battle" },
-        { "eol__cp_08a_final_boss_phase_2",     "chapter__reckoning" }
+        { "eol__maps/game/sp/m1_intro_name",             "chapter__village" },
+        { "eol__maps/game/sp/m2_hebeth_name",            "chapter__hebeth" },
+        { "eol__maps/game/sp/m2b_hebeth_atlan_name",     "chapter__core" },
+        { "eol__maps/game/sp/m3_holy_city_name",         "chapter__barracks" },
+        { "eol__maps/game/sp/m3b_holy_city_dragon_name", "chapter__aratum" },
+        { "eol__maps/game/sp/m4_siege_name",             "chapter__siege_1" },
+        { "eol__maps/game/sp/m4b_siege_return_name",     "chapter__siege_2" },
+        { "eol__maps/game/sp/m5_forge_name",             "chapter__forest" },
+        { "eol__maps/game/sp/m5b_forge_heart_name",      "chapter__forge" },
+        { "eol__maps/game/sp/m6_hell_name",              "chapter__plains" },
+        { "eol__maps/game/sp/m6b_hell_atlan_name",       "chapter__hellbreaker" },
+        { "eol__maps/game/sp/m7_armada_name",            "chapter__station" },
+        { "eol__maps/game/sp/m7b_armada_dragon_name",    "chapter__from_beyond" },
+        { "eol__maps/game/sp/m8_terror_name",            "chapter__spire" },
+        { "eol__maps/game/sp/m9_cosmic_a_name",          "chapter__city" },
+        { "eol__maps/game/sp/m9b_cosmic_a_name",         "chapter__marshes" },
+        { "eol__maps/game/sp/m10_cosmic_b_name",         "chapter__temple" },
+        { "eol__maps/game/sp/m10b_cosmic_b_beast_name",  "chapter__belly" },
+        // { "eol__maps/game/sp/m10b_cosmic_b_name",        "chapter__belly" },
+        { "eol__maps/game/sp/m11_styx_name",             "chapter__harbor" },
+        { "eol__maps/game/sp/m12_argent_ret_name",       "chapter__resurrection" },
+        { "eol__maps/game/sp/m13_final_battle_name",     "chapter__final_battle" },
+        { "eol__maps/game/sp/m14_hell_boss_name",        "chapter__reckoning" }
     };
 
     vars.Setting = (Func<string, bool>)(key =>
@@ -288,6 +288,32 @@ init
         + 0x370 // idList < idMenu* > menus
     );
 
+    // only defined when we're in the end of level screen
+    vars.Helper["eolChapterName"] = vars.Helper.MakeString(
+        vars.idGameSystemLocal
+         + 0x48, // idMapInstance mapInstance
+        0x1988,  // ??
+        0xC0,    // an idPlayer
+        0x2EA18  // idHUD playerHud
+        + 0x368, // idList < idMenu* > menus
+        0x8 * 2, // [2] ("playermenu")
+        0x20     // idListMap < idAtomicString , idMenuElement * > screens
+        + 0x18,  // idList < idMenuElement * > sortedValueList
+        0x8 * 2, // [2] ("playermenu/eol_mission_complete")
+        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_EOL_Mission_Complete)
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x38,    // idDeclString chapterName
+        0x8,     // decl name or key ? look like "maps/game/sp/m6_hell_name"
+        0x0
+    );
+
     vars.GetActiveScreens = (Func<HashSet<string>>)(() => {
         var ret = new HashSet<string>();
 
@@ -401,6 +427,7 @@ update
     vars.Watch(old, current, "checkpoint");
     vars.Watch(old, current, "lastActiveCheckpoint");
     vars.Watch(old, current, "isInEndOfLevelScreen");
+    vars.Watch(old, current, "eolChapterName");
 
     if(settings["Loading"])
     {
@@ -415,6 +442,7 @@ update
 
 onStart
 {
+    vars.Log("timer started");
     timer.IsGameTimePaused = true;
 
     // refresh all splits when we start the run, none are yet completed
@@ -464,9 +492,14 @@ split
     }
 
     // if we've just entered an end of level screen... that means we just completed a chapter
-    if (!old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
-        vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
-        return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
+    // if (!old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
+    //     vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
+    //     return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
+    // }
+
+    if (old.eolChapterName != current.eolChapterName && current.eolChapterName != null) {
+        vars.Log("is it open?" + current.isInEndOfLevelScreen + " (" + old.isInEndOfLevelScreen + ")");
+        return vars.CheckSplit("eol__" + current.eolChapterName);
     }
 
     return false;

@@ -94,3 +94,113 @@
 // 22
 // game/sp/m14_hell_boss/m14_hell_boss -> game/credits/credits
 // cp_08a_final_boss_phase_2 -> cp_01
+
+Main Menu
+game/shell/shell
+M1 
+Village of Khalim,
+game/sp/m1_intro/m1_intro
+M2 
+Hebeth,
+Barrier Core,
+game/sp/m2_hebeth/m2_hebeth
+game/sp/m2b_hebeth_atlan/m2b_hebeth_atlan
+M3 
+Sentinel Barracks,
+Holy City of Aratum,
+game/sp/m3_holy_city/m3_holy_city
+game/sp/m3_holy_city_dragon/m3_holy_city_dragon
+M4 
+Siege 1,
+Siege 2,
+game/sp/m4_siege/m4_siege
+M5
+Abyssal Forest,
+Ancestral Forge,
+game/sp/m5_forge/m5_forge
+M6
+Forsaken Plains,
+Hellbreaker,
+game/sp/m6_hell/m6_hell
+M7
+Sentinel Command Station,
+From Beyond,
+game/sp/m7_armada/m7_armada
+M8
+Spire of Nerathul,
+game/sp/m8_terror/m8_terror
+M9
+City of Ry'uul,
+The Kar'Thul Marshes,
+game/sp/m9_cosmic_a/cosmic_a
+
+M10
+Temple of Lomarith,
+Belly of the Beast,
+game/sp/m10_cosmic_b/m10_cosmic_b
+
+M11
+Harbor of Souls,
+game/sp/m11_styx/m11_styx
+
+M12
+Resurrection,
+game/sp/m12_argent_ret/m12_argent_ret
+
+M13
+Final Battle,
+game/sp/m13_final_battle/m13_final_battle
+M14
+Reckoning,
+game/sp/m14_hell_boss/m14_hell_boss 
+
+
+
+ecls/string/maps/game/sp/m10_cosmic_b_name.decl
+ring/maps/game/sp/m10b_cosmic_b_beast_name.decl
+cls/string/maps/game/sp/m10b_cosmic_b_name.decl
+ed/decls/string/maps/game/sp/m11_styx_name.decl
+ls/string/maps/game/sp/m12_argent_ret_name.decl
+/string/maps/game/sp/m13_final_battle_name.decl
+cls/string/maps/game/sp/m14_hell_boss_name.decl
+ed/decls/string/maps/game/sp/m1_intro_name.decl
+d/decls/string/maps/game/sp/m2_hebeth_name.decl
+/string/maps/game/sp/m2b_hebeth_atlan_name.decl
+ecls/string/maps/game/sp/m3_holy_city_name.decl
+ing/maps/game/sp/m3b_holy_city_dragon_name.decl
+ed/decls/string/maps/game/sp/m4_siege_name.decl
+/string/maps/game/sp/m4b_siege_return_name.decl
+ed/decls/string/maps/game/sp/m5_forge_name.decl
+s/string/maps/game/sp/m5b_forge_heart_name.decl
+ted/decls/string/maps/game/sp/m6_hell_name.decl
+ls/string/maps/game/sp/m6b_hell_atlan_name.decl
+d/decls/string/maps/game/sp/m7_armada_name.decl
+string/maps/game/sp/m7b_armada_dragon_name.decl
+d/decls/string/maps/game/sp/m8_terror_name.decl
+decls/string/maps/game/sp/m9_cosmic_a_name.decl
+ecls/string/maps/game/sp/m9b_cosmic_a_name.decl
+
+
+maps/game/sp/m1_intro_name
+maps/game/sp/m2_hebeth_name
+maps/game/sp/m2b_hebeth_atlan_name
+maps/game/sp/m3_holy_city_name
+maps/game/sp/m3b_holy_city_dragon_name
+maps/game/sp/m4_siege_name
+maps/game/sp/m4b_siege_return_name
+maps/game/sp/m5_forge_name
+maps/game/sp/m5b_forge_heart_name
+maps/game/sp/m6_hell_name
+maps/game/sp/m6b_hell_atlan_name
+maps/game/sp/m7_armada_name
+maps/game/sp/m7b_armada_dragon_name
+maps/game/sp/m8_terror_name
+maps/game/sp/m9_cosmic_a_name
+maps/game/sp/m9b_cosmic_a_name
+maps/game/sp/m10_cosmic_b_name
+# maps/game/sp/m10b_cosmic_b_beast_name
+maps/game/sp/m10b_cosmic_b_name
+maps/game/sp/m11_styx_name
+maps/game/sp/m12_argent_ret_name
+maps/game/sp/m13_final_battle_name
+maps/game/sp/m14_hell_boss_name
