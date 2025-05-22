@@ -100,7 +100,7 @@ init
         { "eol__maps/game/sp/m9b_cosmic_a_name",         "chapter__marshes" },
         { "eol__maps/game/sp/m10_cosmic_b_name",         "chapter__temple" },
         { "eol__maps/game/sp/m10b_cosmic_b_beast_name",  "chapter__belly" },
-        { "eol__maps/game/sp/m10b_cosmic_b_name",        "chapter__belly" },
+        // { "eol__maps/game/sp/m10b_cosmic_b_name",        "chapter__belly" },
         { "eol__maps/game/sp/m11_styx_name",             "chapter__harbor" },
         { "eol__maps/game/sp/m12_argent_ret_name",       "chapter__resurrection" },
         { "eol__maps/game/sp/m13_final_battle_name",     "chapter__final_battle" },
@@ -442,6 +442,7 @@ update
 
 onStart
 {
+    vars.Log("timer started");
     timer.IsGameTimePaused = true;
 
     // refresh all splits when we start the run, none are yet completed
@@ -496,7 +497,7 @@ split
     //     return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
     // }
 
-    if (old.eolChapterName == null && current.eolChapterName != null) {
+    if (old.eolChapterName != current.eolChapterName && current.eolChapterName != null) {
         vars.Log("is it open?" + current.isInEndOfLevelScreen + " (" + old.isInEndOfLevelScreen + ")");
         return vars.CheckSplit("eol__" + current.eolChapterName);
     }
