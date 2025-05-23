@@ -47,35 +47,6 @@ startup
     settings.Add("map", false, "Current map", "debugging");
     #endregion
 
-    vars.CompletedSplits = new HashSet<string>();
-    vars.CompletedQuests = new HashSet<int>();
-
-    vars.Helper.AlertLoadless();
-}
-
-init
-{
-    #region settings helpers
-    // We use the last checkpoint before the end of level screen to determine what chapter we were in
-    // Unfortunately, the next map gets loaded just before the EOL screen goes up, so actually the
-    //  first checkpoint of the next level gets set here.
-    // We don't really care about these, so we'll just ignore them when they come up, so our original
-    //  method still works.
-    // A bit hacky, but this is autosplitter dev for you.
-    vars.StartCheckpoints = new HashSet<string> {
-        "",
-        "cp_01_start",
-        "checkpoints_player_start_cp_01",
-        "checkpoint_player_start_cp_01",
-        "checkpoint_player_start_cp_01_arrival",
-        "cp_01",
-        "cp12_belly_start",
-        "cp_05_swamp",
-        "cp_04_atlan",
-        "cp_08a_entrance_destroyed",
-        "cp_05_ancestral"
-    };
-
     // For the purpose of supporting multiple split criteria to a single setting
     // Changing the ID of a split unchecks it for users, so tying these together closely
     //   is pretty inconvenient.
@@ -100,32 +71,73 @@ init
         { "eol__maps/game/sp/m9b_cosmic_a_name",         "chapter__marshes" },
         { "eol__maps/game/sp/m10_cosmic_b_name",         "chapter__temple" },
         { "eol__maps/game/sp/m10b_cosmic_b_beast_name",  "chapter__belly" },
-        // { "eol__maps/game/sp/m10b_cosmic_b_name",        "chapter__belly" },
         { "eol__maps/game/sp/m11_styx_name",             "chapter__harbor" },
         { "eol__maps/game/sp/m12_argent_ret_name",       "chapter__resurrection" },
         { "eol__maps/game/sp/m13_final_battle_name",     "chapter__final_battle" },
-        { "eol__maps/game/sp/m14_hell_boss_name",        "chapter__reckoning" }
+        { "eol__maps/game/sp/m14_hell_boss_name",        "chapter__reckoning" },
+
+        // Quests
+        { "quests_134_0", "quests_cte_rv" },
+        { "quests_134_1", "quests_cte_cv" },
+        { "quests_134_2", "quests_cte_fk" },
+        { "quests_134_3", "quests_cte_og" },
+        { "quests_134_4", "quests_cte_dp" },
+        { "quests_134_4_progress", "quests_cte_dp_progress" },
+        { "quests_134_5", "quests_cte_db" },
     };
 
-    vars.Setting = (Func<string, bool>)(key =>
+    // quest idx -> (quest step idx -> progress at "completion")
+    vars.QuestsToCheck = new Dictionary<int, Dictionary<int, int>> {
+        {
+            134, // m1_intro_objective_cover_escape
+            new Dictionary<int, int> {
+                { 0, 1 },
+                { 1, 1 },
+                { 2, 1 },
+                { 3, 1 },
+                { 4, 4 },
+                { 5, 1 }
+            }
+        }
+    };
+
+    vars.CompletedSplits = new HashSet<string>();
+    vars.CompletedQuests = new HashSet<int>();
+
+    vars.Helper.AlertLoadless();
+}
+
+init
+{
+    #region settings helpers
+
+    vars.Setting = (Func<string, bool>)(criteria =>
     {
+        var key = vars.SplitMap.ContainsKey(criteria)
+            ? vars.SplitMap[criteria]
+            : criteria;
+
         return settings.ContainsKey(key) && settings[key];
     });
 
     // this function is a helper for checking splits that may or may not exist in settings,
     // and if we want to do them only once
-    vars.CheckSplit = (Func<string, bool>)(criteria =>
+    vars.CheckSplit = (Func<string, string, bool>)((criteria, setting) =>
     {
-        var key = vars.SplitMap.ContainsKey(criteria) ? vars.SplitMap[criteria] : criteria;
+        var key = setting != ""
+            ? setting
+            : vars.SplitMap.ContainsKey(criteria)
+                ? vars.SplitMap[criteria]
+                : criteria;
 
         // if the split doesn't exist, or it's off, or we've done it already
         if (!vars.Setting(key)
-          || !vars.CompletedSplits.Add(key)
+          || !vars.CompletedSplits.Add(criteria)
         ) {
             return false;
         }
 
-        vars.Log("Completed: " + key);
+        vars.Log("Completed: " + criteria);
         return true;
     });
     #endregion
@@ -265,11 +277,6 @@ init
         0x20, // idStrStatic < 1024 > mapName (does not show up in dumps)
         0x0
     );
-    vars.Helper["checkpoint"] = vars.Helper.MakeString(
-        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x1060, // idStrStatic < 1024 > checkpointName (does not show up in dumps)
-        0x0
-    );
 
     #region Menus
     // the idPlayer was pointer scanned for, and walked back - we don't have type information for idMapInstance, nor whatever the class is at 0x1988
@@ -313,6 +320,7 @@ init
         0x8,     // decl name or key ? look like "maps/game/sp/m6_hell_name"
         0x0
     );
+    vars.Helper["eolChapterName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
 
     vars.GetActiveScreens = (Func<HashSet<string>>)(() => {
         var ret = new HashSet<string>();
@@ -351,26 +359,22 @@ init
     );
 
     var QUEST_SIZE = 0xB8;
+    var QUEST_STEP_SIZE = 0x70;
 
     // Big assumption here, in that the quests will always be in the same order and in the same positions
     //   This is at least true when comparing Meta and my quest lists, but it could break in the future
     //   I do this to save scanning the whole list, there are ~650 elements.
     // TODO: An improvement could be to assume it doesn't change once loaded, so scan it once on init and
     //   cache that list.
-    //
-    // enum idQuestStatus {
-    //     QUEST_STATUS_LOCKED_AND_HIDDEN = 0
-    //     QUEST_STATUS_LOCKED = 1
-    //     QUEST_STATUS_UNLOCKED = 2
-    //     QUEST_STATUS_IN_PROGRESS = 3
-    //     QUEST_STATUS_COMPLETE = 4
-    //     QUEST_STATUS_FAILED = 5
-    // }
-    vars.ReadQuestStatus = (Func<int, int>)(questIdx =>
+
+    vars.ReadQuestStepProgress = (Func<int, int, int>)((questIdx, stepIdx) =>
     {
         return vars.Helper.Read<int>(
             current.quests + questIdx * QUEST_SIZE // [questIdx]
-             + 0x8 // idQuestStatus questStatus
+             + 0x10, // idList < idQuestStep > questSteps
+             stepIdx * QUEST_STEP_SIZE // [questStepIdx]
+             + 0x30 // idQuestRequirementProgress progress
+             + 0x0 // unsigned int trackedValue
         );
     });
     vars.ReadQuestName = (Func<int, string>)(questIdx =>
@@ -408,12 +412,6 @@ update
     vars.Helper.MapPointers();
 
     current.isInEndOfLevelScreen = vars.IsInEndOfLevelScreen();
-    // typescript dev attempts C#, fails miserably (part 2)
-    current.lastActiveCheckpoint = current.checkpoint == null || vars.StartCheckpoints.Contains(current.checkpoint)
-        ? ((IDictionary<string, object>) current).ContainsKey("lastActiveCheckpoint")
-            ? current.lastActiveCheckpoint
-            : "no checkpoint"
-        : current.checkpoint;
     // map value that changes at a more favourable point
     current.activeMap = current.gameState == 1
         ? ((IDictionary<string, object>) current).ContainsKey("activeMap")
@@ -424,8 +422,6 @@ update
     vars.Watch(old, current, "gameState");
     vars.Watch(old, current, "map");
     vars.Watch(old, current, "activeMap");
-    vars.Watch(old, current, "checkpoint");
-    vars.Watch(old, current, "lastActiveCheckpoint");
     vars.Watch(old, current, "isInEndOfLevelScreen");
     vars.Watch(old, current, "eolChapterName");
 
@@ -468,38 +464,42 @@ split
 {
 
     if (vars.Setting("quests")) {
-        for (var i = 0; i < current.questsSize; i++)
+        foreach(KeyValuePair<int, Dictionary<int, int>> questEntry in vars.QuestsToCheck)
         {
-            if (!vars.Setting("quest_" + i)) {
-                continue;
+            foreach(KeyValuePair<int, int> questStepEntry in questEntry.Value)
+            {
+                var settingKey = "quests_" + questEntry.Key + "_" + questStepEntry.Key;
+                if (!vars.Setting(settingKey))
+                {
+                    continue;
+                }
+
+                var progress = vars.ReadQuestStepProgress(questEntry.Key, questStepEntry.Key);
+                if (progress == 0)
+                {
+                    continue;
+                }
+
+                if (progress == questStepEntry.Value)
+                {
+                    if (vars.CheckSplit(settingKey, ""))
+                    {
+                        return true;
+                    }
+                } else {
+                    if (vars.CheckSplit(settingKey + "_" + progress, settingKey + "_progress"))
+                    {
+                        vars.Log("progress: " + progress);
+                        return true;
+                    }
+                }
             }
-
-            if (vars.CompletedQuests.Contains(i)) {
-                continue;
-            }
-
-            var questStatus = vars.ReadQuestStatus(i);
-            if (questStatus != 4) {
-                continue;
-            }
-
-            vars.CompletedQuests.Add(i);
-            var name = vars.ReadQuestName(i);
-            vars.Log("Quest completed " + i + " (" + name + ")");
-
-            return true;
         }
     }
 
-    // if we've just entered an end of level screen... that means we just completed a chapter
-    // if (!old.isInEndOfLevelScreen && current.isInEndOfLevelScreen) {
-    //     vars.Log("entered end of level screen from checkpoint " + current.lastActiveCheckpoint);
-    //     return vars.CheckSplit("eol__" + current.lastActiveCheckpoint);
-    // }
-
-    if (old.eolChapterName != current.eolChapterName && current.eolChapterName != null) {
+    if (old.eolChapterName != current.eolChapterName) {
         vars.Log("is it open?" + current.isInEndOfLevelScreen + " (" + old.isInEndOfLevelScreen + ")");
-        return vars.CheckSplit("eol__" + current.eolChapterName);
+        return vars.CheckSplit("eol__" + current.eolChapterName, "");
     }
 
     return false;

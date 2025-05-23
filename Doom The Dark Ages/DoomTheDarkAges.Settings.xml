@@ -23,8 +23,18 @@
         <Setting Id="chapter__final_battle" Label="21: Final Battle" State="true" />
         <Setting Id="chapter__reckoning"    Label="22: Reckoning" State="true" />
     </Setting>
-    <Setting Id="quests" Label="[wip] Split on completing a quest" State="false">
+    <Setting Id="quests" Label="Split on completing a quest" State="false">
         <Setting Id="note" Label="HEY: There are too many quests to list here. Please ping @diggitydingdong if you'd like a specific quest to be added here." State="false" />
+        <Setting Id="quests_khalim" Label="Quests in 1: Village of Khalim" State="false">
+            <Setting Id="quests_cte_rv" Label="Cover the Escape: Get to the Village" State="false" />
+            <Setting Id="quests_cte_cv" Label="Cover the Escape: Clear the Village" State="false" />
+            <Setting Id="quests_cte_fk" Label="Cover the Escape: Find the Key" State="false" />
+            <Setting Id="quests_cte_og" Label="Cover the Escape: Open the Gate" State="false" />
+            <Setting Id="quests_cte_dp" Label="Cover the Escape: Destroy the Demonic Portals" State="false">
+                <Setting Id="quests_cte_dp_progress" Label="Split on every portal destruction (4)." State="false" />
+            </Setting>
+            <Setting Id="quests_cte_db" Label="Cover the Escape: Defend the Beach" State="false" />
+        </Setting>
         <!-- TODO: cull these to just the useful ones -->
         <!-- TODO: convert to split criteria -->
         <!-- <Setting Id="quest_0" Label="0 tutorial_active_tip_base" State="false" />
