@@ -1,4 +1,5 @@
 <Settings>
+    <Setting Id="start_any_chapter" Label="Start on loading any chapter from the main menu" State="false" />
     <Setting Id="chapters" Label="Split on completing a chapter" State="true">
         <Setting Id="chapter__village"      Label="1: Village of Khalim" State="true" />
         <Setting Id="chapter__hebeth"       Label="2: Hebeth" State="true" />

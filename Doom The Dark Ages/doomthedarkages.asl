@@ -456,8 +456,13 @@ isLoading
 
 start
 {
-    // menu -> village of khalim, starts *after* the load now
-    return old.activeMap == "game/shell/shell" && current.activeMap == "game/sp/m1_intro/m1_intro";
+    // from the main menu...
+    if (old.activeMap == "game/shell/shell" && current.activeMap != old.activeMap) {
+        return settings["start_any_chapter"]                     // to any chapter
+            || current.activeMap == "game/sp/m1_intro/m1_intro"; // to khalim
+    }
+
+    return false;
 }
 
 split
