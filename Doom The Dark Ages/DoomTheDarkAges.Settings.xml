@@ -679,4 +679,11 @@
         <Setting Id="quest_638" Label="638 quest_tutorial_popup_slayer_gates_encounters" State="false" />
         <Setting Id="quest_639" Label="639 quest_tutorial_popup_slayer_wall_climb_nodes" State="false" /> -->
     </Setting>
+    <Setting Id="debugging" Label="(debugging) Variable Information" State="false">
+        <Setting Id="Loading" Label="Current Loading" State="false" />
+        <Setting Id="map" Label="Current map" State="false" />
+    </Setting>
+    <Setting Id="experiments" Label="Experimental features, don't use unless you know what you're doing" State="false">
+        <Setting Id="pause_on_main_menu" Label="Pause the timer when in the main menu" State="false" />
+    </Setting>
 </Settings>

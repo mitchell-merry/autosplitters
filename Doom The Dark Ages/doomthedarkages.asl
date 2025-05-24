@@ -41,10 +41,6 @@ startup
 
 	        textSetting.GetType().GetProperty("Text2").SetValue(textSetting, text);
     });
-
-    settings.Add("debugging", false, "(debugging) Variable Information");
-	settings.Add("Loading", false, "Current Loading", "debugging");
-    settings.Add("map", false, "Current map", "debugging");
     #endregion
 
     // For the purpose of supporting multiple split criteria to a single setting
@@ -439,7 +435,6 @@ update
 onStart
 {
     vars.Log("timer started");
-    timer.IsGameTimePaused = true;
 
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
@@ -451,7 +446,9 @@ onStart
 
 isLoading
 {
-    return current.gameState == 1 || current.isInEndOfLevelScreen;
+    return current.gameState == 1
+        || current.isInEndOfLevelScreen
+        || (current.gameState == 0 && settings["pause_on_main_menu"]);
 }
 
 start
