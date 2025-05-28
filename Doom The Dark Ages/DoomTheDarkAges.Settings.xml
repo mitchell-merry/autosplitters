@@ -684,6 +684,5 @@
         <Setting Id="map" Label="Current map" State="false" />
     </Setting>
     <Setting Id="experiments" Label="Experimental features, don't use unless you know what you're doing" State="false">
-        <Setting Id="pause_on_main_menu" Label="Pause the timer when in the main menu" State="false" />
     </Setting>
 </Settings>
