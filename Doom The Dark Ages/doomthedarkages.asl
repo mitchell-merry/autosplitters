@@ -467,7 +467,7 @@ init
         + 0x0,   // idSharedPtrData data
         0x8,     // interlockedPointer_t < void > pointer
         0x28,    // idDeclString text
-        0x8,     // decl name or key ? look like "maps/game/sp/m6_hell_name"
+        0x8,     // decl name or key ? look like "characters/ahzrak_prince"
         0x0
     );
     vars.Helper["bossName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
