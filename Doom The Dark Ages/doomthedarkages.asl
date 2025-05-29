@@ -356,6 +356,87 @@ init
     );
     vars.Helper["eolChapterName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
 
+    // Jesus Fucking Christ
+    vars.Helper["bossHealthBarShown"] = vars.Helper.Make<bool>(
+        vars.idGameSystemLocal
+         + 0x48, // idMapInstance mapInstance
+        0x1988,  // ??
+        0xC0,    // an idPlayer
+        0x2EA18  // idHUD playerHud
+        + 0x40   // idGrowableList < idHUDElement * > elements
+        + 0x0,   // idHUDElement list
+        0x8 * 2, // [2] ("hud")
+        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        // Okay breathe for a moment
+        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+        + 0x0,   // idSharedPtr < idUIWidget > list
+        0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+        + 0x0,   // idSharedPtr < idUIWidget > list
+        0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Hud_Boss_HealthBar)
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x20     // bool isShown (no fweaking way)
+    );
+
+    // idGameSystemLocal.??.player.playerHud.elements[2].children[7].children[0].children[4].model.text.key
+    vars.Helper["bossName"] = vars.Helper.MakeString(
+        vars.idGameSystemLocal
+         + 0x48, // idMapInstance mapInstance
+        0x1988,  // ??
+        0xC0,    // an idPlayer
+        0x2EA18  // idHUD playerHud
+        + 0x40   // idGrowableList < idHUDElement * > elements
+        + 0x0,   // idHUDElement list
+        0x8 * 2, // [2] ("hud")
+        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        // Okay breathe for a moment
+        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+        + 0x0,   // idSharedPtr < idUIWidget > list
+        0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+        + 0x0,   // idSharedPtr < idUIWidget > list
+        0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+        + 0x0,   // idSharedPtr < idUIWidget > list
+        0x8 * 4  // [4] ("ui/elements/text")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Text)
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x28,    // idDeclString text
+        0x8,     // decl name or key ? look like "maps/game/sp/m6_hell_name"
+        0x0
+    );
+    vars.Helper["bossName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
+
     vars.GetActiveScreens = (Func<HashSet<string>>)(() => {
         var ret = new HashSet<string>();
 
@@ -465,6 +546,8 @@ update
     vars.Watch(old, current, "activeMap");
     vars.Watch(old, current, "isInEndOfLevelScreen");
     vars.Watch(old, current, "eolChapterName");
+    vars.Watch(old, current, "bossName");
+    vars.Watch(old, current, "bossHealth");
     vars.Watch(old, current, "hasTimerStartedInThisLoadYet");
 
     if(settings["Loading"])
@@ -477,11 +560,25 @@ update
         vars.SetTextComponent(" ",current.map.ToString());
     }
 
-    if(settings["velocity"])
+    if(settings["velocity_hori"])
     {
         var horiVel = Math.Sqrt(current.playerVelX * current.playerVelX + current.playerVelY * current.playerVelY);
         vars.SetTextComponent("Horizontal Velocity ", horiVel.ToString("0.00"));
+    }
+
+    if (settings["velocity_vert"])
+    {
         vars.SetTextComponent("Vertical Velocity ", current.playerVelZ.ToString("0.00"));
+    }
+
+    if (settings["boss_name"])
+    {
+        vars.SetTextComponent("Boss Name ", current.bossName ?? "(none)");
+    }
+
+    if (settings["boss_bar_shown"])
+    {
+        vars.SetTextComponent("Boss Healthbar Shown ", current.bossHealthBarShown.ToString());
     }
 }
 
@@ -515,8 +612,6 @@ start
     ) {
         return true;
     }
-
-    // velocity hori / verti
 
     // first split
     return !current.hasTimerStartedInThisLoadYet
