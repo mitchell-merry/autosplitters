@@ -506,3 +506,8 @@ split
 
     return false;
 }
+
+exit
+{
+    timer.IsGameTimePaused = true;
+}
