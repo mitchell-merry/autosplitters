@@ -274,8 +274,52 @@ init
         0x0
     );
 
+    // the idPlayer was pointer scanned for, and walked back - we don't have type information for
+    //   idMapInstance, nor whatever the class is at 0x1988
+    vars.Helper["playerX"] = vars.Helper.Make<float>(
+        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+        0x1988, // ??
+        0xC0,   // an idPlayer
+        0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
+        0x208   // playerPState_t current
+        + 0xC   // idVec3 worldOrigin
+        + 0x0   // float x
+    );
+    vars.Helper["playerZ"] = vars.Helper.Make<float>(
+        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+        0x1988, // ??
+        0xC0,   // an idPlayer
+        0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
+        0x208   // playerPState_t current
+        + 0xC   // idVec3 worldOrigin
+        // I don't actually know which is which, I'm guessing the third is Y since
+        //   it's up and down and that's Minecraft rules
+        + 0x4   // float z
+    );
+
+    // shrug
+    var TOLERANCE = 0.05;
+    var FloatIsCloseEnough = (Func<float, float, bool>)((value, target) =>
+    {
+        return Math.Abs(value - target) < TOLERANCE;
+    });
+
+    var KHALIM_BEGINNING_X = -192.8f;
+    var KHALIM_BEGINNING_Z = -344.8f;
+    vars.PlayerIsAtBeginning = (Func<dynamic, bool>)(state =>
+    {
+        if (state.activeMap != "game/sp/m1_intro/m1_intro")
+        {
+            return false;
+        }
+
+        // we don't check Y cause sometimes you jump in the cutscene
+        // and who really cares about that anyways
+        return FloatIsCloseEnough(KHALIM_BEGINNING_X, state.playerX)
+            && FloatIsCloseEnough(KHALIM_BEGINNING_Z, state.playerZ);
+    });
+
     #region Menus
-    // the idPlayer was pointer scanned for, and walked back - we don't have type information for idMapInstance, nor whatever the class is at 0x1988
     vars.Helper["hudMenus"] = vars.Helper.Make<IntPtr>(
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
         0x1988, // ??
@@ -400,6 +444,8 @@ init
         // vars.Log(elapsed);
     });
     #endregion
+
+    current.hasTimerStartedInThisLoadYet = false;
 }
 
 update
@@ -415,11 +461,17 @@ update
             : "no map"
         : current.map;
 
+    if (old.gameState != 2 && current.gameState == 1)
+    {
+        current.hasTimerStartedInThisLoadYet = false;
+    }
+
     vars.Watch(old, current, "gameState");
     vars.Watch(old, current, "map");
     vars.Watch(old, current, "activeMap");
     vars.Watch(old, current, "isInEndOfLevelScreen");
     vars.Watch(old, current, "eolChapterName");
+    vars.Watch(old, current, "hasTimerStartedInThisLoadYet");
 
     if(settings["Loading"])
     {
@@ -435,6 +487,7 @@ update
 onStart
 {
     vars.Log("timer started");
+    current.hasTimerStartedInThisLoadYet = true;
 
     // refresh all splits when we start the run, none are yet completed
     vars.CompletedSplits.Clear();
@@ -453,13 +506,19 @@ isLoading
 
 start
 {
-    // from the main menu...
-    if (old.activeMap == "game/shell/shell" && current.activeMap != old.activeMap) {
-        return settings["start_any_chapter"]                     // to any chapter
-            || current.activeMap == "game/sp/m1_intro/m1_intro"; // to khalim
+    // from the main menu, every chapter except the first
+    if (settings["start_any_chapter"]
+     && current.activeMap != old.activeMap
+     && old.activeMap == "game/shell/shell"
+     && current.activeMap != "game/sp/m1_intro/m1_intro"
+    ) {
+        return true;
     }
 
-    return false;
+    // first split
+    return !current.hasTimerStartedInThisLoadYet
+        && vars.PlayerIsAtBeginning(old)
+        && !vars.PlayerIsAtBeginning(current);
 }
 
 split
