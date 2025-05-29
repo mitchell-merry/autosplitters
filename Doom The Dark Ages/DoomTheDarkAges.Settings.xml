@@ -682,6 +682,7 @@
     <Setting Id="debugging" Label="(debugging) Variable Information" State="false">
         <Setting Id="Loading" Label="Current Loading" State="false" />
         <Setting Id="map" Label="Current map" State="false" />
+        <Setting Id="velocity" Label="Player Velocity" State="false" />
     </Setting>
     <Setting Id="experiments" Label="Experimental features, don't use unless you know what you're doing" State="false">
     </Setting>

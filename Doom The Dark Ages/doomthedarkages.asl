@@ -276,47 +276,41 @@ init
 
     // the idPlayer was pointer scanned for, and walked back - we don't have type information for
     //   idMapInstance, nor whatever the class is at 0x1988
-    vars.Helper["playerX"] = vars.Helper.Make<float>(
+    vars.Helper["playerVelX"] = vars.Helper.Make<float>(
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
         0x1988, // ??
         0xC0,   // an idPlayer
         0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
         0x208   // playerPState_t current
-        + 0xC   // idVec3 worldOrigin
+        + 0x3C   // idVec3 velocity
         + 0x0   // float x
     );
-    vars.Helper["playerZ"] = vars.Helper.Make<float>(
+    vars.Helper["playerVelY"] = vars.Helper.Make<float>(
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
         0x1988, // ??
         0xC0,   // an idPlayer
         0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
         0x208   // playerPState_t current
-        + 0xC   // idVec3 worldOrigin
-        // I don't actually know which is which, I'm guessing the third is Y since
-        //   it's up and down and that's Minecraft rules
-        + 0x4   // float z
+        + 0x3C   // idVec3 velocity
+        + 0x4   // float y
+    );
+    vars.Helper["playerVelZ"] = vars.Helper.Make<float>(
+        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+        0x1988, // ??
+        0xC0,   // an idPlayer
+        0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
+        0x208   // playerPState_t current
+        + 0x3C   // idVec3 velocity
+        + 0x8   // float z
     );
 
     // shrug
     var TOLERANCE = 0.05;
-    var FloatIsCloseEnough = (Func<float, float, bool>)((value, target) =>
+    vars.PlayerIsMoving = (Func<dynamic, bool>)(state =>
     {
-        return Math.Abs(value - target) < TOLERANCE;
-    });
-
-    var KHALIM_BEGINNING_X = -192.8f;
-    var KHALIM_BEGINNING_Z = -344.8f;
-    vars.PlayerIsAtBeginning = (Func<dynamic, bool>)(state =>
-    {
-        if (state.activeMap != "game/sp/m1_intro/m1_intro")
-        {
-            return false;
-        }
-
         // we don't check Y cause sometimes you jump in the cutscene
-        // and who really cares about that anyways
-        return FloatIsCloseEnough(KHALIM_BEGINNING_X, state.playerX)
-            && FloatIsCloseEnough(KHALIM_BEGINNING_Z, state.playerZ);
+        //   and who really cares about that anyways
+        return state.playerVelX > TOLERANCE || state.playerVelY > TOLERANCE;
     });
 
     #region Menus
@@ -482,6 +476,13 @@ update
     {
         vars.SetTextComponent(" ",current.map.ToString());
     }
+
+    if(settings["velocity"])
+    {
+        var horiVel = Math.Sqrt(current.playerVelX * current.playerVelX + current.playerVelY * current.playerVelY);
+        vars.SetTextComponent("Horizontal Velocity ", horiVel.ToString("0.00"));
+        vars.SetTextComponent("Vertical Velocity ", current.playerVelZ.ToString("0.00"));
+    }
 }
 
 onStart
@@ -515,10 +516,13 @@ start
         return true;
     }
 
+    // velocity hori / verti
+
     // first split
     return !current.hasTimerStartedInThisLoadYet
-        && vars.PlayerIsAtBeginning(old)
-        && !vars.PlayerIsAtBeginning(current);
+        && current.activeMap == "game/sp/m1_intro/m1_intro"
+        && !vars.PlayerIsMoving(old)
+        && vars.PlayerIsMoving(current);
 }
 
 split
