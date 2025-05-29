@@ -684,7 +684,8 @@
         <Setting Id="map" Label="Current map" State="false" />
         <Setting Id="velocity_hori" Label="Player Horizontal Velocity" State="false" />
         <Setting Id="velocity_vert" Label="Player Vertical Velocity" State="false" />
-        <Setting Id="boss_name" Label="Current Boss Name" State="false" />
+        <Setting Id="boss_name" Label="Boss Name" State="false" />
+        <Setting Id="boss_health" Label="Boss Health" State="false" />
         <Setting Id="boss_bar_shown" Label="Boss Health Bar Shown" State="false" />
     </Setting>
     <Setting Id="experiments" Label="Experimental features, don't use unless you know what you're doing" State="false">

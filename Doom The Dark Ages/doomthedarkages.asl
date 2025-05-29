@@ -70,7 +70,7 @@ startup
         { "eol__maps/game/sp/m11_styx_name",             "chapter__harbor" },
         { "eol__maps/game/sp/m12_argent_ret_name",       "chapter__resurrection" },
         { "eol__maps/game/sp/m13_final_battle_name",     "chapter__final_battle" },
-        { "eol__maps/game/sp/m14_hell_boss_name",        "chapter__reckoning" },
+        { "boss__characters/ahzrak_prince",              "chapter__reckoning" },
 
         // Quests
         { "quests_134_0", "quests_cte_rv" },
@@ -389,7 +389,42 @@ init
         0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Hud_Boss_HealthBar)
         + 0x0,   // idSharedPtrData data
         0x8,     // interlockedPointer_t < void > pointer
-        0x20     // bool isShown (no fweaking way)
+        0x48     // bool isShown (no fweaking way)
+    );
+
+    vars.Helper["bossHealth"] = vars.Helper.Make<float>(
+        vars.idGameSystemLocal
+         + 0x48, // idMapInstance mapInstance
+        0x1988,  // ??
+        0xC0,    // an idPlayer
+        0x2EA18  // idHUD playerHud
+        + 0x40   // idGrowableList < idHUDElement * > elements
+        + 0x0,   // idHUDElement list
+        0x8 * 2, // [2] ("hud")
+        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        // Okay breathe for a moment
+        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+        + 0x0,   // idSharedPtr < idUIWidget > list
+        0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+        + 0x0,   // idSharedPtr < idUIWidget > list
+        0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+
+        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Hud_Boss_HealthBar)
+        + 0x0,   // idSharedPtrData data
+        0x8,     // interlockedPointer_t < void > pointer
+        0x20     // float currentHealth
     );
 
     // idGameSystemLocal.??.player.playerHud.elements[2].children[7].children[0].children[4].model.text.key
@@ -547,7 +582,7 @@ update
     vars.Watch(old, current, "isInEndOfLevelScreen");
     vars.Watch(old, current, "eolChapterName");
     vars.Watch(old, current, "bossName");
-    vars.Watch(old, current, "bossHealth");
+    vars.Watch(old, current, "bossHealthBarShown");
     vars.Watch(old, current, "hasTimerStartedInThisLoadYet");
 
     if(settings["Loading"])
@@ -574,6 +609,11 @@ update
     if (settings["boss_name"])
     {
         vars.SetTextComponent("Boss Name ", current.bossName ?? "(none)");
+    }
+
+    if (settings["boss_health"])
+    {
+        vars.SetTextComponent("Boss Health ", current.bossHealth.ToString("0.00"));
     }
 
     if (settings["boss_bar_shown"])
@@ -662,7 +702,10 @@ split
         return vars.CheckSplit("eol__" + current.eolChapterName, "");
     }
 
-    return false;
+    if (old.bossHealthBarShown && !current.bossHealthBarShown) {
+        vars.Log("guy: " + vars.bossName);
+        return vars.CheckSplit("boss__" + vars.bossName);
+    }
 }
 
 exit
