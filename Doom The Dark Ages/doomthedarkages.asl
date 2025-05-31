@@ -487,7 +487,7 @@ update
 
 onStart
 {
-    vars.Log("timer started");
+    vars.Log("===== TIMER STARTED =====");
     current.hasTimerStartedInThisLoadYet = true;
 
     // refresh all splits when we start the run, none are yet completed
@@ -496,6 +496,11 @@ onStart
 
     // vars.LogAllQuests();
     // vars.DumpAllClasses();
+}
+
+onReset
+{
+    vars.Log("===== TIMER RESET =====");
 }
 
 isLoading
@@ -565,6 +570,20 @@ split
     if (old.eolChapterName != current.eolChapterName) {
         vars.Log("is it open?" + current.isInEndOfLevelScreen + " (" + old.isInEndOfLevelScreen + ")");
         return vars.CheckSplit("eol__" + current.eolChapterName, "");
+    }
+
+    return false;
+}
+
+reset
+{
+    if (settings["reset_auto_first_chapter"]
+     && old.gameState == 2 && current.gameState == 1
+     && current.activeMap == "game/sp/m1_intro/m1_intro"
+     && !current.isInEndOfLevelScreen
+    )
+    {
+        return true;
     }
 
     return false;
