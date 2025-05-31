@@ -708,8 +708,8 @@ split
     }
 
     if (old.bossHealthBarShown && !current.bossHealthBarShown) {
-        vars.Log("guy: " + vars.bossName);
-        return vars.CheckSplit("boss__" + vars.bossName);
+        vars.Log("guy: " + current.bossName);
+        return vars.CheckSplit("boss__" + current.bossName, "");
     }
 }
 
