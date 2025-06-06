@@ -404,14 +404,17 @@ init
     });
 
     var idTypeInfoToolsPtr = vars.Helper.ScanRel(0x6, "45 33 db 4c 8b 25 ?? ?? ?? ?? 4d 8b eb 49 8b c4");
-    vars.Log("Found idTypeInfoTools pointer at 0x" + idTypeInfoToolsPtr.ToString("X"));
+    vars.Log("=> Found idTypeInfoTools pointer at 0x" + idTypeInfoToolsPtr.ToString("X"));
+    
+    var idTypeInfoTools = vars.Helper.Read<IntPtr>(idTypeInfoToolsPtr);
+    vars.Log("  => Points to 0x" + idTypeInfoTools.ToString("X"));
+
     vars.DumpLiterallyEverything = (Action)(() =>
     {
         string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var basePath = Path.Combine(docPath, "DTDA typeinfo", DateTime.Now.ToString("yyyy-MM-dd"));
         vars.Log("Dumping everything to: " + basePath);
 
-        var idTypeInfoTools = vars.Helper.Read<IntPtr>(idTypeInfoToolsPtr);
 
         // These offsets (everything we use below here) are avaiable in the dumps, but of course, we don't know what
         //    they are yet, because to figure out what they are, we'd have to already know what they are.
@@ -427,11 +430,129 @@ init
             );
         }
     });
+
+    // class name -> (project index, class index)
+    var classLocationMap = new Dictionary<string, Tuple<int, int>>();
+    vars.BuildClassLocationMap = (Action)(() =>
+    {
+        vars.Log("=> Building class location map cache...");
+        for (var projectIdx = 0; projectIdx < 2; projectIdx++)
+        {
+            var project = idTypeInfoTools
+                + 0x0 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
+                + 0x38 * projectIdx;   // [projectIdx]
+
+            var typeInfo = vars.Helper.Read<IntPtr>(
+                project + 0x0 // typeInfoGenerated_t typeInfoGen
+            );
+            var projectName = vars.Helper.ReadString(
+                512, ReadStringType.UTF8,
+                typeInfo + 0x0, // char* projectName
+                0x0
+            );
+            vars.Log("  => Getting classes under " + projectName + "...");
+
+            var classes = vars.Helper.Read<IntPtr>(typeInfo + 0x18);  // classTypeInfo_t* classes
+            var numClasses = vars.Helper.Read<int>(typeInfo + 0x20); // int numClasses
+            for (var classIdx = 0; classIdx < numClasses; classIdx++)
+            {
+                var name = vars.ReadString(
+                    classes + 0x58 * classIdx // [classIdx] (0x58 is size of classTypeInfo_t)
+                    + 0x0                     // char* name
+                );
+
+                if (name == null || name == "")
+                {
+                    vars.Log("    => Finished processing " + classIdx + " classes.");
+                    break;
+                }
+
+                classLocationMap.Add(name, new Tuple<int, int>(projectIdx, classIdx));
+            }
+        }
+    });
+
+    // Cache for the classes we've already introspected
+    // class name -> (variable name -> offset)
+    var classOffsetCache = new Dictionary<string, Dictionary<string, int>>();
+    var GetClassVariableMap = (Func<string, Dictionary<string, int>>)(className =>
+    {
+        Dictionary<string, int> map;
+        if (classOffsetCache.TryGetValue(className, out map))
+        {
+            return map;
+        }
+
+        map = new Dictionary<string, int>();
+        vars.Log("=> Loading " + className + " variables and their offsets...");
+
+        Tuple<int, int> classLocation;
+        if (!classLocationMap.TryGetValue(className, out classLocation))
+        {
+            vars.Log("  => ERROR: Unable to find class " + className + " in location map");
+            return map;
+        }
+
+        var projectIdx = classLocation.Item1;
+        var classIdx = classLocation.Item2;
+        vars.Log("  => Has location " + projectIdx + ", " + classIdx);
+
+        var currentVariable = vars.Helper.Read<IntPtr>(
+            idTypeInfoTools
+            + 0x0                 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
+            + 0x38 * projectIdx   // [projectIdx]
+            + 0x0,                   // typeInfoGenerated_t typeInfoGen
+            0x18,               // classTypeInfo_t* classes
+            0x58 * classIdx      // [i] (0x58 is size of classTypeInfo_t)
+            + 0x28                  // classVariableInfo_t* variables
+        );
+        vars.Log("  => Variables array starts at 0x" + currentVariable.ToString("X"));
+
+        for (var variableIdx = 0; true; variableIdx++) {
+            var name = vars.ReadString(currentVariable + 0x10); // char* name
+            if (name == null || name == "")
+            {
+                vars.Log("  => Loaded " + variableIdx + " variables");
+                break;
+            }
+
+            var offset = vars.Helper.Read<int>(currentVariable + 0x18); // int offset
+            map.Add(name, offset);
+
+            currentVariable += 0x58; // size of classVariableInfo_t
+        }
+
+        classOffsetCache.Add(className, map);
+        return map;
+    });
+
+    // Does not include superclasses, use the superclass name for those offsets
+    var GetOffset = (Func<string, string, int>)((className, variableName) =>
+    {
+        var offsetMap = GetClassVariableMap(className);
+        if (offsetMap == null)
+        {
+            return -1;
+        }
+
+        int offset = -1;
+        if (offsetMap.TryGetValue(variableName, out offset))
+        {
+            vars.Log("  => Got offset for " + className + "." + variableName + " as 0x" + offset.ToString("X"));
+            return offset;
+        }
+
+        vars.Log("  => ERROR: Unable to find " + variableName + " in " + className);
+        return -1;
+    });
     #endregion
+
+    vars.BuildClassLocationMap();
+    var idHud = GetOffset("idPlayer", "playerHud");
 
     // the root of all evil
     vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
-    vars.Log("Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
+    vars.Log("=> Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
 
     // enum idGameSystemLocal::state_t {
     //   GAME_STATE_MAIN_MENU = 0,
@@ -491,14 +612,14 @@ init
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
         0x1988, // ??
         0xC0, // an idPlayer
-        0x2EA18 // idHUD playerHud
+        idHud // idHUD playerHud
         + 0x368 // idList < idMenu* > menus
     );
     vars.Helper["hudMenusSize"] = vars.Helper.Make<int>(
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
         0x1988, // ??
         0xC0, // an idPlayer
-        0x2EA18 // idHUD playerHud
+        idHud // idHUD playerHud
         + 0x370 // idList < idMenu* > menus
     );
 
@@ -508,7 +629,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        idHud  // idHUD playerHud
         + 0x368, // idList < idMenu* > menus
         0x8 * 2, // [2] ("playermenu")
         0x20     // idListMap < idAtomicString , idMenuElement * > screens
@@ -535,7 +656,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        idHud  // idHUD playerHud
         + 0x40   // idGrowableList < idHUDElement * > elements
         + 0x0,   // idHUDElement list
         0x8 * 2, // [2] ("hud")
@@ -570,7 +691,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        idHud  // idHUD playerHud
         + 0x40   // idGrowableList < idHUDElement * > elements
         + 0x0,   // idHUDElement list
         0x8 * 2, // [2] ("hud")
@@ -606,7 +727,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        idHud  // idHUD playerHud
         + 0x40   // idGrowableList < idHUDElement * > elements
         + 0x0,   // idHUDElement list
         0x8 * 2, // [2] ("hud")
@@ -805,7 +926,7 @@ onStart
     vars.CompletedQuests.Clear();
 
     // vars.LogAllQuests();
-    vars.DumpLiterallyEverything();
+    // vars.DumpLiterallyEverything();
 }
 
 onReset
