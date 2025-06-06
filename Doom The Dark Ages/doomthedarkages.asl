@@ -6,6 +6,15 @@ startup
     vars.Helper.GameName = "DOOM: The Dark Ages";
     vars.Helper.Settings.CreateFromXml("Components/DoomTheDarkAges.Settings.xml");
 
+    vars.ReadString = (Func<IntPtr, string>)(strPtr =>
+    {
+        return vars.Helper.ReadString(
+            512, ReadStringType.UTF8,
+            strPtr,
+            0x0
+        );
+    });
+
     #region debugging
     vars.Watch = (Action<IDictionary<string, object>, IDictionary<string, object>, string>)((oldLookup, currentLookup, key) =>
     {
@@ -168,92 +177,323 @@ init
 
     string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-    var DumpClass = (Func<IntPtr, int, int>)((classPtr, classIdx) => {
-        var className = vars.Helper.ReadString(512, ReadStringType.UTF8, classPtr + CLASS_OFFSET_NAME, 0x0);
-        var classSuperName = vars.Helper.ReadString(512, ReadStringType.UTF8, classPtr + CLASS_OFFSET_SUPER, 0x0);
-        var classSize = vars.Helper.Read<int>(classPtr + CLASS_OFFSET_SIZE);
+    // vars.DumpAllClasses = (Action<IntPtr, string>)((typeArray, namespaceName) =>
+    // {
+    //     Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo", namespaceName));
 
-        var classDef = "class " + className;
-        if (classSuperName != null && classSuperName != "") {
-            classDef += " : " + classSuperName;
+    //     var typeArraySize = vars.Helper.Read<int>(typeArray + 0x8);
+    //     var currentType = vars.Helper.Read<IntPtr>(typeArray);
+    //     for (var i = 0; i < typeArraySize; i++) {
+    //         try {
+    //             DumpClass(currentType, i, namespaceName);
+    //         } catch (Exception e) {
+    //             vars.Log(e);
+    //         }
+
+    //         currentType += CLASS_SIZE;
+    //     }
+    // });
+
+    // TOTAL guess on all this, "namespace" fits my mental model
+    var NAMESPACES_OFFSET = 0x0;
+
+    var NAMESPACE_SIZE = 0x38;
+    var NOT_SURE_WHAT_THIS_EXTRA_LEVEL_IS = 0x0;
+    var NAMESPACE_NAME_OFFSET = 0x0; // "Engine" and "Game"
+    var NAMESPACE_TYPES_OFFSET = 0x18; // not sure what's at 0x8 and 0x28 etc but they all seem important
+
+    // appears to be a fixed size array
+    // var idTypeInfoTools = vars.Helper.ScanRel(0x6, "45 33 db 4c 8b 25 ?? ?? ?? ?? 4d 8b eb 49 8b c4");
+    // vars.Log("Found typeInfoBigGuyReallyImportant at 0x" + typeInfoBigGuyReallyImportant.ToString("X"));
+    // vars.DumpAllTypeInfo = (Action)(() =>
+    // {
+    //     var currentNamespace = vars.Helper.Read<IntPtr>(typeInfoBigGuyReallyImportant + NAMESPACES_OFFSET);
+    //     while (true) {
+    //         var namespaceReally = vars.Helper.Read<IntPtr>(currentNamespace + NOT_SURE_WHAT_THIS_EXTRA_LEVEL_IS);
+    //         if (namespaceReally == IntPtr.Zero)
+    //         {
+    //             break;
+    //         }
+
+    //         var namespaceName = vars.Helper.ReadString(
+    //             512, ReadStringType.UTF8,
+    //             namespaceReally + NAMESPACE_NAME_OFFSET, 0x0
+    //         );
+    //         vars.Log(namespaceName);
+
+    //         // var namespaceTypes = vars.Helper.Read<IntPtr>();
+    //         vars.DumpAllClasses(namespaceReally + NAMESPACE_TYPES_OFFSET, namespaceName);
+
+    //         currentNamespace += NAMESPACE_SIZE;
+    //     }
+    // });
+
+    // start of new stuff
+    var DumpLines = (Action<string, string, List<string>>)((parentFolder, name, lines) =>
+    {
+        Directory.CreateDirectory(parentFolder);
+        File.WriteAllLines(Path.Combine(parentFolder, EncodeToFileName(name) + ".cpp"), lines);
+    });
+
+    var AlignItems = (Func<List<Tuple<string, string>>, List<Tuple<string, string>>>)(pairs =>
+    {
+        var longest = 0;
+        foreach (var pair in pairs)
+        {
+            if (pair.Item1.Length > longest)
+            {
+                longest = pair.Item1.Length;
+            }
+        }
+
+        var items = new List<Tuple<string, string>>();
+        foreach (var pair in pairs)
+        {
+            items.Add(new Tuple<string, string>(pair.Item1.PadRight(longest), pair.Item2));
+        }
+        return items;
+    });
+
+    var DumpEnum = (Action<string, IntPtr>)((parentFolder, enumTypeInfo) =>
+    {
+        var name = vars.Helper.ReadString(
+            512, ReadStringType.UTF8,
+            enumTypeInfo + 0x0, // char* name
+            0x0
+        );
+        // Yes, I dumped this enum with the code that you're reading
+        string[] enumType = new string[]{ "ENUM_S8", "ENUM_U8", "ENUM_S16", "ENUM_U16", "ENUM_S32", "ENUM_U32", "ENUM_S64", "eh?" };
+        var type = vars.Helper.Read<int>(
+            enumTypeInfo + 0x10 // enumType type
+        );
+        // vars.Log("  => Dumping " + name + " (0x" + enumTypeInfo.ToString("X") + ")");
+
+        List<string> lines = new List<string> {
+            "/** enum type: enumType." + enumType[type] + " */",
+            "enum " + name + " {",
+        };
+
+        var values = vars.Helper.Read<IntPtr>(
+            enumTypeInfo + 0x20 // enumValueInfo_t* values
+        );
+        var valuesLength = vars.Helper.Read<int>(
+            enumTypeInfo + 0x18 // int valueIndexLength
+        ) - 1;
+        var ENUM_VALUE_INFO_T_SIZE = 0x10;
+
+        List<Tuple<string, string>> valueStrings = new List<Tuple<string, string>>();
+        for (var i = 0; i < valuesLength; i++)
+        {
+            var valueName = vars.Helper.ReadString(
+                512, ReadStringType.UTF8,
+                values + ENUM_VALUE_INFO_T_SIZE * i  // [i]
+                + 0x0,                               // char* name
+                0x0
+            );
+
+            // Yes.
+            var valueValue = vars.Helper.Read<long>(
+                values + ENUM_VALUE_INFO_T_SIZE * i  // [i]
+                + 0x8                                // long long value
+            );
+
+            var valueStringified = valueValue.ToString();
+            valueStrings.Add(new Tuple<string, string>(valueName, valueStringified));
+        }
+
+        valueStrings = AlignItems(valueStrings);
+        foreach (var v in valueStrings)
+        {
+            lines.Add("  " + v.Item1 + " = " + v.Item2 + ",");
+        }
+
+        lines.Add("}");
+        DumpLines(parentFolder, name, lines);
+    });
+
+    var DumpVariable = (Func<IntPtr, Tuple<string, string>>)(classVariableInfo_t =>
+    {
+        var name = vars.ReadString(classVariableInfo_t + 0x10); // char* name
+        if (name == "" || name == null)
+        {
+            return null;
+        }
+
+        var type = vars.ReadString(classVariableInfo_t + 0x0); // char* type
+        var offset = vars.Helper.Read<int>(classVariableInfo_t + 0x18); // int offset
+        var size = vars.Helper.Read<int>(classVariableInfo_t + 0x1C); // int size
+        var comment = vars.ReadString(classVariableInfo_t + 0x30); // char* comment
+
+        var fieldInfo = ("    " + type + " " + name + ";");
+        var offsetStr = "0x" + offset.ToString("X").PadLeft(5, '0');
+        return new Tuple<string, string>(fieldInfo, "// " + offsetStr + " (size: 0x" + size.ToString("X") + ") - " + comment);
+    });
+
+    var DumpClass = (Func<string, IntPtr, int>)((parentFolder, classTypeInfo_t) => {
+        var name = vars.ReadString(classTypeInfo_t + 0x0); // char* name
+        // vars.Log("dumping " + name);
+        var superType = vars.ReadString(classTypeInfo_t + 0x8); // char* superType
+        var size = vars.Helper.Read<int>(classTypeInfo_t + 0x18); // int size
+
+        var def = "class " + name;
+        if (superType != null && superType != "") {
+            def += " : " + superType;
         }
 
 
         List<string> lines = new List<string> {
-            "/** Type Info for '" + className + "'",
+            "/** Type Info for '" + name + "'",
             " * ",
         };
 
-        var properties = vars.Helper.ReadString(512, ReadStringType.UTF8, classPtr + CLASS_OFFSET_PROPERTIES, 0x0, 0x0);
-        if (properties != null) {
+        var metaData = vars.Helper.ReadString(
+            512, ReadStringType.UTF8,
+            classTypeInfo_t + 0x50, // classMetaDataInfo_t* metaData
+            0x0,                    // char* metaData
+            0x0
+        );
+        if (metaData != null) {
             lines.AddRange(new List<string> {
-                " * 'properties'?: " + properties,
+                " * metaData: " + metaData,
                 " *",
             });
         }
 
         lines.AddRange(new List<string> {
             " * At the time of dump (these will not mean anything for you):",
-            " * - address: 0x" + classPtr.ToString("X"),
-            " * - index: " + classIdx,
+            " * - address: 0x" + classTypeInfo_t.ToString("X"),
             " */",
             "",
-            "// size: 0x" + classSize.ToString("X"),
-            classDef + " {",
+            "// size: 0x" + size.ToString("X"),
+            def + " {",
         });
 
 
-        var currentFieldPtr = vars.Helper.Read<IntPtr>(classPtr + CLASS_OFFSET_FIELDS);
+        var currentField = vars.Helper.Read<IntPtr>(classTypeInfo_t + 0x28); // classVariableInfo_t* variables
 
+        var pairs = new List<Tuple<string, string>>();
         while (true) {
-            var name = vars.Helper.ReadString(512, ReadStringType.UTF8, currentFieldPtr + FIELD_OFFSET_NAME, 0x0);
-            if (name == "" || name == null) {
+            var vari = DumpVariable(currentField);
+            if (vari == null)
+            {
                 break;
             }
-            var type = vars.Helper.ReadString(512, ReadStringType.UTF8, currentFieldPtr + FIELD_OFFSET_TYPE, 0x0);
-            var offset = vars.Helper.Read<int>(currentFieldPtr + FIELD_OFFSET_OFFSET);
-            var size = vars.Helper.Read<int>(currentFieldPtr + FIELD_OFFSET_SIZE);
-            var desc = vars.Helper.ReadString(512, ReadStringType.UTF8, currentFieldPtr + FIELD_OFFSET_DESCRIPTION, 0x0);
 
-            var fieldInfo = ("    " + type + " " + name + ";").PadRight(120);
-            var offsetStr = "0x" + offset.ToString("X").PadLeft(5, '0');
-            lines.Add(fieldInfo + "// " + offsetStr + " (size: 0x" + size.ToString("X") + ") - " + desc);
-
-            currentFieldPtr += FIELD_SIZE;
+            pairs.Add(vari);
+            currentField += FIELD_SIZE;
         }
 
+        pairs = AlignItems(pairs);
+        foreach (var pair in pairs)
+        {
+            lines.Add(pair.Item1 + " " + pair.Item2);
+        }
         lines.Add("}");
 
-        File.WriteAllLines(Path.Combine(docPath, "DTDA typeinfo", EncodeToFileName(className) + ".cpp"), lines);
+        DumpLines(parentFolder, name, lines);
 
         return 0;
     });
 
-    vars.DumpAllClasses = (Action)(() =>
+    var DumpTypeDef = (Action<string, IntPtr>)((parentFolder, typedefInfo_t) =>
     {
-        Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo"));
+        var name = vars.ReadString(typedefInfo_t + 0x0); // char* name
+        var type = vars.ReadString(typedefInfo_t + 0x8); // char* type
+        var ops = vars.ReadString(typedefInfo_t + 0x10); // char* ops
+        var size = vars.Helper.Read<int>(typedefInfo_t + 0x18); // int size
 
-        // quick note to find this: search for a class name in static unwritable,
-        //  find usages of that address, should be one in an array, scroll to the beginning of the array
-        //  search for that
-        //  something like that
-        // TODO: i should probably make a sig for this
-        var classArray = (IntPtr) 0x147F49118;
-        var classArraySize = (IntPtr) 0x147F49120;
+        List<string> lines = new List<string> {
+            "// ops? " + ops,
+            "",
+            "typedef " + type + " " + name + "; // size: 0x" + size.ToString("X")
+        };
 
-        var classArrayS = vars.Helper.Read<int>(classArraySize);
-        var currentClass = vars.Helper.Read<IntPtr>(classArray);
-        for (var i = 0; i < classArrayS; i++) {
+        DumpLines(parentFolder, name, lines);
+    });
+
+    var DumpProject = (Action<string, IntPtr>)((parentFolder, project) =>
+    {
+        var typeInfo = vars.Helper.Read<IntPtr>(
+            project + 0x0 // typeInfoGenerated_t typeInfoGen
+            + 0x0
+        );
+        var projectName = vars.Helper.ReadString(
+            512, ReadStringType.UTF8,
+            typeInfo + 0x0, // char* projectName
+            0x0
+        );
+        var path = Path.Combine(parentFolder, projectName);
+        vars.Log("=> Dumping project " + projectName + " to " + path);
+
+        // Enums
+        var enumsPath = Path.Combine(path, "enums");
+        vars.Log("  => Dumping enums to " + enumsPath);
+        var enums = vars.Helper.Read<IntPtr>(typeInfo + 0x8);  // enumTypeInfo_t* enums
+        var numEnums = vars.Helper.Read<int>(typeInfo + 0x10); // int numEnums
+        for (var i = 0; i < numEnums; i++)
+        {
             try {
-                vars.ReadClassThing(currentClass, i);
+                DumpEnum(enumsPath, enums + 0x40 * i); // [i] (0x40 is size of enumTypeInfo_t)
             } catch (Exception e) {
+                vars.Log("ERROR PROCESS ENUM (" + i + "):");
                 vars.Log(e);
             }
+        }
 
-            currentClass += CLASS_SIZE;
+        // Classes
+        var classesPath = Path.Combine(path, "classes");
+        vars.Log("  => Dumping classes to " + classesPath);
+        var classes = vars.Helper.Read<IntPtr>(typeInfo + 0x18);  // classTypeInfo_t* classes
+        var numClasses = vars.Helper.Read<int>(typeInfo + 0x20); // int numClasses
+        for (var i = 0; i < numClasses; i++)
+        {
+            try {
+                DumpClass(classesPath, classes + 0x58 * i); // [i] (0x58 is size of classTypeInfo_t)
+            } catch (Exception e) {
+                vars.Log("ERROR PROCESS CLASS (" + i + "):");
+                vars.Log(e);
+            }
+        }
+
+        // Typedefs
+        var typedefsPath = Path.Combine(path, "typedefs");
+        vars.Log("  => Dumping typedefs to " + typedefsPath);
+        var typedefs = vars.Helper.Read<IntPtr>(typeInfo + 0x28);  // typedefInfo_t* typedefs
+        var numTypedefs = vars.Helper.Read<int>(typeInfo + 0x30); // int numTypedefs
+        for (var i = 0; i < numTypedefs; i++)
+        {
+            try {
+                DumpTypeDef(typedefsPath, typedefs + 0x20 * i); // [i] (0x20 is size of typedefInfo_t)
+            } catch (Exception e) {
+                vars.Log("ERROR PROCESS TYPEDEF (" + i + "):");
+                vars.Log(e);
+            }
         }
     });
 
+    var idTypeInfoToolsPtr = vars.Helper.ScanRel(0x6, "45 33 db 4c 8b 25 ?? ?? ?? ?? 4d 8b eb 49 8b c4");
+    vars.Log("Found idTypeInfoTools pointer at 0x" + idTypeInfoToolsPtr.ToString("X"));
+    vars.DumpLiterallyEverything = (Action)(() =>
+    {
+        var basePath = Path.Combine(docPath, "DTDA typeinfo", DateTime.Now.ToString("yyyy-MM-dd"));
+        vars.Log("Dumping everything to: " + basePath);
+
+        var idTypeInfoTools = vars.Helper.Read<IntPtr>(idTypeInfoToolsPtr);
+
+        // These offsets are avaiable in the dumps, but of course, we don't know what they are yet, because
+        //   to figure out what they are, we'd have to already know what they are.
+        // Let's hope these are stable.
+
+        // hardcoded to 2
+        for (var projectIdx = 0; projectIdx < 2; projectIdx++)
+        {
+            DumpProject(
+                basePath,
+                idTypeInfoTools + 0x0 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
+                + 0x38 * projectIdx   // [projectIdx]
+            );
+        }
+    });
     #endregion
 
     // the root of all evil
@@ -632,7 +872,7 @@ onStart
     vars.CompletedQuests.Clear();
 
     // vars.LogAllQuests();
-    // vars.DumpAllClasses();
+    vars.DumpLiterallyEverything();
 }
 
 onReset
