@@ -161,74 +161,6 @@ init
         return name;
     });
 
-    var CLASS_SIZE = 0x58;
-    var CLASS_OFFSET_NAME = 0x0;
-    var CLASS_OFFSET_SUPER = 0x8;
-    var CLASS_OFFSET_SIZE = 0x18;
-    var CLASS_OFFSET_FIELDS = 0x28;
-    var CLASS_OFFSET_PROPERTIES = 0x50;
-
-    var FIELD_SIZE = 0x58;
-    var FIELD_OFFSET_TYPE = 0x0;
-    var FIELD_OFFSET_NAME = 0x10;
-    var FIELD_OFFSET_OFFSET = 0x18;
-    var FIELD_OFFSET_SIZE = 0x1C;
-    var FIELD_OFFSET_DESCRIPTION = 0x30;
-
-    string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-    // vars.DumpAllClasses = (Action<IntPtr, string>)((typeArray, namespaceName) =>
-    // {
-    //     Directory.CreateDirectory(Path.Combine(docPath, "DTDA typeinfo", namespaceName));
-
-    //     var typeArraySize = vars.Helper.Read<int>(typeArray + 0x8);
-    //     var currentType = vars.Helper.Read<IntPtr>(typeArray);
-    //     for (var i = 0; i < typeArraySize; i++) {
-    //         try {
-    //             DumpClass(currentType, i, namespaceName);
-    //         } catch (Exception e) {
-    //             vars.Log(e);
-    //         }
-
-    //         currentType += CLASS_SIZE;
-    //     }
-    // });
-
-    // TOTAL guess on all this, "namespace" fits my mental model
-    var NAMESPACES_OFFSET = 0x0;
-
-    var NAMESPACE_SIZE = 0x38;
-    var NOT_SURE_WHAT_THIS_EXTRA_LEVEL_IS = 0x0;
-    var NAMESPACE_NAME_OFFSET = 0x0; // "Engine" and "Game"
-    var NAMESPACE_TYPES_OFFSET = 0x18; // not sure what's at 0x8 and 0x28 etc but they all seem important
-
-    // appears to be a fixed size array
-    // var idTypeInfoTools = vars.Helper.ScanRel(0x6, "45 33 db 4c 8b 25 ?? ?? ?? ?? 4d 8b eb 49 8b c4");
-    // vars.Log("Found typeInfoBigGuyReallyImportant at 0x" + typeInfoBigGuyReallyImportant.ToString("X"));
-    // vars.DumpAllTypeInfo = (Action)(() =>
-    // {
-    //     var currentNamespace = vars.Helper.Read<IntPtr>(typeInfoBigGuyReallyImportant + NAMESPACES_OFFSET);
-    //     while (true) {
-    //         var namespaceReally = vars.Helper.Read<IntPtr>(currentNamespace + NOT_SURE_WHAT_THIS_EXTRA_LEVEL_IS);
-    //         if (namespaceReally == IntPtr.Zero)
-    //         {
-    //             break;
-    //         }
-
-    //         var namespaceName = vars.Helper.ReadString(
-    //             512, ReadStringType.UTF8,
-    //             namespaceReally + NAMESPACE_NAME_OFFSET, 0x0
-    //         );
-    //         vars.Log(namespaceName);
-
-    //         // var namespaceTypes = vars.Helper.Read<IntPtr>();
-    //         vars.DumpAllClasses(namespaceReally + NAMESPACE_TYPES_OFFSET, namespaceName);
-
-    //         currentNamespace += NAMESPACE_SIZE;
-    //     }
-    // });
-
-    // start of new stuff
     var DumpLines = (Action<string, string, List<string>>)((parentFolder, name, lines) =>
     {
         Directory.CreateDirectory(parentFolder);
@@ -369,18 +301,18 @@ init
         });
 
 
-        var currentField = vars.Helper.Read<IntPtr>(classTypeInfo_t + 0x28); // classVariableInfo_t* variables
+        var currentVariable = vars.Helper.Read<IntPtr>(classTypeInfo_t + 0x28); // classVariableInfo_t* variables
 
         var pairs = new List<Tuple<string, string>>();
         while (true) {
-            var vari = DumpVariable(currentField);
+            var vari = DumpVariable(currentVariable);
             if (vari == null)
             {
                 break;
             }
 
             pairs.Add(vari);
-            currentField += FIELD_SIZE;
+            currentVariable += 0x58; // size of classVariableInfo_t
         }
 
         pairs = AlignItems(pairs);
@@ -475,14 +407,15 @@ init
     vars.Log("Found idTypeInfoTools pointer at 0x" + idTypeInfoToolsPtr.ToString("X"));
     vars.DumpLiterallyEverything = (Action)(() =>
     {
+        string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var basePath = Path.Combine(docPath, "DTDA typeinfo", DateTime.Now.ToString("yyyy-MM-dd"));
         vars.Log("Dumping everything to: " + basePath);
 
         var idTypeInfoTools = vars.Helper.Read<IntPtr>(idTypeInfoToolsPtr);
 
-        // These offsets are avaiable in the dumps, but of course, we don't know what they are yet, because
-        //   to figure out what they are, we'd have to already know what they are.
-        // Let's hope these are stable.
+        // These offsets (everything we use below here) are avaiable in the dumps, but of course, we don't know what
+        //    they are yet, because to figure out what they are, we'd have to already know what they are.
+        // Let's hope these are stable, so that this shit always works.
 
         // hardcoded to 2
         for (var projectIdx = 0; projectIdx < 2; projectIdx++)
