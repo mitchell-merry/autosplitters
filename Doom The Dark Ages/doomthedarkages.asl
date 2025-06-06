@@ -172,7 +172,7 @@ init
         var longest = 0;
         foreach (var pair in pairs)
         {
-            if (pair.Item1.Length > longest)
+            if (pair.Item1.Length > longest && pair.Item1.Length < 120)
             {
                 longest = pair.Item1.Length;
             }
