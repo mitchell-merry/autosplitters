@@ -318,14 +318,14 @@ init
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
         0x1988, // ??
         0xC0, // an idPlayer
-        0x2EA18 // idHUD playerHud
+        0x2EA60 // idHUD playerHud
         + 0x368 // idList < idMenu* > menus
     );
     vars.Helper["hudMenusSize"] = vars.Helper.Make<int>(
         vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
         0x1988, // ??
         0xC0, // an idPlayer
-        0x2EA18 // idHUD playerHud
+        0x2EA60 // idHUD playerHud
         + 0x370 // idList < idMenu* > menus
     );
 
@@ -335,7 +335,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        0x2EA60  // idHUD playerHud
         + 0x368, // idList < idMenu* > menus
         0x8 * 2, // [2] ("playermenu")
         0x20     // idListMap < idAtomicString , idMenuElement * > screens
@@ -362,7 +362,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        0x2EA60  // idHUD playerHud
         + 0x40   // idGrowableList < idHUDElement * > elements
         + 0x0,   // idHUDElement list
         0x8 * 2, // [2] ("hud")
@@ -397,7 +397,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        0x2EA60  // idHUD playerHud
         + 0x40   // idGrowableList < idHUDElement * > elements
         + 0x0,   // idHUDElement list
         0x8 * 2, // [2] ("hud")
@@ -433,7 +433,7 @@ init
          + 0x48, // idMapInstance mapInstance
         0x1988,  // ??
         0xC0,    // an idPlayer
-        0x2EA18  // idHUD playerHud
+        0x2EA60  // idHUD playerHud
         + 0x40   // idGrowableList < idHUDElement * > elements
         + 0x0,   // idHUDElement list
         0x8 * 2, // [2] ("hud")
