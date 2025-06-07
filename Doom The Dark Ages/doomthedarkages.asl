@@ -147,726 +147,774 @@ init
     });
     #endregion
 
-    #region class inference and dumping
-    char[] separators = new char[]{'"','\\','/','?',':','<', '>', '*', '|'};
-    var EncodeToFileName = (Func<string, string>)(className => {
-        string[] temp = className.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-        var name = String.Join("%", temp);
-
-        if (name.Length > 200) {
-            vars.Log("warning: truncated " + className);
-            return name.Substring(0, 200);
-        }
-
-        return name;
+    // allow us to cancel operations if the game closes or livesplit shutdowns
+    vars.cts = new CancellationTokenSource();
+    var SleepAndYield = (Func<int, System.Threading.Tasks.Task<object>>)(async ms =>
+    {
+        await System.Threading.Tasks.Task.Delay(
+            ms, vars.cts.Token
+        ).ConfigureAwait(true);
+        vars.cts.Token.ThrowIfCancellationRequested();
+        return;
     });
 
-    var DumpLines = (Action<string, string, List<string>>)((parentFolder, name, lines) =>
-    {
-        Directory.CreateDirectory(parentFolder);
-        File.WriteAllLines(Path.Combine(parentFolder, EncodeToFileName(name) + ".cpp"), lines);
-    });
+    System.Threading.Tasks.Task.Run((Func<System.Threading.Tasks.Task<object>>)(async () => {
+        #region class inference and dumping
+        char[] separators = new char[]{'"','\\','/','?',':','<', '>', '*', '|'};
+        var EncodeToFileName = (Func<string, string>)(className => {
+            string[] temp = className.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var name = String.Join("%", temp);
 
-    var AlignItems = (Func<List<Tuple<string, string>>, List<Tuple<string, string>>>)(pairs =>
-    {
-        var longest = 0;
-        foreach (var pair in pairs)
-        {
-            if (pair.Item1.Length > longest && pair.Item1.Length < 120)
-            {
-                longest = pair.Item1.Length;
+            if (name.Length > 200) {
+                vars.Log("warning: truncated " + className);
+                return name.Substring(0, 200);
             }
-        }
 
-        var items = new List<Tuple<string, string>>();
-        foreach (var pair in pairs)
-        {
-            items.Add(new Tuple<string, string>(pair.Item1.PadRight(longest), pair.Item2));
-        }
-        return items;
-    });
-
-    var DumpEnum = (Action<string, IntPtr>)((parentFolder, enumTypeInfo) =>
-    {
-        var name = vars.Helper.ReadString(
-            512, ReadStringType.UTF8,
-            enumTypeInfo + 0x0, // char* name
-            0x0
-        );
-        // Yes, I dumped this enum with the code that you're reading
-        string[] enumType = new string[]{ "ENUM_S8", "ENUM_U8", "ENUM_S16", "ENUM_U16", "ENUM_S32", "ENUM_U32", "ENUM_S64", "eh?" };
-        var type = vars.Helper.Read<int>(
-            enumTypeInfo + 0x10 // enumType type
-        );
-        // vars.Log("  => Dumping " + name + " (0x" + enumTypeInfo.ToString("X") + ")");
-
-        List<string> lines = new List<string> {
-            "/** enum type: enumType." + enumType[type] + " */",
-            "enum " + name + " {",
-        };
-
-        var values = vars.Helper.Read<IntPtr>(
-            enumTypeInfo + 0x20 // enumValueInfo_t* values
-        );
-        var valuesLength = vars.Helper.Read<int>(
-            enumTypeInfo + 0x18 // int valueIndexLength
-        ) - 1;
-        var ENUM_VALUE_INFO_T_SIZE = 0x10;
-
-        List<Tuple<string, string>> valueStrings = new List<Tuple<string, string>>();
-        for (var i = 0; i < valuesLength; i++)
-        {
-            var valueName = vars.Helper.ReadString(
-                512, ReadStringType.UTF8,
-                values + ENUM_VALUE_INFO_T_SIZE * i  // [i]
-                + 0x0,                               // char* name
-                0x0
-            );
-
-            // Yes.
-            var valueValue = vars.Helper.Read<long>(
-                values + ENUM_VALUE_INFO_T_SIZE * i  // [i]
-                + 0x8                                // long long value
-            );
-
-            var valueStringified = valueValue.ToString();
-            valueStrings.Add(new Tuple<string, string>(valueName, valueStringified));
-        }
-
-        valueStrings = AlignItems(valueStrings);
-        foreach (var v in valueStrings)
-        {
-            lines.Add("  " + v.Item1 + " = " + v.Item2 + ",");
-        }
-
-        lines.Add("}");
-        DumpLines(parentFolder, name, lines);
-    });
-
-    var DumpVariable = (Func<IntPtr, Tuple<string, string>>)(classVariableInfo_t =>
-    {
-        var name = vars.ReadString(classVariableInfo_t + 0x10); // char* name
-        if (name == "" || name == null)
-        {
-            return null;
-        }
-
-        var type = vars.ReadString(classVariableInfo_t + 0x0); // char* type
-        var offset = vars.Helper.Read<int>(classVariableInfo_t + 0x18); // int offset
-        var size = vars.Helper.Read<int>(classVariableInfo_t + 0x1C); // int size
-        var comment = vars.ReadString(classVariableInfo_t + 0x30); // char* comment
-
-        var fieldInfo = ("    " + type + " " + name + ";");
-        var offsetStr = "0x" + offset.ToString("X").PadLeft(5, '0');
-        return new Tuple<string, string>(fieldInfo, "// " + offsetStr + " (size: 0x" + size.ToString("X") + ") - " + comment);
-    });
-
-    var DumpClass = (Func<string, IntPtr, int>)((parentFolder, classTypeInfo_t) => {
-        var name = vars.ReadString(classTypeInfo_t + 0x0); // char* name
-        // vars.Log("dumping " + name);
-        var superType = vars.ReadString(classTypeInfo_t + 0x8); // char* superType
-        var size = vars.Helper.Read<int>(classTypeInfo_t + 0x18); // int size
-
-        var def = "class " + name;
-        if (superType != null && superType != "") {
-            def += " : " + superType;
-        }
-
-
-        List<string> lines = new List<string> {
-            "/** Type Info for '" + name + "'",
-            " * ",
-        };
-
-        var metaData = vars.Helper.ReadString(
-            512, ReadStringType.UTF8,
-            classTypeInfo_t + 0x50, // classMetaDataInfo_t* metaData
-            0x0,                    // char* metaData
-            0x0
-        );
-        if (metaData != null) {
-            lines.AddRange(new List<string> {
-                " * metaData: " + metaData,
-                " *",
-            });
-        }
-
-        lines.AddRange(new List<string> {
-            " * At the time of dump (these will not mean anything for you):",
-            " * - address: 0x" + classTypeInfo_t.ToString("X"),
-            " */",
-            "",
-            "// size: 0x" + size.ToString("X"),
-            def + " {",
+            return name;
         });
 
+        var DumpLines = (Action<string, string, List<string>>)((parentFolder, name, lines) =>
+        {
+            Directory.CreateDirectory(parentFolder);
+            File.WriteAllLines(Path.Combine(parentFolder, EncodeToFileName(name) + ".cpp"), lines);
+        });
 
-        var currentVariable = vars.Helper.Read<IntPtr>(classTypeInfo_t + 0x28); // classVariableInfo_t* variables
-
-        var pairs = new List<Tuple<string, string>>();
-        while (true) {
-            var vari = DumpVariable(currentVariable);
-            if (vari == null)
+        var AlignItems = (Func<List<Tuple<string, string>>, List<Tuple<string, string>>>)(pairs =>
+        {
+            var longest = 0;
+            foreach (var pair in pairs)
             {
-                break;
+                if (pair.Item1.Length > longest && pair.Item1.Length < 120)
+                {
+                    longest = pair.Item1.Length;
+                }
             }
 
-            pairs.Add(vari);
-            currentVariable += 0x58; // size of classVariableInfo_t
-        }
-
-        pairs = AlignItems(pairs);
-        foreach (var pair in pairs)
-        {
-            lines.Add(pair.Item1 + " " + pair.Item2);
-        }
-        lines.Add("}");
-
-        DumpLines(parentFolder, name, lines);
-
-        return 0;
-    });
-
-    var DumpTypeDef = (Action<string, IntPtr>)((parentFolder, typedefInfo_t) =>
-    {
-        var name = vars.ReadString(typedefInfo_t + 0x0); // char* name
-        var type = vars.ReadString(typedefInfo_t + 0x8); // char* type
-        var ops = vars.ReadString(typedefInfo_t + 0x10); // char* ops
-        var size = vars.Helper.Read<int>(typedefInfo_t + 0x18); // int size
-
-        List<string> lines = new List<string> {
-            "// ops? " + ops,
-            "",
-            "typedef " + type + " " + name + "; // size: 0x" + size.ToString("X")
-        };
-
-        DumpLines(parentFolder, name, lines);
-    });
-
-    var DumpProject = (Action<string, IntPtr>)((parentFolder, project) =>
-    {
-        var typeInfo = vars.Helper.Read<IntPtr>(
-            project + 0x0 // typeInfoGenerated_t typeInfoGen
-            + 0x0
-        );
-        var projectName = vars.Helper.ReadString(
-            512, ReadStringType.UTF8,
-            typeInfo + 0x0, // char* projectName
-            0x0
-        );
-        var path = Path.Combine(parentFolder, projectName);
-        vars.Log("=> Dumping project " + projectName + " to " + path);
-
-        // Enums
-        var enumsPath = Path.Combine(path, "enums");
-        vars.Log("  => Dumping enums to " + enumsPath);
-        var enums = vars.Helper.Read<IntPtr>(typeInfo + 0x8);  // enumTypeInfo_t* enums
-        var numEnums = vars.Helper.Read<int>(typeInfo + 0x10); // int numEnums
-        for (var i = 0; i < numEnums; i++)
-        {
-            try {
-                DumpEnum(enumsPath, enums + 0x40 * i); // [i] (0x40 is size of enumTypeInfo_t)
-            } catch (Exception e) {
-                vars.Log("ERROR PROCESS ENUM (" + i + "):");
-                vars.Log(e);
+            var items = new List<Tuple<string, string>>();
+            foreach (var pair in pairs)
+            {
+                items.Add(new Tuple<string, string>(pair.Item1.PadRight(longest), pair.Item2));
             }
-        }
+            return items;
+        });
 
-        // Classes
-        var classesPath = Path.Combine(path, "classes");
-        vars.Log("  => Dumping classes to " + classesPath);
-        var classes = vars.Helper.Read<IntPtr>(typeInfo + 0x18);  // classTypeInfo_t* classes
-        var numClasses = vars.Helper.Read<int>(typeInfo + 0x20); // int numClasses
-        for (var i = 0; i < numClasses; i++)
+        var DumpEnum = (Action<string, IntPtr>)((parentFolder, enumTypeInfo) =>
         {
-            try {
-                DumpClass(classesPath, classes + 0x58 * i); // [i] (0x58 is size of classTypeInfo_t)
-            } catch (Exception e) {
-                vars.Log("ERROR PROCESS CLASS (" + i + "):");
-                vars.Log(e);
-            }
-        }
-
-        // Typedefs
-        var typedefsPath = Path.Combine(path, "typedefs");
-        vars.Log("  => Dumping typedefs to " + typedefsPath);
-        var typedefs = vars.Helper.Read<IntPtr>(typeInfo + 0x28);  // typedefInfo_t* typedefs
-        var numTypedefs = vars.Helper.Read<int>(typeInfo + 0x30); // int numTypedefs
-        for (var i = 0; i < numTypedefs; i++)
-        {
-            try {
-                DumpTypeDef(typedefsPath, typedefs + 0x20 * i); // [i] (0x20 is size of typedefInfo_t)
-            } catch (Exception e) {
-                vars.Log("ERROR PROCESS TYPEDEF (" + i + "):");
-                vars.Log(e);
-            }
-        }
-    });
-
-    var idTypeInfoToolsPtr = vars.Helper.ScanRel(0x6, "45 33 db 4c 8b 25 ?? ?? ?? ?? 4d 8b eb 49 8b c4");
-    vars.Log("=> Found idTypeInfoTools pointer at 0x" + idTypeInfoToolsPtr.ToString("X"));
-
-    var idTypeInfoTools = vars.Helper.Read<IntPtr>(idTypeInfoToolsPtr);
-    vars.Log("  => Points to 0x" + idTypeInfoTools.ToString("X"));
-
-    vars.DumpLiterallyEverything = (Action)(() =>
-    {
-        string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var basePath = Path.Combine(docPath, "DTDA typeinfo", DateTime.Now.ToString("yyyy-MM-dd"));
-        vars.Log("Dumping everything to: " + basePath);
-
-
-        // These offsets (everything we use below here) are avaiable in the dumps, but of course, we don't know what
-        //    they are yet, because to figure out what they are, we'd have to already know what they are.
-        // Let's hope these are stable, so that this shit always works.
-
-        // hardcoded to 2
-        for (var projectIdx = 0; projectIdx < 2; projectIdx++)
-        {
-            DumpProject(
-                basePath,
-                idTypeInfoTools + 0x0 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
-                + 0x38 * projectIdx   // [projectIdx]
+            var name = vars.Helper.ReadString(
+                512, ReadStringType.UTF8,
+                enumTypeInfo + 0x0, // char* name
+                0x0
             );
-        }
-    });
+            // Yes, I dumped this enum with the code that you're reading
+            string[] enumType = new string[]{ "ENUM_S8", "ENUM_U8", "ENUM_S16", "ENUM_U16", "ENUM_S32", "ENUM_U32", "ENUM_S64", "eh?" };
+            var type = vars.Helper.Read<int>(
+                enumTypeInfo + 0x10 // enumType type
+            );
+            // vars.Log("  => Dumping " + name + " (0x" + enumTypeInfo.ToString("X") + ")");
 
-    // class name -> (project index, class index)
-    var classLocationMap = new Dictionary<string, Tuple<int, int>>();
-    vars.BuildClassLocationMap = (Action)(() =>
-    {
-        vars.Log("=> Building class location map cache...");
+            List<string> lines = new List<string> {
+                "/** enum type: enumType." + enumType[type] + " */",
+                "enum " + name + " {",
+            };
 
-        vars.Log("  => Waiting for classes to be initialised...");
-        var a = new Stopwatch();
-        a.Start();
-        while (!vars.Helper.Read<bool>(idTypeInfoTools + 0xEC))
+            var values = vars.Helper.Read<IntPtr>(
+                enumTypeInfo + 0x20 // enumValueInfo_t* values
+            );
+            var valuesLength = vars.Helper.Read<int>(
+                enumTypeInfo + 0x18 // int valueIndexLength
+            ) - 1;
+            var ENUM_VALUE_INFO_T_SIZE = 0x10;
+
+            List<Tuple<string, string>> valueStrings = new List<Tuple<string, string>>();
+            for (var i = 0; i < valuesLength; i++)
+            {
+                var valueName = vars.Helper.ReadString(
+                    512, ReadStringType.UTF8,
+                    values + ENUM_VALUE_INFO_T_SIZE * i  // [i]
+                    + 0x0,                               // char* name
+                    0x0
+                );
+
+                // Yes.
+                var valueValue = vars.Helper.Read<long>(
+                    values + ENUM_VALUE_INFO_T_SIZE * i  // [i]
+                    + 0x8                                // long long value
+                );
+
+                var valueStringified = valueValue.ToString();
+                valueStrings.Add(new Tuple<string, string>(valueName, valueStringified));
+            }
+
+            valueStrings = AlignItems(valueStrings);
+            foreach (var v in valueStrings)
+            {
+                lines.Add("  " + v.Item1 + " = " + v.Item2 + ",");
+            }
+
+            lines.Add("}");
+            DumpLines(parentFolder, name, lines);
+        });
+
+        var DumpVariable = (Func<IntPtr, Tuple<string, string>>)(classVariableInfo_t =>
         {
-            vars.Log("    => PostInit not yet handled, waiting...");
-            Thread.Sleep(100);
-        }
-        a.Stop();
-        vars.Log("    => Classes initalised after " + a.Elapsed.ToString(@"s\.fff") + "s.");
+            var name = vars.ReadString(classVariableInfo_t + 0x10); // char* name
+            if (name == "" || name == null)
+            {
+                return null;
+            }
 
-        for (var projectIdx = 0; projectIdx < 2; projectIdx++)
+            var type = vars.ReadString(classVariableInfo_t + 0x0); // char* type
+            var offset = vars.Helper.Read<int>(classVariableInfo_t + 0x18); // int offset
+            var size = vars.Helper.Read<int>(classVariableInfo_t + 0x1C); // int size
+            var comment = vars.ReadString(classVariableInfo_t + 0x30); // char* comment
+
+            var fieldInfo = ("    " + type + " " + name + ";");
+            var offsetStr = "0x" + offset.ToString("X").PadLeft(5, '0');
+            return new Tuple<string, string>(fieldInfo, "// " + offsetStr + " (size: 0x" + size.ToString("X") + ") - " + comment);
+        });
+
+        var DumpClass = (Func<string, IntPtr, int>)((parentFolder, classTypeInfo_t) => {
+            var name = vars.ReadString(classTypeInfo_t + 0x0); // char* name
+            // vars.Log("dumping " + name);
+            var superType = vars.ReadString(classTypeInfo_t + 0x8); // char* superType
+            var size = vars.Helper.Read<int>(classTypeInfo_t + 0x18); // int size
+
+            var def = "class " + name;
+            if (superType != null && superType != "") {
+                def += " : " + superType;
+            }
+
+
+            List<string> lines = new List<string> {
+                "/** Type Info for '" + name + "'",
+                " * ",
+            };
+
+            var metaData = vars.Helper.ReadString(
+                512, ReadStringType.UTF8,
+                classTypeInfo_t + 0x50, // classMetaDataInfo_t* metaData
+                0x0,                    // char* metaData
+                0x0
+            );
+            if (metaData != null) {
+                lines.AddRange(new List<string> {
+                    " * metaData: " + metaData,
+                    " *",
+                });
+            }
+
+            lines.AddRange(new List<string> {
+                " * At the time of dump (these will not mean anything for you):",
+                " * - address: 0x" + classTypeInfo_t.ToString("X"),
+                " */",
+                "",
+                "// size: 0x" + size.ToString("X"),
+                def + " {",
+            });
+
+
+            var currentVariable = vars.Helper.Read<IntPtr>(classTypeInfo_t + 0x28); // classVariableInfo_t* variables
+
+            var pairs = new List<Tuple<string, string>>();
+            while (true) {
+                var vari = DumpVariable(currentVariable);
+                if (vari == null)
+                {
+                    break;
+                }
+
+                pairs.Add(vari);
+                currentVariable += 0x58; // size of classVariableInfo_t
+            }
+
+            pairs = AlignItems(pairs);
+            foreach (var pair in pairs)
+            {
+                lines.Add(pair.Item1 + " " + pair.Item2);
+            }
+            lines.Add("}");
+
+            DumpLines(parentFolder, name, lines);
+
+            return 0;
+        });
+
+        var DumpTypeDef = (Action<string, IntPtr>)((parentFolder, typedefInfo_t) =>
         {
-            var project = idTypeInfoTools
-                + 0x0 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
-                + 0x38 * projectIdx;   // [projectIdx]
+            var name = vars.ReadString(typedefInfo_t + 0x0); // char* name
+            var type = vars.ReadString(typedefInfo_t + 0x8); // char* type
+            var ops = vars.ReadString(typedefInfo_t + 0x10); // char* ops
+            var size = vars.Helper.Read<int>(typedefInfo_t + 0x18); // int size
 
+            List<string> lines = new List<string> {
+                "// ops? " + ops,
+                "",
+                "typedef " + type + " " + name + "; // size: 0x" + size.ToString("X")
+            };
+
+            DumpLines(parentFolder, name, lines);
+        });
+
+        var DumpProject = (Action<string, IntPtr>)((parentFolder, project) =>
+        {
             var typeInfo = vars.Helper.Read<IntPtr>(
                 project + 0x0 // typeInfoGenerated_t typeInfoGen
+                + 0x0
             );
             var projectName = vars.Helper.ReadString(
                 512, ReadStringType.UTF8,
                 typeInfo + 0x0, // char* projectName
                 0x0
             );
-            vars.Log("  => Getting classes under " + projectName + "...");
+            var path = Path.Combine(parentFolder, projectName);
+            vars.Log("=> Dumping project " + projectName + " to " + path);
 
+            // Enums
+            var enumsPath = Path.Combine(path, "enums");
+            vars.Log("  => Dumping enums to " + enumsPath);
+            var enums = vars.Helper.Read<IntPtr>(typeInfo + 0x8);  // enumTypeInfo_t* enums
+            var numEnums = vars.Helper.Read<int>(typeInfo + 0x10); // int numEnums
+            for (var i = 0; i < numEnums; i++)
+            {
+                try {
+                    DumpEnum(enumsPath, enums + 0x40 * i); // [i] (0x40 is size of enumTypeInfo_t)
+                } catch (Exception e) {
+                    vars.Log("ERROR PROCESS ENUM (" + i + "):");
+                    vars.Log(e);
+                }
+            }
+
+            // Classes
+            var classesPath = Path.Combine(path, "classes");
+            vars.Log("  => Dumping classes to " + classesPath);
             var classes = vars.Helper.Read<IntPtr>(typeInfo + 0x18);  // classTypeInfo_t* classes
             var numClasses = vars.Helper.Read<int>(typeInfo + 0x20); // int numClasses
-            for (var classIdx = 0; classIdx < numClasses; classIdx++)
+            for (var i = 0; i < numClasses; i++)
             {
-                var name = vars.ReadString(
-                    classes + 0x58 * classIdx // [classIdx] (0x58 is size of classTypeInfo_t)
-                    + 0x0                     // char* name
-                );
+                try {
+                    DumpClass(classesPath, classes + 0x58 * i); // [i] (0x58 is size of classTypeInfo_t)
+                } catch (Exception e) {
+                    vars.Log("ERROR PROCESS CLASS (" + i + "):");
+                    vars.Log(e);
+                }
+            }
 
+            // Typedefs
+            var typedefsPath = Path.Combine(path, "typedefs");
+            vars.Log("  => Dumping typedefs to " + typedefsPath);
+            var typedefs = vars.Helper.Read<IntPtr>(typeInfo + 0x28);  // typedefInfo_t* typedefs
+            var numTypedefs = vars.Helper.Read<int>(typeInfo + 0x30); // int numTypedefs
+            for (var i = 0; i < numTypedefs; i++)
+            {
+                try {
+                    DumpTypeDef(typedefsPath, typedefs + 0x20 * i); // [i] (0x20 is size of typedefInfo_t)
+                } catch (Exception e) {
+                    vars.Log("ERROR PROCESS TYPEDEF (" + i + "):");
+                    vars.Log(e);
+                }
+            }
+        });
+
+        var idTypeInfoToolsPtr = vars.Helper.ScanRel(18, "48 8b fa 4c 89 41 08 48 8b d9 48 85 D2 74 25 48 8B 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 89 03");
+        vars.Log("=> Found idTypeInfoTools pointer at 0x" + idTypeInfoToolsPtr.ToString("X"));
+
+        IntPtr idTypeInfoTools = IntPtr.Zero;
+        var WaitUntilTypeInfoToolsInitialised = (Func<System.Threading.Tasks.Task<object>>)(async () =>
+        {
+            vars.Log("  => Attempting to load the idTypeInfoTools instance...");
+            while (true)
+            {
+                idTypeInfoTools = vars.Helper.Read<IntPtr>(idTypeInfoToolsPtr);
+                if (idTypeInfoTools != IntPtr.Zero)
+                {
+                    vars.Log("    => idTypeInfoTools instance at 0x" + idTypeInfoTools.ToString("X"));
+                    break;
+                }
+                vars.Log("    => Still null, retrying...");
+                await SleepAndYield(100);
+            }
+
+            vars.Log("  => Waiting for classes to be initialised...");
+            var a = new Stopwatch();
+            a.Start();
+            while (!vars.Helper.Read<bool>(idTypeInfoTools + 0xEC))
+            {
+                vars.Log("    => PostInit not yet handled, waiting...");
+                await SleepAndYield(100);
+            }
+            a.Stop();
+            vars.Log("    => Classes initalised after " + a.Elapsed.ToString(@"s\.fff") + "s.");
+            return;
+        });
+
+
+        vars.DumpLiterallyEverything = (Func<System.Threading.Tasks.Task<object>>)(async () =>
+        {
+            await WaitUntilTypeInfoToolsInitialised();
+
+            string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var basePath = Path.Combine(docPath, "DTDA typeinfo", DateTime.Now.ToString("yyyy-MM-dd"));
+            vars.Log("Dumping everything to: " + basePath);
+
+
+            // These offsets (everything we use below here) are avaiable in the dumps, but of course, we don't know what
+            //    they are yet, because to figure out what they are, we'd have to already know what they are.
+            // Let's hope these are stable, so that this shit always works.
+
+            // hardcoded to 2
+            for (var projectIdx = 0; projectIdx < 2; projectIdx++)
+            {
+                DumpProject(
+                    basePath,
+                    idTypeInfoTools + 0x0 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
+                    + 0x38 * projectIdx   // [projectIdx]
+                );
+            }
+            return;
+        });
+
+        // class name -> (project index, class index)
+        var classLocationMap = new Dictionary<string, Tuple<int, int>>();
+        var BuildClassLocationMap = (Func<System.Threading.Tasks.Task<object>>)(async () =>
+        {
+            vars.Log("=> Building class location map cache...");
+            await WaitUntilTypeInfoToolsInitialised();
+
+            for (var projectIdx = 0; projectIdx < 2; projectIdx++)
+            {
+                var project = idTypeInfoTools
+                    + 0x0 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
+                    + 0x38 * projectIdx;   // [projectIdx]
+
+                var typeInfo = vars.Helper.Read<IntPtr>(
+                    project + 0x0 // typeInfoGenerated_t typeInfoGen
+                );
+                var projectName = vars.Helper.ReadString(
+                    512, ReadStringType.UTF8,
+                    typeInfo + 0x0, // char* projectName
+                    0x0
+                );
+                vars.Log("  => Getting classes under " + projectName + "...");
+
+                var classes = vars.Helper.Read<IntPtr>(typeInfo + 0x18);  // classTypeInfo_t* classes
+                var numClasses = vars.Helper.Read<int>(typeInfo + 0x20); // int numClasses
+                for (var classIdx = 0; classIdx < numClasses; classIdx++)
+                {
+                    var name = vars.ReadString(
+                        classes + 0x58 * classIdx // [classIdx] (0x58 is size of classTypeInfo_t)
+                        + 0x0                     // char* name
+                    );
+
+                    if (name == null || name == "")
+                    {
+                        vars.Log("    => Finished processing " + classIdx + " classes.");
+                        break;
+                    }
+
+                    classLocationMap.Add(name, new Tuple<int, int>(projectIdx, classIdx));
+                }
+            }
+            return;
+        });
+
+        // Cache for the classes we've already introspected
+        // class name -> (variable name -> offset)
+        var classOffsetCache = new Dictionary<string, Dictionary<string, int>>();
+        var GetClassVariableMap = (Func<string, Dictionary<string, int>>)(className =>
+        {
+            Dictionary<string, int> map;
+            if (classOffsetCache.TryGetValue(className, out map))
+            {
+                return map;
+            }
+
+            map = new Dictionary<string, int>();
+            vars.Log("=> Loading " + className + " variables and their offsets...");
+
+            Tuple<int, int> classLocation;
+            if (!classLocationMap.TryGetValue(className, out classLocation))
+            {
+                vars.Log("  => ERROR: Unable to find class " + className + " in location map");
+                return map;
+            }
+
+            var projectIdx = classLocation.Item1;
+            var classIdx = classLocation.Item2;
+            vars.Log("  => Has location " + projectIdx + ", " + classIdx);
+
+            var currentVariable = vars.Helper.Read<IntPtr>(
+                idTypeInfoTools
+                + 0x0                 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
+                + 0x38 * projectIdx   // [projectIdx]
+                + 0x0,                   // typeInfoGenerated_t typeInfoGen
+                0x18,               // classTypeInfo_t* classes
+                0x58 * classIdx      // [i] (0x58 is size of classTypeInfo_t)
+                + 0x28                  // classVariableInfo_t* variables
+            );
+            vars.Log("  => Variables array starts at 0x" + currentVariable.ToString("X"));
+
+            for (var variableIdx = 0; true; variableIdx++) {
+                var name = vars.ReadString(currentVariable + 0x10); // char* name
                 if (name == null || name == "")
                 {
-                    vars.Log("    => Finished processing " + classIdx + " classes.");
+                    vars.Log("  => Loaded " + variableIdx + " variables");
                     break;
                 }
 
-                classLocationMap.Add(name, new Tuple<int, int>(projectIdx, classIdx));
+                var offset = vars.Helper.Read<int>(currentVariable + 0x18); // int offset
+                // vars.Log("    => " + name + " at " + offset.ToString("X") + " (" + variableIdx + ")");
+                map.Add(name, offset);
+
+                currentVariable += 0x58; // size of classVariableInfo_t
             }
-        }
-    });
 
-    // Cache for the classes we've already introspected
-    // class name -> (variable name -> offset)
-    var classOffsetCache = new Dictionary<string, Dictionary<string, int>>();
-    var GetClassVariableMap = (Func<string, Dictionary<string, int>>)(className =>
-    {
-        Dictionary<string, int> map;
-        if (classOffsetCache.TryGetValue(className, out map))
-        {
+            classOffsetCache.Add(className, map);
             return map;
-        }
+        });
 
-        map = new Dictionary<string, int>();
-        vars.Log("=> Loading " + className + " variables and their offsets...");
-
-        Tuple<int, int> classLocation;
-        if (!classLocationMap.TryGetValue(className, out classLocation))
+        // Does not include superclasses, use the superclass name for those offsets
+        var GetOffset = (Func<string, string, int>)((className, variableName) =>
         {
-            vars.Log("  => ERROR: Unable to find class " + className + " in location map");
-            return map;
-        }
-
-        var projectIdx = classLocation.Item1;
-        var classIdx = classLocation.Item2;
-        vars.Log("  => Has location " + projectIdx + ", " + classIdx);
-
-        var currentVariable = vars.Helper.Read<IntPtr>(
-            idTypeInfoTools
-            + 0x0                 // idArray < idTypeInfoTools::registeredTypeInfo_t , 2 > generatedTypeInfo
-            + 0x38 * projectIdx   // [projectIdx]
-            + 0x0,                   // typeInfoGenerated_t typeInfoGen
-            0x18,               // classTypeInfo_t* classes
-            0x58 * classIdx      // [i] (0x58 is size of classTypeInfo_t)
-            + 0x28                  // classVariableInfo_t* variables
-        );
-        vars.Log("  => Variables array starts at 0x" + currentVariable.ToString("X"));
-
-        for (var variableIdx = 0; true; variableIdx++) {
-            var name = vars.ReadString(currentVariable + 0x10); // char* name
-            if (name == null || name == "")
+            var offsetMap = GetClassVariableMap(className);
+            if (offsetMap == null)
             {
-                vars.Log("  => Loaded " + variableIdx + " variables");
-                break;
+                return -1;
             }
 
-            var offset = vars.Helper.Read<int>(currentVariable + 0x18); // int offset
-            // vars.Log("    => " + name + " at " + offset.ToString("X") + " (" + variableIdx + ")");
-            map.Add(name, offset);
+            int offset = -1;
+            if (offsetMap.TryGetValue(variableName, out offset))
+            {
+                vars.Log("  => Got offset for " + className + "." + variableName + " as 0x" + offset.ToString("X"));
+                return offset;
+            }
 
-            currentVariable += 0x58; // size of classVariableInfo_t
-        }
-
-        classOffsetCache.Add(className, map);
-        return map;
-    });
-
-    // Does not include superclasses, use the superclass name for those offsets
-    var GetOffset = (Func<string, string, int>)((className, variableName) =>
-    {
-        var offsetMap = GetClassVariableMap(className);
-        if (offsetMap == null)
-        {
+            vars.Log("  => ERROR: Unable to find " + variableName + " in " + className);
             return -1;
-        }
+        });
 
-        int offset = -1;
-        if (offsetMap.TryGetValue(variableName, out offset))
-        {
-            vars.Log("  => Got offset for " + className + "." + variableName + " as 0x" + offset.ToString("X"));
-            return offset;
-        }
+        await BuildClassLocationMap();
+        var idHud = GetOffset("idPlayer", "playerHud");
 
-        vars.Log("  => ERROR: Unable to find " + variableName + " in " + className);
-        return -1;
-    });
-    #endregion
+        // the root of all evil
+        vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
+        vars.Log("=> Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
 
-    vars.BuildClassLocationMap();
-    var idHud = GetOffset("idPlayer", "playerHud");
-
-    // the root of all evil
-    vars.idGameSystemLocal = vars.Helper.ScanRel(0x6, "FF 50 40 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 84 C0");
-    vars.Log("=> Found idGameSystemLocal at 0x" + vars.idGameSystemLocal.ToString("X"));
-
-    // enum idGameSystemLocal::state_t {
-    //   GAME_STATE_MAIN_MENU = 0,
-    //   GAME_STATE_LOADING = 1,
-    //   GAME_STATE_INGAME = 2,
-    // }
-    vars.Helper["gameState"] = vars.Helper.Make<int>(
-        vars.idGameSystemLocal + 0x40 // idGameSystemLocal::state_t state
-    );
-    vars.Helper["map"] = vars.Helper.MakeString(
-        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x20, // idStrStatic < 1024 > mapName (does not show up in dumps)
-        0x0
-    );
-
-    // the idPlayer was pointer scanned for, and walked back - we don't have type information for
-    //   idMapInstance, nor whatever the class is at 0x1988
-    vars.Helper["playerVelX"] = vars.Helper.Make<float>(
-        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x1988, // ??
-        0xC0,   // an idPlayer
-        0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
-        0x208   // playerPState_t current
-        + 0x3C   // idVec3 velocity
-        + 0x0   // float x
-    );
-    vars.Helper["playerVelY"] = vars.Helper.Make<float>(
-        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x1988, // ??
-        0xC0,   // an idPlayer
-        0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
-        0x208   // playerPState_t current
-        + 0x3C   // idVec3 velocity
-        + 0x4   // float y
-    );
-    vars.Helper["playerVelZ"] = vars.Helper.Make<float>(
-        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x1988, // ??
-        0xC0,   // an idPlayer
-        0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
-        0x208   // playerPState_t current
-        + 0x3C   // idVec3 velocity
-        + 0x8   // float z
-    );
-
-    // shrug
-    var TOLERANCE = 0.05;
-    vars.PlayerIsMoving = (Func<dynamic, bool>)(state =>
-    {
-        // we don't check Y cause sometimes you jump in the cutscene
-        //   and who really cares about that anyways
-        return state.playerVelX > TOLERANCE || state.playerVelY > TOLERANCE;
-    });
-
-    #region Menus
-    vars.Helper["hudMenus"] = vars.Helper.Make<IntPtr>(
-        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x1988, // ??
-        0xC0, // an idPlayer
-        idHud // idHUD playerHud
-        + 0x368 // idList < idMenu* > menus
-    );
-    vars.Helper["hudMenusSize"] = vars.Helper.Make<int>(
-        vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
-        0x1988, // ??
-        0xC0, // an idPlayer
-        idHud // idHUD playerHud
-        + 0x370 // idList < idMenu* > menus
-    );
-
-    // only defined when we're in the end of level screen
-    vars.Helper["eolChapterName"] = vars.Helper.MakeString(
-        vars.idGameSystemLocal
-         + 0x48, // idMapInstance mapInstance
-        0x1988,  // ??
-        0xC0,    // an idPlayer
-        idHud  // idHUD playerHud
-        + 0x368, // idList < idMenu* > menus
-        0x8 * 2, // [2] ("playermenu")
-        0x20     // idListMap < idAtomicString , idMenuElement * > screens
-        + 0x18,  // idList < idMenuElement * > sortedValueList
-        0x8 * 2, // [2] ("playermenu/eol_mission_complete")
-        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_EOL_Mission_Complete)
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x38,    // idDeclString chapterName
-        0x8,     // decl name or key ? look like "maps/game/sp/m6_hell_name"
-        0x0
-    );
-    vars.Helper["eolChapterName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
-
-    // Jesus Fucking Christ
-    vars.Helper["bossHealthBarShown"] = vars.Helper.Make<bool>(
-        vars.idGameSystemLocal
-         + 0x48, // idMapInstance mapInstance
-        0x1988,  // ??
-        0xC0,    // an idPlayer
-        idHud  // idHUD playerHud
-        + 0x40   // idGrowableList < idHUDElement * > elements
-        + 0x0,   // idHUDElement list
-        0x8 * 2, // [2] ("hud")
-        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        // Okay breathe for a moment
-        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
-        + 0x0,   // idSharedPtr < idUIWidget > list
-        0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
-        + 0x0,   // idSharedPtr < idUIWidget > list
-        0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Hud_Boss_HealthBar)
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x48     // bool isShown (no fweaking way)
-    );
-
-    vars.Helper["bossHealth"] = vars.Helper.Make<float>(
-        vars.idGameSystemLocal
-         + 0x48, // idMapInstance mapInstance
-        0x1988,  // ??
-        0xC0,    // an idPlayer
-        idHud  // idHUD playerHud
-        + 0x40   // idGrowableList < idHUDElement * > elements
-        + 0x0,   // idHUDElement list
-        0x8 * 2, // [2] ("hud")
-        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        // Okay breathe for a moment
-        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
-        + 0x0,   // idSharedPtr < idUIWidget > list
-        0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
-        + 0x0,   // idSharedPtr < idUIWidget > list
-        0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Hud_Boss_HealthBar)
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x20     // float currentHealth
-    );
-
-    // idGameSystemLocal.??.player.playerHud.elements[2].children[7].children[0].children[4].model.text.key
-    vars.Helper["bossName"] = vars.Helper.MakeString(
-        vars.idGameSystemLocal
-         + 0x48, // idMapInstance mapInstance
-        0x1988,  // ??
-        0xC0,    // an idPlayer
-        idHud  // idHUD playerHud
-        + 0x40   // idGrowableList < idHUDElement * > elements
-        + 0x0,   // idHUDElement list
-        0x8 * 2, // [2] ("hud")
-        0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        // Okay breathe for a moment
-        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
-        + 0x0,   // idSharedPtr < idUIWidget > list
-        0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
-        + 0x0,   // idSharedPtr < idUIWidget > list
-        0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
-        + 0x0,   // idSharedPtr < idUIWidget > list
-        0x8 * 4  // [4] ("ui/elements/text")
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-
-        0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Text)
-        + 0x0,   // idSharedPtrData data
-        0x8,     // interlockedPointer_t < void > pointer
-        0x28,    // idDeclString text
-        0x8,     // decl name or key ? look like "characters/ahzrak_prince"
-        0x0
-    );
-    vars.Helper["bossName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
-
-    vars.GetActiveScreens = (Func<HashSet<string>>)(() => {
-        var ret = new HashSet<string>();
-
-        // I have a hunch that it's always at i=2, but do our due diligence...
-        for (var i = 0; i < current.hudMenusSize; i++) {
-            var currentScreen = vars.Helper.ReadString(
-                512, ReadStringType.UTF8,
-                current.hudMenus + i * 0x8,
-                0x68 // idMenu::menuScreenId_t currentScreen
-                + 0x8, // idAtomicString titanId
-                0x0
-            );
-            ret.Add(currentScreen);
-        }
-
-        return ret;
-    });
-
-    vars.IsInEndOfLevelScreen = (Func<bool>)(() => {
-        var screens = vars.GetActiveScreens();
-        return screens.Contains("mission_complete") || screens.Contains("end_of_level");
-    });
-    #endregion
-
-    #region Quests
-    vars.Helper["quests"] = vars.Helper.Make<IntPtr>(
-        vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
-        0x0 // idList<idQuest*> quests
-        + 0x0 // idQuest* list
-    );
-    vars.Helper["questsSize"] = vars.Helper.Make<int>(
-        vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
-        0x0 // idList<idQuest*> quests
-        + 0x8 // int num
-    );
-
-    var QUEST_SIZE = 0xB8;
-    var QUEST_STEP_SIZE = 0x70;
-
-    // Big assumption here, in that the quests will always be in the same order and in the same positions
-    //   This is at least true when comparing Meta and my quest lists, but it could break in the future
-    //   I do this to save scanning the whole list, there are ~650 elements.
-    // TODO: An improvement could be to assume it doesn't change once loaded, so scan it once on init and
-    //   cache that list.
-
-    vars.ReadQuestStepProgress = (Func<int, int, int>)((questIdx, stepIdx) =>
-    {
-        return vars.Helper.Read<int>(
-            current.quests + questIdx * QUEST_SIZE // [questIdx]
-             + 0x10, // idList < idQuestStep > questSteps
-             stepIdx * QUEST_STEP_SIZE // [questStepIdx]
-             + 0x30 // idQuestRequirementProgress progress
-             + 0x0 // unsigned int trackedValue
+        // enum idGameSystemLocal::state_t {
+        //   GAME_STATE_MAIN_MENU = 0,
+        //   GAME_STATE_LOADING = 1,
+        //   GAME_STATE_INGAME = 2,
+        // }
+        vars.Helper["gameState"] = vars.Helper.Make<int>(
+            vars.idGameSystemLocal + 0x40 // idGameSystemLocal::state_t state
         );
-    });
-    vars.ReadQuestName = (Func<int, string>)(questIdx =>
-    {
-        return vars.Helper.ReadString(
-            512, ReadStringType.UTF8,
-            current.quests + questIdx * QUEST_SIZE // [questIdx]
-             + 0x0, // idDeclQuestDef questDef
-            0x88, // idStr questId
+        vars.Helper["map"] = vars.Helper.MakeString(
+            vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+            0x20, // idStrStatic < 1024 > mapName (does not show up in dumps)
             0x0
         );
-    });
 
-    vars.LogAllQuests = (Action)(() =>
-    {
-        // var start = DateTime.Now;
-        for (var i = 0; i < current.questsSize; i++) {
+        // the idPlayer was pointer scanned for, and walked back - we don't have type information for
+        //   idMapInstance, nor whatever the class is at 0x1988
+        vars.Helper["playerVelX"] = vars.Helper.Make<float>(
+            vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+            0x1988, // ??
+            0xC0,   // an idPlayer
+            0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
+            0x208   // playerPState_t current
+            + 0x3C   // idVec3 velocity
+            + 0x0   // float x
+        );
+        vars.Helper["playerVelY"] = vars.Helper.Make<float>(
+            vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+            0x1988, // ??
+            0xC0,   // an idPlayer
+            0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
+            0x208   // playerPState_t current
+            + 0x3C   // idVec3 velocity
+            + 0x4   // float y
+        );
+        vars.Helper["playerVelZ"] = vars.Helper.Make<float>(
+            vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+            0x1988, // ??
+            0xC0,   // an idPlayer
+            0x2D30, // idPlayerPhysicsInfo idPlayerPhysicsInfo
+            0x208   // playerPState_t current
+            + 0x3C   // idVec3 velocity
+            + 0x8   // float z
+        );
 
-            var questStatus = vars.ReadQuestStatus(i);
-            // if (questStatus == 4) {
-                var questName = vars.ReadQuestName(i);
+        // shrug
+        var TOLERANCE = 0.05;
+        vars.PlayerIsMoving = (Func<dynamic, bool>)(state =>
+        {
+            // we don't check Y cause sometimes you jump in the cutscene
+            //   and who really cares about that anyways
+            return state.playerVelX > TOLERANCE || state.playerVelY > TOLERANCE;
+        });
 
-                vars.Log("quest " + i + " " + questName + " is in status " + questStatus + " (0x" + (current.quests + i * QUEST_SIZE).ToString("X") + ")");
-            // }
+        #region Menus
+        vars.Helper["hudMenus"] = vars.Helper.Make<IntPtr>(
+            vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+            0x1988, // ??
+            0xC0, // an idPlayer
+            idHud // idHUD playerHud
+            + 0x368 // idList < idMenu* > menus
+        );
+        vars.Helper["hudMenusSize"] = vars.Helper.Make<int>(
+            vars.idGameSystemLocal + 0x48, // idMapInstance mapInstance
+            0x1988, // ??
+            0xC0, // an idPlayer
+            idHud // idHUD playerHud
+            + 0x370 // idList < idMenu* > menus
+        );
 
-        }
-        // vars.Log(elapsed);
-    });
+        // only defined when we're in the end of level screen
+        vars.Helper["eolChapterName"] = vars.Helper.MakeString(
+            vars.idGameSystemLocal
+            + 0x48, // idMapInstance mapInstance
+            0x1988,  // ??
+            0xC0,    // an idPlayer
+            idHud  // idHUD playerHud
+            + 0x368, // idList < idMenu* > menus
+            0x8 * 2, // [2] ("playermenu")
+            0x20     // idListMap < idAtomicString , idMenuElement * > screens
+            + 0x18,  // idList < idMenuElement * > sortedValueList
+            0x8 * 2, // [2] ("playermenu/eol_mission_complete")
+            0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_EOL_Mission_Complete)
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x38,    // idDeclString chapterName
+            0x8,     // decl name or key ? look like "maps/game/sp/m6_hell_name"
+            0x0
+        );
+        vars.Helper["eolChapterName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
+
+        // Jesus Fucking Christ
+        vars.Helper["bossHealthBarShown"] = vars.Helper.Make<bool>(
+            vars.idGameSystemLocal
+            + 0x48, // idMapInstance mapInstance
+            0x1988,  // ??
+            0xC0,    // an idPlayer
+            idHud  // idHUD playerHud
+            + 0x40   // idGrowableList < idHUDElement * > elements
+            + 0x0,   // idHUDElement list
+            0x8 * 2, // [2] ("hud")
+            0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            // Okay breathe for a moment
+            0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+            + 0x0,   // idSharedPtr < idUIWidget > list
+            0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+            + 0x0,   // idSharedPtr < idUIWidget > list
+            0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Hud_Boss_HealthBar)
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x48     // bool isShown (no fweaking way)
+        );
+
+        vars.Helper["bossHealth"] = vars.Helper.Make<float>(
+            vars.idGameSystemLocal
+            + 0x48, // idMapInstance mapInstance
+            0x1988,  // ??
+            0xC0,    // an idPlayer
+            idHud  // idHUD playerHud
+            + 0x40   // idGrowableList < idHUDElement * > elements
+            + 0x0,   // idHUDElement list
+            0x8 * 2, // [2] ("hud")
+            0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            // Okay breathe for a moment
+            0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+            + 0x0,   // idSharedPtr < idUIWidget > list
+            0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+            + 0x0,   // idSharedPtr < idUIWidget > list
+            0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Hud_Boss_HealthBar)
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x20     // float currentHealth
+        );
+
+        // idGameSystemLocal.??.player.playerHud.elements[2].children[7].children[0].children[4].model.text.key
+        vars.Helper["bossName"] = vars.Helper.MakeString(
+            vars.idGameSystemLocal
+            + 0x48, // idMapInstance mapInstance
+            0x1988,  // ??
+            0xC0,    // an idPlayer
+            idHud  // idHUD playerHud
+            + 0x40   // idGrowableList < idHUDElement * > elements
+            + 0x0,   // idHUDElement list
+            0x8 * 2, // [2] ("hud")
+            0xA8     // idSharedPtr < idUIWidget > rootWidgetNew (idUIWidget "ui/screens")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            // Okay breathe for a moment
+            0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+            + 0x0,   // idSharedPtr < idUIWidget > list
+            0x8 * 7  // [7] ("ui/screens/hud_screen_boss_health")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+            + 0x0,   // idSharedPtr < idUIWidget > list
+            0x8 * 0  // [0] ("ui/prefabs/hud_boss_health_bar")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            0xA0     // idList < idSharedPtr < idUIWidget > , TAG_MENU , true > children
+            + 0x0,   // idSharedPtr < idUIWidget > list
+            0x8 * 4  // [4] ("ui/elements/text")
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+
+            0x70     // idSharedPtr < idUIWidgetModelInterface > modelInterface
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x190    // idSharedPtr < idUIWidgetModel > model (idUIWidgetModel_Text)
+            + 0x0,   // idSharedPtrData data
+            0x8,     // interlockedPointer_t < void > pointer
+            0x28,    // idDeclString text
+            0x8,     // decl name or key ? look like "characters/ahzrak_prince"
+            0x0
+        );
+        vars.Helper["bossName"].FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
+
+        vars.GetActiveScreens = (Func<HashSet<string>>)(() => {
+            var ret = new HashSet<string>();
+
+            // I have a hunch that it's always at i=2, but do our due diligence...
+            for (var i = 0; i < current.hudMenusSize; i++) {
+                var currentScreen = vars.Helper.ReadString(
+                    512, ReadStringType.UTF8,
+                    current.hudMenus + i * 0x8,
+                    0x68 // idMenu::menuScreenId_t currentScreen
+                    + 0x8, // idAtomicString titanId
+                    0x0
+                );
+                ret.Add(currentScreen);
+            }
+
+            return ret;
+        });
+
+        vars.IsInEndOfLevelScreen = (Func<bool>)(() => {
+            var screens = vars.GetActiveScreens();
+            return screens.Contains("mission_complete") || screens.Contains("end_of_level");
+        });
+        #endregion
+
+        #region Quests
+        vars.Helper["quests"] = vars.Helper.Make<IntPtr>(
+            vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
+            0x0 // idList<idQuest*> quests
+            + 0x0 // idQuest* list
+        );
+        vars.Helper["questsSize"] = vars.Helper.Make<int>(
+            vars.idGameSystemLocal + 0x1A30, // idQuestSystem questSystem
+            0x0 // idList<idQuest*> quests
+            + 0x8 // int num
+        );
+
+        var QUEST_SIZE = 0xB8;
+        var QUEST_STEP_SIZE = 0x70;
+
+        // Big assumption here, in that the quests will always be in the same order and in the same positions
+        //   This is at least true when comparing Meta and my quest lists, but it could break in the future
+        //   I do this to save scanning the whole list, there are ~650 elements.
+        // TODO: An improvement could be to assume it doesn't change once loaded, so scan it once on init and
+        //   cache that list.
+
+        vars.ReadQuestStepProgress = (Func<int, int, int>)((questIdx, stepIdx) =>
+        {
+            return vars.Helper.Read<int>(
+                current.quests + questIdx * QUEST_SIZE // [questIdx]
+                + 0x10, // idList < idQuestStep > questSteps
+                stepIdx * QUEST_STEP_SIZE // [questStepIdx]
+                + 0x30 // idQuestRequirementProgress progress
+                + 0x0 // unsigned int trackedValue
+            );
+        });
+        vars.ReadQuestName = (Func<int, string>)(questIdx =>
+        {
+            return vars.Helper.ReadString(
+                512, ReadStringType.UTF8,
+                current.quests + questIdx * QUEST_SIZE // [questIdx]
+                + 0x0, // idDeclQuestDef questDef
+                0x88, // idStr questId
+                0x0
+            );
+        });
+
+        vars.LogAllQuests = (Action)(() =>
+        {
+            // var start = DateTime.Now;
+            for (var i = 0; i < current.questsSize; i++) {
+
+                var questStatus = vars.ReadQuestStatus(i);
+                // if (questStatus == 4) {
+                    var questName = vars.ReadQuestName(i);
+
+                    vars.Log("quest " + i + " " + questName + " is in status " + questStatus + " (0x" + (current.quests + i * QUEST_SIZE).ToString("X") + ")");
+                // }
+
+            }
+            // vars.Log(elapsed);
+        });
+
+        vars.Log("  => Loading complete!");
+        vars.finishedLoading = true;
+        return;
+    }), vars.cts.Token);
+    #endregion
     #endregion
 
     current.hasTimerStartedInThisLoadYet = false;
+
+    // we do some loading in another thread to unblock the main thread and keep LS responsive -
+    // we need to, however, block the ASL from attempting to do anything until that loading is done.
+    vars.finishedLoading = false;
 }
 
 update
 {
+    // don't do anything until we're done loading everything - see init{}
+    if (!vars.finishedLoading)
+    {
+        return false;
+    }
+
     vars.Helper.Update();
     vars.Helper.MapPointers();
 
@@ -949,6 +997,12 @@ onReset
 
 isLoading
 {
+    // don't do anything until we're done loading everything - see init{}
+    if (!vars.finishedLoading)
+    {
+        return false;
+    }
+
     return current.gameState == 1
         || current.isInEndOfLevelScreen
         || current.gameState == 0;
@@ -956,6 +1010,12 @@ isLoading
 
 start
 {
+    // don't do anything until we're done loading everything - see init{}
+    if (!vars.finishedLoading)
+    {
+        return false;
+    }
+
     // from the main menu, every chapter except the first
     if (settings["start_any_chapter"]
      && current.activeMap != old.activeMap
@@ -974,6 +1034,11 @@ start
 
 split
 {
+    // don't do anything until we're done loading everything - see init{}
+    if (!vars.finishedLoading)
+    {
+        return false;
+    }
 
     if (vars.Setting("quests")) {
         foreach(KeyValuePair<int, Dictionary<int, int>> questEntry in vars.QuestsToCheck)
@@ -1022,6 +1087,12 @@ split
 
 reset
 {
+    // don't do anything until we're done loading everything - see init{}
+    if (!vars.finishedLoading)
+    {
+        return false;
+    }
+
     if (settings["reset_auto_first_chapter"]
      && old.gameState == 2 && current.gameState == 1
      && current.activeMap == "game/sp/m1_intro/m1_intro"
