@@ -405,7 +405,7 @@ init
 
     var idTypeInfoToolsPtr = vars.Helper.ScanRel(0x6, "45 33 db 4c 8b 25 ?? ?? ?? ?? 4d 8b eb 49 8b c4");
     vars.Log("=> Found idTypeInfoTools pointer at 0x" + idTypeInfoToolsPtr.ToString("X"));
-    
+
     var idTypeInfoTools = vars.Helper.Read<IntPtr>(idTypeInfoToolsPtr);
     vars.Log("  => Points to 0x" + idTypeInfoTools.ToString("X"));
 
@@ -436,6 +436,18 @@ init
     vars.BuildClassLocationMap = (Action)(() =>
     {
         vars.Log("=> Building class location map cache...");
+
+        vars.Log("  => Waiting for classes to be initialised...");
+        var a = new Stopwatch();
+        a.Start();
+        while (!vars.Helper.Read<bool>(idTypeInfoTools + 0xEC))
+        {
+            vars.Log("    => PostInit not yet handled, waiting...");
+            Thread.Sleep(100);
+        }
+        a.Stop();
+        vars.Log("    => Classes initalised after " + a.Elapsed.ToString(@"s\.fff") + "s.");
+
         for (var projectIdx = 0; projectIdx < 2; projectIdx++)
         {
             var project = idTypeInfoTools
@@ -517,6 +529,7 @@ init
             }
 
             var offset = vars.Helper.Read<int>(currentVariable + 0x18); // int offset
+            // vars.Log("    => " + name + " at " + offset.ToString("X") + " (" + variableIdx + ")");
             map.Add(name, offset);
 
             currentVariable += 0x58; // size of classVariableInfo_t
