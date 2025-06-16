@@ -8,7 +8,6 @@ Other scripts I've worked on outside of this repo:
 - **In Sound Mind:** https://github.com/ontrigger/ism-autosplitter
 - **My Friendly Neighbourhood:** https://github.com/TheDementedSalad/My-Friendly-Neighborhood-Splitter/tree/main
 - **The Blair Witch Volumes:** https://github.com/MildGothDaddy/Bw_asl
-- **Trepang2:** https://github.com/LiterallyMetaphorical/Livesplit.Trepang2
 
 I have worked on other autosplitters, those that are either
 full LiveSplit components or use the Auto Splitting Runtime (ASR):
