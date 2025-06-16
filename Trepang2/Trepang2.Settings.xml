@@ -1,0 +1,33 @@
+<Settings>
+    <Setting Id="start_on_mission" Label="Start on entering any mission from the safehouse (IL runs)" State="false" />
+    <Setting Id="Mission_Prologue_C" Label="Split on Prologue (Site 14) events" State="false">
+        <Setting Id="Mission_Prologue_C__restraints" Label="Unlocking Restraints" State="false" />
+        <Setting Id="Mission_Prologue_C__exit"       Label="Exit Mission" State="false" />
+    </Setting>
+    <Setting Id="Mission_Mothman_C" Label="Split on Pandora Institute events" State="false">
+        <Setting Id="Mission_Mothman_C__enter"   Label="Enter Mission"                State="false" />
+        <Setting Id="Cutscene_ReactorArenaSetup" Label="Switch at Reactor (?)"        State="false" />
+        <Setting Id="scene_MothmanRooftopIntro"  Label="Mothman Intro after Elevator" State="false" />
+        <Setting Id="Mission_Mothman_C__exit"    Label="Exit Mission"                 State="false" />
+    </Setting>
+    <Setting Id="Mission_Cultists_C" Label="Split on Jorvik Castle events" State="false">
+        <Setting Id="Mission_Cultists_C__enter"   Label="Enter Mission"             State="false" />
+        <Setting Id="Cutscene_PopeKillhouseIntro" Label="Patriarch Intro Killhouse" State="false" />
+        <Setting Id="AuditoriumSequence"          Label="Patriarch Boss Intro"      State="false" />
+        <Setting Id="Mission_Cultists_C__exit"    Label="Exit Mission"              State="false" />
+    </Setting>
+    <Setting Id="Mission_Ghosts_C" Label="Split on Site 83 events" State="false">
+        <Setting Id="Mission_Ghosts_C__enter"   Label="Enter Mission"       State="false" />
+        <Setting Id="Mission_Ghosts_C__gasmask" Label="Taking off Gas Mask" State="false" />
+        <Setting Id="Mission_Ghosts_C__exit"    Label="Exit Mission"        State="false" />
+    </Setting>
+    <Setting Id="Mission_HorizonHQ_C" Label="Split on Horizon HQ events" State="false">
+        <Setting Id="Mission_HorizonHQ_C__enter"    Label="Enter Mission"        State="false" />
+        <Setting Id="cutscene_horizon_elevatorRide" Label="Elevator after Lobby" State="false" />
+        <Setting Id="Mission_HorizonHQ_C__exit"     Label="Exit Mission"         State="false" />
+    </Setting>
+    <Setting Id="Mission_SyndicateHQFinal_C" Label="Split on Syndicate HQ (Betrayal) events" State="true">
+        <Setting Id="Mission_SyndicateHQ_Betrayal_C__enter" Label="Betrayal in Safehouse" State="false" />
+        <Setting Id="Mission_SyndicateHQFinal_C__exit"      Label="Beat the Game"         State="true" />
+    </Setting>
+</Settings>
