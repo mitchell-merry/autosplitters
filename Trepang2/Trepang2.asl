@@ -266,6 +266,13 @@ init
             var ABaseGameMode_C_CurrentCutscene = getProperty(ABaseGameMode_C, "CurrentCutscene");
             var ABaseGameMode_C_CurrentCutscene_Offset = getPropertyOffset(ABaseGameMode_C_CurrentCutscene);
             vars.Log("CurrentCutscene Offset: " + ABaseGameMode_C_CurrentCutscene_Offset.ToString("X"));
+
+            var ABaseGameMode_C_AllLiveBaseChars = getProperty(ABaseGameMode_C, "AllLiveBaseChars");
+            var ABaseGameMode_C_AllLiveBaseCharsArrayPtr_Offset = getPropertyOffset(ABaseGameMode_C_AllLiveBaseChars);
+            vars.Log("AllLiveBaseCharsArrayPtr Offset: " + ABaseGameMode_C_AllLiveBaseCharsArrayPtr_Offset.ToString("X"));
+            var ABaseGameMode_C_AllLiveBaseCharsArrayCount_Offset = getPropertyOffset(ABaseGameMode_C_AllLiveBaseChars) + 8;
+            vars.Log("AllLiveBaseCharsArrayCount Offset: " + ABaseGameMode_C_AllLiveBaseCharsArrayCount_Offset.ToString("X"));
+
             #endregion
 
             #region creating the memorywatchers
@@ -281,6 +288,20 @@ init
                         UOBJECT_NAME
                     )
                 ) { Name = "cutsceneFName" },
+                new MemoryWatcher<IntPtr>(
+                   new DeepPointer(
+                        vars.GWorld,
+                        UWorld_AuthorityGameMode_Offset,
+                        ABaseGameMode_C_AllLiveBaseCharsArrayPtr_Offset
+                    )
+                ) { Name = "liveBaseCharsArrayPtr" },
+                new MemoryWatcher<int>(
+                   new DeepPointer(
+                        vars.GWorld,
+                        UWorld_AuthorityGameMode_Offset,
+                        ABaseGameMode_C_AllLiveBaseCharsArrayCount_Offset
+                    )
+                ) { Name = "liveBaseCharsArrayCount" },
                 new MemoryWatcher<long>(
                    new DeepPointer(
                         vars.GEngine,
@@ -356,10 +377,15 @@ update
     // This is useful for more than just the isLoading {} block
     current.isLoading = current.LoadingWidget != IntPtr.Zero || current.missionFName == 0;
 
+    // this will get properly set after we've resolved the mission name
+    current.hordeMode = false;
+
     if (!((IDictionary<string, object>)(old)).ContainsKey("cutsceneFName"))
     {
         vars.Log("Loaded values:");
         vars.Log("  cutsceneFName: " + current.cutsceneFName.ToString("X"));
+        vars.Log("  liveBaseCharsArrayPtr: " + current.liveBaseCharsArrayPtr.ToString("X"));
+        vars.Log("  liveBaseCharsArrayCount: " + current.liveBaseCharsArrayCount);
         vars.Log("  missionFName: " + current.missionFName.ToString("X"));
         vars.Log("  IsUnlockingRestraints: " + current.IsUnlockingRestraints);
         vars.Log("  IsWearingGasMask: " + current.IsWearingGasMask);
@@ -402,6 +428,94 @@ update
 
         currdict[key] = val;
     }
+
+    // we'll enable horde mode logic only when requested
+    current.hordeMode = settings["combat_sim_waves"] && current.mission.StartsWith("Mission_Horde_");
+
+    if (old.hordeMode != current.hordeMode)
+    {
+        vars.Log("  hordeMode: " + current.hordeMode);
+    }
+
+    // Note: The following code works properly only in horde mode. But
+    // we'll add dummy values outside horde mode to keep transitions
+    // sane.
+    bool playerAlive = false;
+    List<string> enemies = new List<string>();
+    List<string> friends = new List<string>();
+
+    if (current.hordeMode)
+    {
+        // In full log output mode, read the currently alive
+        // characters and classify them as:
+        // - playerAlive
+        // - friends
+        // - enemies
+        // This is useful only for debugging.
+        //
+        // Otherwise, we'll short circuit as soon as we find the
+        // player and two enemies. One enemy would be enough for the
+        // start/split logic. Two enemies allows us to still log
+        // useful info on 2 -> 1 transition in case friends are
+        // incorrectly classified as enemies.
+        bool fullOutput = false;
+
+        for (int i = 0; i < current.liveBaseCharsArrayCount; ++i)
+        {
+            var c = vars.Helper.Read<IntPtr>(current.liveBaseCharsArrayPtr + i*8);
+            if (c != null)
+            {
+                var UOBJECT_NAME = 0x18;
+                var charName = vars.ReadFName(vars.Helper.Read<long>(c + UOBJECT_NAME));
+
+                // classify the character by name
+                if (charName == "PlayerBP")
+                {
+                    playerAlive = true;
+                }
+                else if (charName.StartsWith("NPC_Merc_HordeSquadmate"))
+                {
+                    if (fullOutput)
+                        friends.Add(charName);
+                }
+                else
+                {
+                    enemies.Add(charName);
+                }
+
+                // short circuit?
+                if (!fullOutput && playerAlive && enemies.Count >= 2)
+                    break;
+            }
+        }
+    }
+
+    current.playerAlive = playerAlive;
+    current.enemies = enemies;
+    current.friends = friends;
+
+    if (current.hordeMode)
+    {
+        if (!old.hordeMode || old.liveBaseCharsArrayCount != current.liveBaseCharsArrayCount)
+        {
+            vars.Log("  liveBaseCharsArrayCount: " + current.liveBaseCharsArrayCount);
+        }
+
+        if (!old.hordeMode || (old.playerAlive != current.playerAlive))
+        {
+            vars.Log("  Player alive: " + current.playerAlive);
+        }
+
+        if (!old.hordeMode || (old.friends.Count != current.friends.Count))
+        {
+            vars.Log("  Friends: " + String.Join(" ", current.friends));
+        }
+
+        if (!old.hordeMode || (old.enemies.Count != current.enemies.Count))
+        {
+            vars.Log("  Enemies: " + String.Join(" ", current.enemies));
+        }
+    }
 }
 
 onStart
@@ -423,6 +537,17 @@ start
      && !current.isLoading
      && vars.Missions.Contains(current.mission)
     ) {
+        return true;
+    }
+
+    // trigger start when a wave spawns in
+    if (settings["combat_sim_waves"]
+        && old.hordeMode
+        && current.hordeMode
+        && current.playerAlive
+        && old.enemies.Count == 0
+        && current.enemies.Count > 0)
+    {
         return true;
     }
 
@@ -474,6 +599,22 @@ split
         return vars.CheckSplit(current.cutscene);
     }
 
+    // Trigger a split when the last enemy has died but only if the
+    // player is still alive and we're not loading
+    //
+    // NOTE: It would be better to detect splits using
+    // HordeModeActor2::CurrentWaveIndex, but this would require figuring
+    // out how to find that object.
+    if (settings["combat_sim_waves"]
+        && old.hordeMode               // make sure we don't trigger on transitions such as checkpoint reloads
+        && current.hordeMode
+        && current.playerAlive
+        && !current.isLoading
+        && old.enemies.Count > 0
+        && current.enemies.Count == 0)
+    {
+        return true;
+    }
 }
 
 exit

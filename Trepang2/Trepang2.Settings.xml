@@ -30,4 +30,5 @@
         <Setting Id="Mission_SyndicateHQ_Betrayal_C__enter" Label="Betrayal in Safehouse" State="false" />
         <Setting Id="Mission_SyndicateHQFinal_C__exit"      Label="Beat the Game"         State="true" />
     </Setting>
+    <Setting Id="combat_sim_waves" Label="Start/split on combat simulator waves" State="false" />
 </Settings>
