@@ -1,0 +1,35 @@
+<Settings>
+    <Setting Id="level" Label="Split on completing level" State="false">
+        <Setting ID="transition__02 Catholic Scene__03 Larry's House 0 new"                  Label="2" State="false" />
+        <Setting ID="transition__03 Larry's__se 0 new -> 04 Approach House"                  Label="3" State="false" />
+        <Setting ID="transition__04 Approach House__05 House 1st Floor"                      Label="4" State="false" />
+        <Setting ID="transition__05 House 1st__or -> 06 House 2nd Floor"                     Label="5" State="false" />
+        <Setting ID="transition__06 House 2nd__or -> 07 Larry's House 1"                     Label="6" State="false" />
+        <Setting ID="transition__07 Larry's__se 1 -> 08 Approach Store"                      Label="7" State="false" />
+        <Setting ID="transition__08 Approach Store__09 Store "                               Label="8" State="false" />
+        <Setting ID="transition__09 Store ->__Larry's House 2 new "                          Label="9" State="false" />
+        <Setting ID="transition__10 Larry's__se 2 new -> 11 Approach House 2 "               Label="10" State="false" />
+        <Setting ID="transition__11 Approach House__> 12 House 1"                            Label="11" State="false" />
+        <Setting ID="transition__12 House 1__13 House 2"                                     Label="12" State="false" />
+        <Setting ID="transition__13 House 2__14 Larry's House 3 new"                         Label="13" State="false" />
+        <Setting ID="transition__14 Larry's__se 3 new -> 15 Approach Brothal"                Label="14" State="false" />
+        <Setting ID="transition__15 Approach Brothal__16 Brothal"                            Label="15" State="false" />
+        <Setting ID="transition__16 Brothal ->__Concert"                                     Label="16" State="false" />
+        <Setting ID="transition__17 Concert ->__Larry's House 4 "                            Label="17" State="false" />
+        <Setting ID="transition__18 Larry's__se 4 -> 19 Approach Theater "                   Label="18" State="false" />
+        <Setting ID="transition__19 Approach Theater__20 Theater "                           Label="19" State="false" />
+        <Setting ID="transition__20 Theater ->__Larry's House 5 "                            Label="20" State="false" />
+        <Setting ID="transition__21 Larry's__se 5 -> 22 Morgue "                             Label="21" State="false" />
+        <Setting ID="transition__22 Morgue ->__Larry's House 6 "                             Label="22" State="false" />
+        <Setting ID="transition__23 Larry's__se 6 -> 24 Catholic School Outside 0 "          Label="23" State="false" />
+        <Setting ID="transition__24 Catholic School__side 0 -> 25 Catholic School Return 1 " Label="24" State="false" />
+        <Setting ID="transition__25 Catholic School__urn 1 -> 26 Catholic School Return 2 "  Label="25" State="false" />
+        <Setting ID="transition__26 Catholic School__urn 2 -> 27 Catholic School Return 3 "  Label="26" State="false" />
+        <Setting ID="transition__27 Catholic School__urn 3 -> 28 Catholic School Return 4 "  Label="27" State="false" />
+        <Setting ID="transition__28 Catholic School__urn 4 -> 29 Catholic School Outside 5 " Label="28" State="false" />
+        <Setting ID="transition__29 Catholic School__side 5 -> 30 Larry's House 7 end "      Label="29" State="false" />
+        <Setting ID="transition__30 Larry's__se 7 end -> 31 Asylum Cutscene "                Label="30" State="false" />
+        <Setting ID="transition__31 Asylum Cutscene__32 Asylum Escape "                      Label="31" State="false" />
+        <Setting ID="transition__32 Asylum Escape__00 Main Menu with Level select"           Label="32" State="true" />
+    </Setting>
+</Settings>
