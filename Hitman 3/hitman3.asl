@@ -82,19 +82,33 @@ update
     // (or the main menu, which is paused regardless anyway)
     if (old.isLoading && !current.isLoading) {
         vars.inIntroCutscene = true;
+        // vars.Log("in intro cutscene");
     }
 
     // if we were in the intro cutscene, but we have gained control, then the cutscene is over
-    if (vars.inIntroCutscene && !old.hasControl && current.hasControl) {
+    if (vars.inIntroCutscene && (
+        // Showdown cutscenes - you spawn in with "control" immediately, time should continue when you leave the cutscene
+        (current.hasControl && old.inCutscene && !current.inCutscene) ||
+        // Other level cutscenes - you don't have control in the beginning, time should continue when you gain it
+        (!current.inCutscene && !old.hasControl && current.hasControl)
+    )) {
         vars.inIntroCutscene = false;
+
+        // vars.Log("out of intro cutscene");
     }
+
+    // if (old.isLoading != current.isLoading) vars.Log("isLoading: " + old.isLoading + " -> " + current.isLoading);
+    // if (old.isInMainMenu != current.isInMainMenu) vars.Log("isInMainMenu: " + old.isInMainMenu + " -> " + current.isInMainMenu);
+    // if (old.inCutscene != current.inCutscene) vars.Log("inCutscene: " + old.inCutscene + " -> " + current.inCutscene);
+    // if (old.hasControl != current.hasControl) vars.Log("hasControl: " + old.hasControl + " -> " + current.hasControl);
+    // if (old.usingCamera != current.usingCamera) vars.Log("usingCamera: " + old.usingCamera + " -> " + current.usingCamera);
 }
 
 isLoading
 {
     // hasControl is false while using the camera, both are false when we actually don't have control
     // "having control" really means being able to move around and shit
-    var reallyHasControl = current.hasControl || current.usingCamera; 
+    var reallyHasControl = current.hasControl || current.usingCamera;
 
     // we're in a cutscene, or we're on a screen we don't have control in (e.g. results screen after level),
     //   and we're not in the intro cutscene (to the safehouse or the level)
