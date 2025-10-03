@@ -24,7 +24,7 @@ init
     var isLoadingBase = vars.Helper.ScanRel(0x5, "75 13 48 8B 05 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? B2 01");
     vars.Helper["isLoading"] = vars.Helper.Make<bool>(isLoadingBase + 0x3C);
     vars.Log(vars.Helper["isLoading"].ToString());
-    
+
     // 48 89 35 ????????     - mov [hitman3.exe+????????],rsi
     // 48 8D 0D ????????     - lea rcx,[hitman3.exe+????????]
     // 40 88 35 ????????     - mov [hitman3.exe+????????],sil
@@ -38,9 +38,10 @@ init
     var inCutsceneBase = vars.Helper.ScanRel(0xB, "88 44 24 ?? E8 ?? ?? ?? ?? FF 0D");
     vars.Helper["inCutscene"] = vars.Helper.Make<bool>(inCutsceneBase + 0x0);
     vars.Log(vars.Helper["inCutscene"].ToString());
-    
+
     // find this by doing the inverse of usingCamera
     // this one appears to be the most shakey, so I've included more of the surrounding opcodes to see if you can forge a stronger signature (if this breaks again)
+    // 2025/10/03 - Happened again. No luck besides just updating the signature.
     // 48 8B D0              - mov rdx,rax
     // 48 C1 EA ??           - shr rdx,??
     // C6 05 ???????? 01     - mov byte ptr [hitman3.exe+????????],01
@@ -49,7 +50,7 @@ init
     // 0FB6 C0               - movzx eax,al
     // EB ??                 - jmp hitman3.exe+????????
     // 48 8B 05 ????????     - mov rax,[hitman3.exe+????????]
-    var hasControlBase = vars.Helper.ScanRel(0x9, "48 8B D0 48 C1 EA ?? C6 05 ?? ?? ?? ?? 01");
+    var hasControlBase = vars.Helper.ScanRel(0x9, "4C 8B C0 49 C1 E8 ?? C6 05 ?? ?? ?? ?? 01");
     vars.Helper["hasControl"] = vars.Helper.Make<bool>(hasControlBase + 0x1);
     vars.Log(vars.Helper["hasControl"].ToString());
 
